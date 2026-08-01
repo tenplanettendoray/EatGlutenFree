@@ -56,6 +56,7 @@ function AllergyReview({ restaurant, allergies }: { restaurant: Restaurant; alle
 
 export default function Home() {
   const [location, setLocation] = useState("");
+  const [food, setFood] = useState("");
   const [occasion, setOccasion] = useState("");
   const [allergies, setAllergies] = useState<string[]>([]);
   const [customAllergy, setCustomAllergy] = useState("");
@@ -75,13 +76,22 @@ export default function Home() {
     setCustomAllergy("");
   }
   async function runSearch(params: URLSearchParams, label: string) {
+    if (food.trim()) params.set("food", food.trim());
     if (occasion) params.set("occasion", occasion.toLowerCase());
     setLoading(true); setError(""); setSelected(null);
     try {
       const response = await fetch(`/api/restaurants?${params.toString()}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Restaurant search failed.");
-      setRestaurants(data.restaurants); setSearchedLocation(data.location || label);
+      const ranked = [...data.restaurants].sort((a: Restaurant, b: Restaurant) => {
+        const allergyScore = (restaurant: Restaurant) => allergies.reduce((score, allergy) => {
+          const key = dietKeys[allergy.toLowerCase()];
+          return score + (key && restaurant.dietary[key] === "yes" ? 5 : 0);
+        }, 0);
+        const detailScore = (restaurant: Restaurant) => Number(Boolean(restaurant.website)) * 2 + Object.keys(restaurant.dietary).length;
+        return allergyScore(b) - allergyScore(a) || detailScore(b) - detailScore(a) || a.distanceKm - b.distanceKm;
+      });
+      setRestaurants(ranked); setSearchedLocation(data.location || label);
       if (!data.restaurants.length) setError("No restaurants were found in this area. Try a nearby city or ZIP code.");
     } catch (searchError) {
       setRestaurants([]); setError(searchError instanceof Error ? searchError.message : "Restaurant search failed.");
@@ -122,6 +132,8 @@ export default function Home() {
           <div className="card-heading"><span>Start your search</span><small>Your choices stay on this device</small></div>
           <label htmlFor="location">Where are you dining?</label>
           <div className="location-row"><span className="input-icon" aria-hidden="true">⌖</span><input id="location" value={location} onChange={(event) => setLocation(event.target.value)} placeholder="City, neighborhood, or ZIP" autoComplete="postal-code" /><button type="button" className="locate-button" onClick={useMyLocation} aria-label="Use my current location">◎</button></div>
+          <label className="food-label" htmlFor="food">What food are you craving?</label>
+          <div className="food-row"><span className="input-icon" aria-hidden="true">⌕</span><input id="food" value={food} onChange={(event) => setFood(event.target.value)} placeholder="Pizza, burgers, sushi, tacos…" /></div>
           <div className="occasion-label-row"><label>What are you looking for?</label><span>{occasion || "Any time"}</span></div>
           <div className="occasion-grid">{occasionOptions.map((option) => <button type="button" key={option} className={occasion === option ? "allergy-chip selected" : "allergy-chip"} onClick={() => setOccasion(occasion === option ? "" : option)} aria-pressed={occasion === option}>{option}</button>)}</div>
           <p className="occasion-note">Meal categories are inferred from restaurant type and cuisine tags—confirm the current menu and hours.</p>
@@ -138,7 +150,7 @@ export default function Home() {
       <section className="results-section" aria-live="polite">
         {error && <div className="message-banner"><span>!</span>{error}</div>}
         {restaurants.length > 0 ? <>
-          <div className="results-heading"><div><span className="section-kicker">{occasion ? occasion + " matches" : "Nearby tables"}</span><h2>Restaurants around {searchedLocation}</h2></div><div className="active-profile"><span>Watching for</span><strong>{allergySummary}</strong></div></div>
+          <div className="results-heading"><div><span className="section-kicker">{[food, occasion].filter(Boolean).join(" · ") || "Nearby tables"}</span><h2>Best source-backed matches around {searchedLocation}</h2></div><div className="active-profile"><span>Ranked by</span><strong>Allergy tag match · requested food · source details · distance</strong><span>Watching for</span><strong>{allergySummary}</strong></div></div>
           <div className="restaurant-grid">{restaurants.map((restaurant) => <article className="restaurant-card" key={restaurant.id}>
             <WebsitePreview restaurant={restaurant} />
             <div className="restaurant-body"><div className="restaurant-title-row"><div><h3>{restaurant.name}</h3><p>{restaurant.cuisine.length ? restaurant.cuisine.join(" · ") : "Restaurant"}</p></div><span className="rating-unavailable" title="Public rating unavailable"><b>☆</b> —</span></div>
@@ -147,6 +159,7 @@ export default function Home() {
               <button className="details-button" onClick={() => setSelected(restaurant)}>Review this restaurant <span>→</span></button>
             </div>
           </article>)}</div>
+          <p className="ranking-disclosure">These results are not ranked by popularity or reviews because the current source does not provide ratings. Dietary tags are community-entered and must be confirmed directly.</p>
         </> : !loading && !error ? <div className="empty-state" id="how-it-works"><div className="empty-orbit"><span>⌖</span><i /><i /><i /></div><div><span className="section-kicker">Built for better questions</span><h2>Your next meal starts here.</h2><p>Enter a location and your allergies. We’ll find nearby restaurants and surface the details that help you decide what to investigate.</p></div></div> : null}
       </section>
 

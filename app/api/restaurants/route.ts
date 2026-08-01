@@ -39,6 +39,21 @@ function normalizedWebsite(tags: Record<string, string>) {
   } catch { return undefined; }
 }
 
+function matchesFood(tags: Record<string, string>, food: string) {
+  if (!food) return true;
+  const aliases: Record<string, string[]> = {
+    burger: ["burger", "hamburger"], burgers: ["burger", "hamburger"],
+    pizza: ["pizza"], sushi: ["sushi", "japanese"], taco: ["taco", "mexican"], tacos: ["taco", "mexican"],
+    chicken: ["chicken", "wings"], wings: ["wings", "chicken"], seafood: ["seafood", "fish"],
+    sandwich: ["sandwich", "deli"], sandwiches: ["sandwich", "deli"], salad: ["salad", "healthy"],
+    pasta: ["pasta", "italian"], barbecue: ["barbecue", "bbq"], bbq: ["barbecue", "bbq"],
+  };
+  const requested = food.toLowerCase().trim();
+  const terms = aliases[requested] || requested.split(/\s+/).filter((term) => term.length > 1);
+  const searchable = [tags.name, tags.cuisine, tags.description, tags.brand].filter(Boolean).join(" ").toLowerCase().replaceAll("_", " ");
+  return terms.some((term) => searchable.includes(term));
+}
+
 function matchesOccasion(tags: Record<string, string>, occasion: string) {
   if (!occasion) return true;
   const amenity = tags.amenity || "";
@@ -76,6 +91,7 @@ async function fetchOverpass(query: string) {
 
 export async function GET(request: NextRequest) {
   const location = request.nextUrl.searchParams.get("location")?.trim();
+  const food = request.nextUrl.searchParams.get("food")?.trim().toLowerCase() || "";
   const occasion = request.nextUrl.searchParams.get("occasion")?.trim().toLowerCase() || "";
   let latitude = Number(request.nextUrl.searchParams.get("lat"));
   let longitude = Number(request.nextUrl.searchParams.get("lon"));
@@ -104,7 +120,7 @@ export async function GET(request: NextRequest) {
       const tags = element.tags || {};
       const lat = element.lat ?? element.center?.lat;
       const lon = element.lon ?? element.center?.lon;
-      if (!tags.name || lat === undefined || lon === undefined || !matchesOccasion(tags, occasion)) return [];
+      if (!tags.name || lat === undefined || lon === undefined || !matchesFood(tags, food) || !matchesOccasion(tags, occasion)) return [];
       const dietary = Object.fromEntries(Object.entries(tags).filter(([key]) => key.startsWith("diet:")).map(([key, value]) => [key.replace("diet:", ""), value]));
       return [{
         id: `${element.type}-${element.id}`,
