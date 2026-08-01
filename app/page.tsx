@@ -17,6 +17,7 @@ type Restaurant = {
 };
 
 const allergyOptions = ["Peanuts", "Tree nuts", "Milk", "Eggs", "Wheat", "Soy", "Fish", "Shellfish", "Sesame", "Gluten"];
+const occasionOptions = ["Breakfast", "Lunch", "Dinner", "Snacks", "Coffee", "Dessert"];
 const dietKeys: Record<string, string> = {
   gluten: "gluten_free", wheat: "gluten_free", milk: "dairy_free", eggs: "egg_free",
   "tree nuts": "nut_free", peanuts: "peanut_free", vegan: "vegan", vegetarian: "vegetarian",
@@ -32,7 +33,7 @@ function WebsitePreview({ restaurant }: { restaurant: Restaurant }) {
         <img src={preview} alt="" onError={() => setFailed(true)} />
       ) : <div className="fallback-mark" aria-hidden="true">{restaurant.name.slice(0, 1).toUpperCase()}</div>}
       <div className="visual-shade" />
-      <span className="distance-pill">{restaurant.distanceKm.toFixed(1)} km</span>
+      <span className="distance-pill">~{restaurant.distanceKm.toFixed(1)} km straight-line</span>
       {restaurant.website && <span className="site-preview-pill">Website preview</span>}
     </div>
   );
@@ -43,7 +44,7 @@ function AllergyReview({ restaurant, allergies }: { restaurant: Restaurant; alle
   const supported = checks.filter(({ value }) => value === "yes");
   return (
     <div className="allergy-review">
-      <div className="review-title-row"><span className="review-icon" aria-hidden="true">✦</span><div><strong>Allergy review</strong><p>Based on restaurant details available in OpenStreetMap</p></div></div>
+      <div className="review-title-row"><span className="review-icon" aria-hidden="true">✦</span><div><strong>Community dietary notes</strong><p>These are map tags, not verified ingredients or a safety guarantee</p></div></div>
       {allergies.length === 0 ? <p className="review-copy">Add your allergies to personalize this check.</p> : supported.length > 0 ? (
         <div className="review-status cautiously-positive"><strong>Published options found</strong><span>{supported.map(({ allergy }) => allergy).join(", ")} options are listed, but cross-contact still needs confirmation.</span></div>
       ) : (
@@ -55,6 +56,7 @@ function AllergyReview({ restaurant, allergies }: { restaurant: Restaurant; alle
 
 export default function Home() {
   const [location, setLocation] = useState("");
+  const [occasion, setOccasion] = useState("");
   const [allergies, setAllergies] = useState<string[]>([]);
   const [customAllergy, setCustomAllergy] = useState("");
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -73,6 +75,7 @@ export default function Home() {
     setCustomAllergy("");
   }
   async function runSearch(params: URLSearchParams, label: string) {
+    if (occasion) params.set("occasion", occasion.toLowerCase());
     setLoading(true); setError(""); setSelected(null);
     try {
       const response = await fetch(`/api/restaurants?${params.toString()}`);
@@ -119,6 +122,9 @@ export default function Home() {
           <div className="card-heading"><span>Start your search</span><small>Your choices stay on this device</small></div>
           <label htmlFor="location">Where are you dining?</label>
           <div className="location-row"><span className="input-icon" aria-hidden="true">⌖</span><input id="location" value={location} onChange={(event) => setLocation(event.target.value)} placeholder="City, neighborhood, or ZIP" autoComplete="postal-code" /><button type="button" className="locate-button" onClick={useMyLocation} aria-label="Use my current location">◎</button></div>
+          <div className="occasion-label-row"><label>What are you looking for?</label><span>{occasion || "Any time"}</span></div>
+          <div className="occasion-grid">{occasionOptions.map((option) => <button type="button" key={option} className={occasion === option ? "allergy-chip selected" : "allergy-chip"} onClick={() => setOccasion(occasion === option ? "" : option)} aria-pressed={occasion === option}>{option}</button>)}</div>
+          <p className="occasion-note">Meal categories are inferred from restaurant type and cuisine tags—confirm the current menu and hours.</p>
           <div className="allergy-label-row"><label>What should we look out for?</label><span>{allergies.length} selected</span></div>
           <div className="allergy-grid">
             {allergyOptions.map((allergy) => <button type="button" key={allergy} className={allergies.includes(allergy) ? "allergy-chip selected" : "allergy-chip"} onClick={() => toggleAllergy(allergy)} aria-pressed={allergies.includes(allergy)}><span>{allergies.includes(allergy) ? "✓" : "+"}</span>{allergy}</button>)}
@@ -132,7 +138,7 @@ export default function Home() {
       <section className="results-section" aria-live="polite">
         {error && <div className="message-banner"><span>!</span>{error}</div>}
         {restaurants.length > 0 ? <>
-          <div className="results-heading"><div><span className="section-kicker">Nearby tables</span><h2>Restaurants around {searchedLocation}</h2></div><div className="active-profile"><span>Watching for</span><strong>{allergySummary}</strong></div></div>
+          <div className="results-heading"><div><span className="section-kicker">{occasion ? occasion + " matches" : "Nearby tables"}</span><h2>Restaurants around {searchedLocation}</h2></div><div className="active-profile"><span>Watching for</span><strong>{allergySummary}</strong></div></div>
           <div className="restaurant-grid">{restaurants.map((restaurant) => <article className="restaurant-card" key={restaurant.id}>
             <WebsitePreview restaurant={restaurant} />
             <div className="restaurant-body"><div className="restaurant-title-row"><div><h3>{restaurant.name}</h3><p>{restaurant.cuisine.length ? restaurant.cuisine.join(" · ") : "Restaurant"}</p></div><span className="rating-unavailable" title="Public rating unavailable"><b>☆</b> —</span></div>
@@ -149,11 +155,11 @@ export default function Home() {
       <footer><div className="brand"><span className="brand-symbol">C</span><span>ClearPlate</span></div><p>Restaurant data © OpenStreetMap contributors. Website previews by Thum.io.</p><p>Research support only—not medical advice or a safety guarantee.</p></footer>
 
       {selected && <div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)}><section className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title" onMouseDown={(event) => event.stopPropagation()}><button className="close-button" onClick={() => setSelected(null)} aria-label="Close restaurant details">×</button><WebsitePreview restaurant={selected} /><div className="detail-content">
-        <span className="section-kicker">Restaurant summary</span><h2 id="detail-title">{selected.name}</h2><p className="detail-meta">{selected.cuisine.length ? selected.cuisine.join(" · ") : "Restaurant"} · {selected.distanceKm.toFixed(1)} km away</p><p className="detail-address">{selected.address || "Address details unavailable"}</p>
+        <span className="section-kicker">Restaurant summary</span><h2 id="detail-title">{selected.name}</h2><p className="detail-meta">{selected.cuisine.length ? selected.cuisine.join(" · ") : "Restaurant"} · about {selected.distanceKm.toFixed(1)} km straight-line</p><p className="detail-address">{selected.address || "Address details unavailable"}</p>
         <AllergyReview restaurant={selected} allergies={allergies} />
         <div className="detail-section"><div className="detail-section-heading"><h3>Meals & ingredients</h3><span>Restaurant confirmation required</span></div><div className="ingredient-empty"><span aria-hidden="true">≋</span><div><strong>No verified ingredient list is published in the map data.</strong><p>Use the restaurant website to find its current menu or allergen guide. Never rely on an AI-generated ingredient list.</p></div></div></div>
         <dl className="restaurant-facts">{selected.openingHours && <><dt>Hours</dt><dd>{selected.openingHours}</dd></>}{selected.phone && <><dt>Phone</dt><dd><a href={`tel:${selected.phone}`}>{selected.phone}</a></dd></>}<dt>Rating</dt><dd>Not available from this data source</dd></dl>
-        <div className="detail-actions">{selected.website ? <a className="primary-link" href={selected.website} target="_blank" rel="noreferrer">Open restaurant website ↗</a> : <span className="disabled-link">Website unavailable</span>}<a className="map-link" href={`https://www.openstreetmap.org/?mlat=${selected.latitude}&mlon=${selected.longitude}#map=18/${selected.latitude}/${selected.longitude}`} target="_blank" rel="noreferrer">View on map</a></div>
+        <div className="detail-actions">{selected.website ? <a className="primary-link" href={selected.website} target="_blank" rel="noreferrer">Open restaurant website ↗</a> : <a className="primary-link" href={`https://www.google.com/search?q=${encodeURIComponent(`${selected.name} ${selected.address} official website`)}`} target="_blank" rel="noreferrer">Find official website ↗</a>}<a className="map-link" href={`https://www.openstreetmap.org/?mlat=${selected.latitude}&mlon=${selected.longitude}#map=18/${selected.latitude}/${selected.longitude}`} target="_blank" rel="noreferrer">View on map</a></div>
         <p className="safety-callout"><strong>Before ordering:</strong> Tell staff about every allergy and ask whether they can prevent cross-contact. If you are unsure, do not eat the item.</p>
       </div></section></div>}
     </main>

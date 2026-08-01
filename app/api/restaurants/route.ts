@@ -30,7 +30,7 @@ function addressFrom(tags: Record<string, string>) {
 }
 
 function normalizedWebsite(tags: Record<string, string>) {
-  const raw = tags.website || tags["contact:website"];
+  const raw = tags.website || tags["contact:website"] || tags.url || tags["contact:url"];
   if (!raw) return undefined;
   try {
     const value = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
@@ -39,8 +39,44 @@ function normalizedWebsite(tags: Record<string, string>) {
   } catch { return undefined; }
 }
 
+function matchesOccasion(tags: Record<string, string>, occasion: string) {
+  if (!occasion) return true;
+  const amenity = tags.amenity || "";
+  const searchable = [tags.name, tags.cuisine, tags.description, tags["brand"], tags["takeaway"]].filter(Boolean).join(" ").toLowerCase();
+  if (occasion === "coffee") return amenity === "cafe" || /coffee|espresso|tea/.test(searchable);
+  if (occasion === "breakfast") return amenity === "cafe" || /breakfast|brunch|bakery|bagel|pancake|waffle|coffee/.test(searchable);
+  if (occasion === "lunch") return /restaurant|cafe|fast_food|food_court/.test(amenity);
+  if (occasion === "dinner") return /restaurant|pub|bar/.test(amenity);
+  if (occasion === "snacks") return /cafe|fast_food|ice_cream|food_court/.test(amenity) || /snack|bakery|donut|pastry|dessert/.test(searchable);
+  if (occasion === "dessert") return /cafe|ice_cream/.test(amenity) || /dessert|cake|pastry|ice cream|gelato|donut|bakery/.test(searchable);
+  return true;
+}
+
+async function fetchOverpass(query: string) {
+  const endpoints = [
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+  ];
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { ...sourceHeaders, "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ data: query }),
+        signal: AbortSignal.timeout(25000),
+      });
+      if (response.ok) return await response.json() as { elements: OsmElement[] };
+    } catch {
+      // Try the next public instance when one is busy or unavailable.
+    }
+  }
+  throw new Error("Nearby restaurant data is temporarily busy. Please try again in a moment.");
+}
+
 export async function GET(request: NextRequest) {
   const location = request.nextUrl.searchParams.get("location")?.trim();
+  const occasion = request.nextUrl.searchParams.get("occasion")?.trim().toLowerCase() || "";
   let latitude = Number(request.nextUrl.searchParams.get("lat"));
   let longitude = Number(request.nextUrl.searchParams.get("lon"));
   let locationLabel = location || "your location";
@@ -61,21 +97,14 @@ export async function GET(request: NextRequest) {
       locationLabel = places[0].display_name.split(",").slice(0, 2).join(",");
     }
 
-    const query = `[out:json][timeout:18];(nwr["amenity"="restaurant"](around:5000,${latitude},${longitude});nwr["amenity"="cafe"](around:5000,${latitude},${longitude}););out center tags;`;
-    const overpassResponse = await fetch("https://overpass-api.de/api/interpreter", {
-      method: "POST",
-      headers: { ...sourceHeaders, "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ data: query }),
-      signal: AbortSignal.timeout(20000),
-    });
-    if (!overpassResponse.ok) throw new Error("Nearby restaurant data is temporarily busy. Please try again in a moment.");
-    const data = await overpassResponse.json() as { elements: OsmElement[] };
+    const query = `[out:json][timeout:18];nwr["amenity"~"^(restaurant|cafe|fast_food|ice_cream|food_court|pub|bar)$"](around:4000,${latitude},${longitude});out center tags;`;
+    const data = await fetchOverpass(query);
 
     const restaurants = data.elements.flatMap((element) => {
       const tags = element.tags || {};
       const lat = element.lat ?? element.center?.lat;
       const lon = element.lon ?? element.center?.lon;
-      if (!tags.name || lat === undefined || lon === undefined) return [];
+      if (!tags.name || lat === undefined || lon === undefined || !matchesOccasion(tags, occasion)) return [];
       const dietary = Object.fromEntries(Object.entries(tags).filter(([key]) => key.startsWith("diet:")).map(([key, value]) => [key.replace("diet:", ""), value]));
       return [{
         id: `${element.type}-${element.id}`,
