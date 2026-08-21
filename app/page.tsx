@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { AccountControls } from "./auth-ui";
@@ -238,17 +238,17 @@ function AllergyQuest({ allergies, customAllergy, location, food, cityOptions, a
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   }
 
-  return <main className={`allergy-quest quest-step-${step}`}>
+  return <main className="allergy-quest">
     <div className="quest-sky" aria-hidden="true"><i /><b /><span /></div>
     <header className="quest-header">
       <Link className="brand" href="/" aria-label="Safe Serve home"><span className="brand-symbol"><SafeServeMark /></span><span className="brand-lockup"><WordGroups text="Safe Serve" /><small>CanIEatIt?</small></span></Link>
-      <div className="quest-progress" aria-label={`Step ${step} of 2`}><span className={step === 1 ? "active" : "done"}>Allergies</span><i /><span className={step === 2 ? "active" : ""}>Destination</span></div>
+      <div className="quest-progress" aria-label={`Step ${step} of 2`}><span className={step === 1 ? "active" : "done"}>1</span><i /><span className={step === 2 ? "active" : ""}>2</span></div>
       <AccountControls />
     </header>
 
     <AnimatePresence mode="wait">
       {step === 1 ? <motion.section key="allergy-step" className="quest-stage quest-allergy-stage" initial={reducedMotion ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={reducedMotion ? undefined : { opacity: 0, x: -20 }} transition={safeMotion}>
-        <div className="quest-intro"><span className="quest-eyebrow">Your allergy profile</span><h1>Choose what stays <em>off the plate.</em></h1><p>Drag an ingredient to the center, or tap it once. Your choices follow every search.</p><aside className="quest-safety-note"><span aria-hidden="true">◇</span><p>Always confirm ingredients and cross-contact with restaurant staff.</p></aside></div>
+        <div className="quest-intro"><span className="quest-eyebrow">Step one</span><h1>Set your <em>allergy profile.</em></h1><p>Drag any ingredient you want to avoid onto the center plate. Safe Serve will use those filters in every search.</p><aside className="quest-safety-note"><span aria-hidden="true">◇</span><p>These filters stay with every restaurant search.</p></aside></div>
         <div className="quest-table" aria-label="Allergy plate game">
           <div className="table-glow" aria-hidden="true" />
           <div className="allergy-plate-rack" aria-label="Available allergy plates">
@@ -268,12 +268,12 @@ function AllergyQuest({ allergies, customAllergy, location, food, cityOptions, a
               <div className="plate-tags" aria-live="polite">{allergies.length ? allergies.map((allergy) => <button type="button" onClick={() => onToggleAllergy(allergy)} key={allergy} aria-label={`Remove ${allergy}`}>{allergy}<b>×</b></button>) : <p>Drop plates here</p>}</div>
             </div></div>
           </div>
-          <p className="quest-help">Drag or tap to add. Tap a selected allergy to remove it.</p>
+          <p className="quest-help">You can also tap a plate to add it instantly.</p>
           {dragObject && <motion.div className="floating-allergen-dish" style={{ "--dish-x": `${(dragObject.index % 5) * 25}%`, "--dish-y": `${Math.floor(dragObject.index / 5) * 100}%`, left: dragObject.x, top: dragObject.y } as CSSProperties & Record<"--dish-x" | "--dish-y", string>} initial={{ scale: 1, opacity: 0 }} animate={{ scale: 1, opacity: 1, rotate: dragObject.rotation }} transition={{ type: "spring", stiffness: 520, damping: 16, mass: .38 }} aria-hidden="true"><span className="dish-food" /></motion.div>}
         </div>
         <div className="quest-actions"><span>{allergies.length ? `${allergies.length} ${allergies.length === 1 ? "allergy" : "allergies"} selected` : "No allergies selected yet"}</span><button type="button" className="quest-primary" onClick={() => setStep(2)}>Continue <b>→</b></button></div>
       </motion.section> : <motion.section key="location-step" className="quest-stage quest-location-stage" initial={reducedMotion ? false : { opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={reducedMotion ? undefined : { opacity: 0, x: 20 }} transition={safeMotion}>
-        <div className="location-copy"><span className="quest-eyebrow">Your destination</span><h1>Where should we <em>find your table?</em></h1><p>Type a city first, then use the globe when you want a more precise point.</p>
+        <div className="location-copy"><span className="quest-eyebrow">Step two</span><h1>Choose your <em>destination.</em></h1><p>Enter a city, country, neighbourhood, or ZIP first, then refine with the globe for a more precise search.</p>
           <label htmlFor="quest-location">Location</label><div className="quest-location-input"><input id="quest-location" value={location} onChange={(event) => onLocationChange(event.target.value)} placeholder="Paris, France" autoComplete="address-level2" list="city-catalog-options" /><span aria-hidden="true">⌖</span></div>
           <datalist id="city-catalog-options">{cityOptions.map((city) => <option value={city} key={city} />)}</datalist>
           <label htmlFor="quest-food">Cuisine or dish <em>(optional)</em></label><div className="quest-location-input quest-food-input"><input id="quest-food" value={food} onChange={(event) => onFoodChange(event.target.value)} placeholder="Burger, pizza, sushi…" /><span aria-hidden="true">⌕</span></div>
@@ -852,8 +852,6 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
         <span className="ambient-orb ambient-orb-one" />
         <span className="ambient-orb ambient-orb-two" />
         <span className="ambient-shape ambient-aurora" />
-        <span className="ambient-leaf ambient-leaf-one" />
-        <span className="ambient-leaf ambient-leaf-two" />
       </div>
       <motion.header className="site-header" initial={shouldReduceMotion ? false : { opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .3, ease: [.22, 1, .36, 1] }}>
         <Link className="brand" href="/" aria-label="Return to the Safe Serve start page"><span className="brand-symbol"><SafeServeMark /></span><span className="brand-lockup"><WordGroups text="Safe Serve" /><small>CanIEatIt?</small></span></Link>
@@ -974,7 +972,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
         {error && <div className="message-banner"><span>!</span>{error}</div>}
         {loading ? <motion.div className="search-loading-screen" initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
           <div className="search-loading-orbit" aria-hidden="true"><span /><i /><b /></div>
-          <span className="section-kicker">Restaurant research in progress</span>
+          <span className="section-kicker">Live restaurant research</span>
           <h2><WordGroups text={searchMode === "free" ? "Searching public sources" : "Researching the strongest matches"} /></h2>
           <p><WordGroups text={`Checking ${[location, food, occasion, allergies.join(", ")].filter(Boolean).join(" · ")}`} /></p>
           <div className="search-loading-progress" aria-hidden="true">
@@ -1007,7 +1005,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
 
       {!searchPage && <motion.section className="safety-strip" id="safety" initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .25 }} transition={{ duration: .25, ease: "easeOut" }}>{safetyItems.map((item, index) => <motion.div key={item.title} initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .65 }} transition={{ duration: .22, delay: shouldReduceMotion ? 0 : index * .025, ease: "easeOut" }}><span aria-hidden="true">{item.icon}</span><strong><WordGroups text={item.title} /></strong><p><WordGroups text={item.copy} /></p></motion.div>)}</motion.section>}
 
-      {!searchPage && <motion.footer initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .55 }} transition={{ duration: .22 }}><div className="brand"><span className="brand-symbol"><SafeServeMark /></span><span className="brand-lockup"><WordGroups text="Safe Serve" /><small>CanIEatIt?</small></span></div><p><WordGroups text="Locations © OpenStreetMap contributors." /></p><p><WordGroups text="Research only. Confirm with staff." /></p></motion.footer>}
+      {!searchPage && <motion.footer initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .55 }} transition={{ duration: .22 }}><div className="brand"><span className="brand-symbol"><SafeServeMark /></span><span className="brand-lockup"><WordGroups text="Safe Serve" /><small>CanIEatIt?</small></span></div><p><WordGroups text="Locations © OpenStreetMap contributors." /></p><p><WordGroups text="Research only—confirm with staff." /></p></motion.footer>}
 
       <AnimatePresence>
       {selected && <motion.div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: shouldReduceMotion ? 0 : .2 }}><motion.section className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title" onMouseDown={(event) => event.stopPropagation()} initial={shouldReduceMotion ? false : { opacity: 0, y: 26, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={shouldReduceMotion ? undefined : { opacity: 0, y: 18, scale: .98 }} transition={{ duration: shouldReduceMotion ? 0 : .28, ease: "easeOut" }}><button className="close-button" onClick={() => setSelected(null)} aria-label="Close restaurant details">×</button><WebsitePreview restaurant={selected} /><div className="detail-content">
