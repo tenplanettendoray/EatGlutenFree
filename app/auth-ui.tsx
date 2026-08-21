@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { authClient } from "./lib/auth-client";
 import { SafeServeMark } from "./safe-serve-logo";
+import { EnvelopeSimple, Eye, EyeSlash, LockKey, UserCircle } from "@phosphor-icons/react";
 
 type AuthMode = "sign-in" | "sign-up";
 type SocialProvider = "google" | "apple" | "microsoft";
@@ -22,19 +23,19 @@ function defaultUsername(email?: string | null) {
 }
 
 function MailIcon() {
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16v11H4zM4.5 7l7.5 6 7.5-6" /></svg>;
+  return <EnvelopeSimple aria-hidden="true" weight="regular" />;
 }
 
 function LockIcon() {
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="3" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>;
+  return <LockKey aria-hidden="true" weight="regular" />;
 }
 
 function UserIcon() {
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4.5 20a7.5 7.5 0 0 1 15 0" /></svg>;
+  return <UserCircle aria-hidden="true" weight="regular" />;
 }
 
 function EyeIcon({ hidden }: { hidden: boolean }) {
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.7" />{hidden && <path d="m4 4 16 16" />}</svg>;
+  return hidden ? <EyeSlash aria-hidden="true" weight="regular" /> : <Eye aria-hidden="true" weight="regular" />;
 }
 
 export function AccountControls() {

@@ -16,6 +16,7 @@
     "auth:db:local": "wrangler d1 migrations apply site-creator-d1 --local --config wrangler.auth.jsonc"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "@types/three": "^0.185.4",
     "better-auth": "^1.6.26",
     "drizzle-orm": "0.45.2",
