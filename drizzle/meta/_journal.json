@@ -1,5 +1,27 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1786327757207,
+      "tag": "0000_better-auth",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1786462853000,
+      "tag": "0001_restaurant_preferences",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1786464558000,
+      "tag": "0002_scoped_restaurant_preferences",
+      "breakpoints": true
+    }
+  ]
 }

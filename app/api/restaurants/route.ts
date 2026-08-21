@@ -1,148 +1,336 @@
 import { NextRequest, NextResponse } from "next/server";
+import { discoverRestaurants } from "@/app/lib/ai-discovery";
+import { discoverRestaurantLeadsWithNvidia, type WeightedPreferenceSignal } from "@/app/lib/nvidia-discovery";
+import { discoverFreeRestaurants } from "@/app/lib/free-discovery";
+import { getDb } from "../../../db";
+import { restaurantPreference } from "../../../db/schema";
+import { auth } from "../../lib/auth";
 
-type OsmElement = {
-  type: "node" | "way" | "relation";
-  id: number;
-  lat?: number;
-  lon?: number;
-  center?: { lat: number; lon: number };
-  tags?: Record<string, string>;
-};
+const FREE_DAILY_LIMIT = 3;
+const FREE_SUGGESTION_BONUS = 1;
+const FREE_SEARCH_COOKIE = "safeserve_free_searches";
+const FREE_SUGGESTION_COOKIE = "safeserve_suggestion_bonus";
 
-const sourceHeaders = {
-  "User-Agent": "ClearPlate-Restaurant-Research/0.1 (https://github.com/tenplanettendoray/Allergen-Reccomen)",
-  "Accept-Language": "en",
-};
-
-function distanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const radius = 6371;
-  const toRadians = (value: number) => value * Math.PI / 180;
-  const dLat = toRadians(lat2 - lat1);
-  const dLon = toRadians(lon2 - lon1);
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) ** 2;
-  return radius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+function normalizedId(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
 }
 
-function addressFrom(tags: Record<string, string>) {
-  const street = [tags["addr:housenumber"], tags["addr:street"]].filter(Boolean).join(" ");
-  const place = [tags["addr:city"], tags["addr:state"], tags["addr:postcode"]].filter(Boolean).join(", ");
-  return [street, place].filter(Boolean).join(" · ");
+function cityOnlyLocation(value: string) {
+  const cleaned = value.trim().replace(/\s+/g, " ");
+  const parts = cleaned.split(",").map((part) => part.trim()).filter(Boolean);
+  if (parts.length < 2) return cleaned;
+  const first = normalizedScope(parts[0]);
+  const countryFirst = /^(united states(?: of america)?|usa|us|canada|france|united kingdom|uk|england|australia|germany|italy|spain|china|japan|india)$/.test(first);
+  return countryFirst ? parts[1] : parts[0];
 }
 
-function normalizedWebsite(tags: Record<string, string>) {
-  const raw = tags.website || tags["contact:website"] || tags.url || tags["contact:url"];
-  if (!raw) return undefined;
-  try {
-    const value = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-    const url = new URL(value);
-    return ["http:", "https:"].includes(url.protocol) ? url.toString() : undefined;
-  } catch { return undefined; }
+function normalizedScope(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120);
 }
 
-function matchesFood(tags: Record<string, string>, food: string) {
-  if (!food) return true;
-  const aliases: Record<string, string[]> = {
-    burger: ["burger", "hamburger"], burgers: ["burger", "hamburger"],
-    pizza: ["pizza"], sushi: ["sushi", "japanese"], taco: ["taco", "mexican"], tacos: ["taco", "mexican"],
-    chicken: ["chicken", "wings"], wings: ["wings", "chicken"], seafood: ["seafood", "fish"],
-    sandwich: ["sandwich", "deli"], sandwiches: ["sandwich", "deli"], salad: ["salad", "healthy"],
-    pasta: ["pasta", "italian"], barbecue: ["barbecue", "bbq"], bbq: ["barbecue", "bbq"],
-  };
-  const requested = food.toLowerCase().trim();
-  const terms = aliases[requested] || requested.split(/\s+/).filter((term) => term.length > 1);
-  const searchable = [tags.name, tags.cuisine, tags.description, tags.brand].filter(Boolean).join(" ").toLowerCase().replaceAll("_", " ");
-  return terms.some((term) => searchable.includes(term));
+function allergyScope(allergies: string[]) {
+  return allergies.map(normalizedScope).filter(Boolean).sort().join("|").slice(0, 240);
 }
 
-function matchesOccasion(tags: Record<string, string>, occasion: string) {
-  if (!occasion) return true;
-  const amenity = tags.amenity || "";
-  const searchable = [tags.name, tags.cuisine, tags.description, tags["brand"], tags["takeaway"]].filter(Boolean).join(" ").toLowerCase();
-  if (occasion === "coffee") return amenity === "cafe" || /coffee|espresso|tea/.test(searchable);
-  if (occasion === "breakfast") return amenity === "cafe" || /breakfast|brunch|bakery|bagel|pancake|waffle|coffee/.test(searchable);
-  if (occasion === "lunch") return /restaurant|cafe|fast_food|food_court/.test(amenity);
-  if (occasion === "dinner") return /restaurant|pub|bar/.test(amenity);
-  if (occasion === "snacks") return /cafe|fast_food|ice_cream|food_court/.test(amenity) || /snack|bakery|donut|pastry|dessert/.test(searchable);
-  if (occasion === "dessert") return /cafe|ice_cream/.test(amenity) || /dessert|cake|pastry|ice cream|gelato|donut|bakery/.test(searchable);
-  return true;
-}
-
-async function fetchOverpass(query: string) {
-  const endpoints = [
-    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-    "https://overpass-api.de/api/interpreter",
-    "https://overpass.private.coffee/api/interpreter",
-  ];
-  for (const endpoint of endpoints) {
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { ...sourceHeaders, "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ data: query }),
-        signal: AbortSignal.timeout(25000),
-      });
-      if (response.ok) return await response.json() as { elements: OsmElement[] };
-    } catch {
-      // Try the next public instance when one is busy or unavailable.
-    }
+function scopeOverlaps(stored: string, current: string, mode: "location" | "allergy" | "food") {
+  if (!stored || !current) return false;
+  if (mode === "allergy") {
+    const currentAllergies = new Set(current.split("|").filter(Boolean));
+    return stored.split("|").filter(Boolean).some((allergy) => currentAllergies.has(allergy));
   }
-  throw new Error("Nearby restaurant data is temporarily busy. Please try again in a moment.");
+  return stored === current || stored.includes(current) || current.includes(stored);
+}
+
+function dailyUsage(request: NextRequest) {
+  const today = new Date().toISOString().slice(0, 10);
+  const [savedDate, savedCount] = (request.cookies.get(FREE_SEARCH_COOKIE)?.value || "").split(":");
+  const count = savedDate === today ? Math.max(0, Number.parseInt(savedCount || "0", 10) || 0) : 0;
+  return { today, count };
+}
+
+function dailySuggestionBonus(request: NextRequest, today: string) {
+  const [savedDate, savedClaimed] = (request.cookies.get(FREE_SUGGESTION_COOKIE)?.value || "").split(":");
+  return savedDate === today && savedClaimed === "1" ? FREE_SUGGESTION_BONUS : 0;
+}
+
+function setDailyUsage(response: NextResponse, date: string, count: number) {
+  response.cookies.set(FREE_SEARCH_COOKIE, `${date}:${count}`, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 48,
+  });
+  return response;
+}
+
+function envList(name: string) {
+  return (process.env[name] || "")
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function isWhitelistedUser(session: Awaited<ReturnType<typeof auth.api.getSession>>) {
+  if (!session?.user) return false;
+  const emails = envList("SEARCH_WHITELIST_EMAILS");
+  const userIds = envList("SEARCH_WHITELIST_USER_IDS");
+  return Boolean(
+    session.user.email && emails.includes(session.user.email.toLowerCase())
+    || userIds.includes(session.user.id.toLowerCase()),
+  );
+}
+
+type SearchInput = {
+  location: string;
+  latitude?: number;
+  longitude?: number;
+  food: string;
+  occasion: string;
+  priceRange: string;
+  allergies: string[];
+  suggestedRestaurants: string[];
+  avoidedRestaurants: string[];
+  preferenceSignals: WeightedPreferenceSignal[];
+};
+
+function publicPreferenceData(input: SearchInput) {
+  const location = normalizedScope(input.location);
+  const allergies = allergyScope(input.allergies);
+  const food = normalizedScope(input.food);
+  return getDb().select().from(restaurantPreference).limit(5000).then((rows) => {
+    const signals = new Map<string, WeightedPreferenceSignal>();
+    const suggestedCounts = new Map<string, { name: string; count: number }>();
+    const avoidedCounts = new Map<string, { name: string; count: number }>();
+    for (const row of rows) {
+      const signalKey = [row.normalizedName, row.locationScope, row.allergyScope, row.foodScope].join("|");
+      const signal = signals.get(signalKey) || {
+        name: row.name,
+        suggestionWeight: 0,
+        avoidWeight: 0,
+        locationScope: row.locationScope,
+        allergyScope: row.allergyScope,
+        foodScope: row.foodScope,
+      };
+      if (row.kind === "suggest") signal.suggestionWeight += 1;
+      else signal.avoidWeight += 1;
+      signals.set(signalKey, signal);
+
+      if (!scopeOverlaps(row.locationScope, location, "location")) continue;
+      if (!scopeOverlaps(row.allergyScope, allergies, "allergy")) continue;
+      if (row.foodScope && food && !scopeOverlaps(row.foodScope, food, "food")) continue;
+      if (row.foodScope && !food) continue;
+      const counts = row.kind === "suggest" ? suggestedCounts : avoidedCounts;
+      const existing = counts.get(row.normalizedName);
+      if (existing) existing.count += 1;
+      else counts.set(row.normalizedName, { name: row.name, count: 1 });
+    }
+    const weightedNames = (counts: Map<string, { name: string; count: number }>, kind: "suggest" | "avoid") => [...counts.values()]
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+      .flatMap((item) => Array.from({ length: kind === "suggest" ? Math.min(item.count, 4) : 1 }, () => item.name))
+      .slice(0, 12);
+    return {
+      preferenceSignals: [...signals.values()].sort((a, b) =>
+        (b.suggestionWeight + b.avoidWeight) - (a.suggestionWeight + a.avoidWeight)
+        || a.name.localeCompare(b.name)),
+      publicSuggested: weightedNames(suggestedCounts, "suggest"),
+      publicAvoided: weightedNames(avoidedCounts, "avoid"),
+    };
+  }).catch(() => ({ preferenceSignals: [] as WeightedPreferenceSignal[], publicSuggested: [] as string[], publicAvoided: [] as string[] }));
+}
+
+async function withPublicPreferences(input: SearchInput): Promise<SearchInput> {
+  const { preferenceSignals, publicSuggested, publicAvoided } = await publicPreferenceData(input);
+  return {
+    ...input,
+    preferenceSignals,
+    suggestedRestaurants: [...input.suggestedRestaurants, ...publicSuggested].slice(0, 24),
+    avoidedRestaurants: [...new Set([...input.avoidedRestaurants, ...publicAvoided])].slice(0, 12),
+  };
+}
+
+async function runPublicDiscovery(input: SearchInput, requestedMode: "free" | "premium") {
+  const nvidiaDiscovery = await discoverRestaurantLeadsWithNvidia({
+    location: input.location || (input.latitude !== undefined && input.longitude !== undefined ? `${input.latitude}, ${input.longitude}` : ""),
+    food: input.food,
+    occasion: input.occasion,
+    priceRange: input.priceRange,
+    allergies: input.allergies,
+    suggestedRestaurants: [...new Set(input.suggestedRestaurants)],
+    avoidedRestaurants: input.avoidedRestaurants,
+    preferenceSignals: input.preferenceSignals,
+  });
+  const discovery = await discoverFreeRestaurants({
+    ...input,
+    nvidiaLeads: nvidiaDiscovery.leads,
+  });
+  const restaurants = discovery.restaurants.map((restaurant, index) => ({
+    id: `free-${index + 1}-${normalizedId(restaurant.name)}`,
+    name: restaurant.name,
+    cuisine: restaurant.cuisine,
+    address: restaurant.locations[0].address,
+    distanceKm: restaurant.distanceKm,
+    website: restaurant.website,
+    dietary: restaurant.dietary,
+    latitude: restaurant.locations[0].latitude,
+    longitude: restaurant.locations[0].longitude,
+    source: "free" as const,
+    sourceUrl: restaurant.menuSourceUrl,
+    menuSourceUrl: restaurant.menuSourceUrl,
+    qualitySourceUrl: restaurant.qualitySourceUrl,
+    evidenceSummary: restaurant.evidenceSummary,
+    popularitySummary: restaurant.popularitySummary,
+    rankingReason: restaurant.rankingReason,
+    rating: restaurant.rating,
+    reviewCount: restaurant.reviewCount,
+    evidenceTier: restaurant.evidenceTier,
+    supportedAllergies: restaurant.supportedAllergies,
+    missingAllergies: restaurant.missingAllergies,
+    locations: restaurant.locations,
+  }));
+  return {
+    location: discovery.locationLabel,
+    restaurants,
+    mode: requestedMode,
+    agentQuery: discovery.query,
+    engine: nvidiaDiscovery.status === "used" ? "nvidia-model-discovery" : "openstreetmap-fallback",
+    nvidiaStatus: nvidiaDiscovery.status,
+    premiumFallback: requestedMode === "premium",
+  };
 }
 
 export async function GET(request: NextRequest) {
-  const location = request.nextUrl.searchParams.get("location")?.trim();
+  const session = await auth.api.getSession({ headers: request.headers });
+  const whitelisted = isWhitelistedUser(session);
+  const requestedMode = request.nextUrl.searchParams.get("mode") === "premium" ? "premium" : "free";
+  const mode = whitelisted ? "premium" : requestedMode;
+  const location = cityOnlyLocation(request.nextUrl.searchParams.get("location") || "");
   const food = request.nextUrl.searchParams.get("food")?.trim().toLowerCase() || "";
   const occasion = request.nextUrl.searchParams.get("occasion")?.trim().toLowerCase() || "";
-  let latitude = Number(request.nextUrl.searchParams.get("lat"));
-  let longitude = Number(request.nextUrl.searchParams.get("lon"));
-  let locationLabel = location || "your location";
+  const priceRange = request.nextUrl.searchParams.get("price")?.trim() || "";
+  const suggestedRestaurants = [
+    request.nextUrl.searchParams.get("suggestedRestaurants") || "",
+    request.nextUrl.searchParams.get("suggestedRestaurant") || "",
+  ].join("|")
+    .split("|")
+    .map((item) => item.trim().slice(0, 120))
+    .filter(Boolean)
+    .slice(0, 8);
+  const avoidedRestaurants = [
+    request.nextUrl.searchParams.get("avoidedRestaurants") || "",
+    request.nextUrl.searchParams.get("avoidedRestaurant") || "",
+  ].join("|")
+    .split("|")
+    .map((item) => item.trim().slice(0, 120))
+    .filter(Boolean)
+    .slice(0, 8);
+  const allergies = (request.nextUrl.searchParams.get("allergies") || "")
+    .split("|")
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 20);
+  const latitude = Number(request.nextUrl.searchParams.get("lat"));
+  const longitude = Number(request.nextUrl.searchParams.get("lon"));
+  const hasCoordinates = request.nextUrl.searchParams.has("lat")
+    && request.nextUrl.searchParams.has("lon")
+    && Number.isFinite(latitude)
+    && Number.isFinite(longitude);
 
-  try {
-    if (!request.nextUrl.searchParams.has("lat") || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-      if (!location) return NextResponse.json({ error: "Enter a location to search." }, { status: 400 });
-      const geocodeUrl = new URL("https://nominatim.openstreetmap.org/search");
-      geocodeUrl.searchParams.set("q", location);
-      geocodeUrl.searchParams.set("format", "jsonv2");
-      geocodeUrl.searchParams.set("limit", "1");
-      const geocodeResponse = await fetch(geocodeUrl, { headers: sourceHeaders, signal: AbortSignal.timeout(9000) });
-      if (!geocodeResponse.ok) throw new Error("The location service is temporarily unavailable.");
-      const places = await geocodeResponse.json() as Array<{ lat: string; lon: string; display_name: string }>;
-      if (!places.length) return NextResponse.json({ error: "We could not find that location. Try a city and state or ZIP code." }, { status: 404 });
-      latitude = Number(places[0].lat);
-      longitude = Number(places[0].lon);
-      locationLabel = places[0].display_name.split(",").slice(0, 2).join(",");
-    }
-
-    const query = `[out:json][timeout:18];nwr["amenity"~"^(restaurant|cafe|fast_food|ice_cream|food_court|pub|bar)$"](around:4000,${latitude},${longitude});out center tags;`;
-    const data = await fetchOverpass(query);
-
-    const restaurants = data.elements.flatMap((element) => {
-      const tags = element.tags || {};
-      const lat = element.lat ?? element.center?.lat;
-      const lon = element.lon ?? element.center?.lon;
-      if (!tags.name || lat === undefined || lon === undefined || !matchesFood(tags, food) || !matchesOccasion(tags, occasion)) return [];
-      const dietary = Object.fromEntries(Object.entries(tags).filter(([key]) => key.startsWith("diet:")).map(([key, value]) => [key.replace("diet:", ""), value]));
-      return [{
-        id: `${element.type}-${element.id}`,
-        name: tags.name,
-        cuisine: (tags.cuisine || "").split(";").filter(Boolean).map((item) => item.replaceAll("_", " ")),
-        address: addressFrom(tags),
-        distanceKm: distanceKm(latitude, longitude, lat, lon),
-        website: normalizedWebsite(tags),
-        phone: tags.phone || tags["contact:phone"],
-        openingHours: tags.opening_hours,
-        dietary,
-        latitude: lat,
-        longitude: lon,
-      }];
-    }).sort((a, b) => {
-      const detailDifference = Number(Boolean(b.website)) + Object.keys(b.dietary).length - Number(Boolean(a.website)) - Object.keys(a.dietary).length;
-      return detailDifference || a.distanceKm - b.distanceKm;
-    }).slice(0, 18);
-
-    return NextResponse.json({ location: locationLabel, restaurants }, { headers: { "Cache-Control": "public, max-age=300, s-maxage=1800" } });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Restaurant search failed.";
-    return NextResponse.json({ error: message }, { status: 502 });
+  if (!location && !hasCoordinates) {
+    return NextResponse.json({ error: "Enter a location to search." }, { status: 400 });
   }
+
+  const input = await withPublicPreferences({
+    location,
+    latitude: hasCoordinates ? latitude : undefined,
+    longitude: hasCoordinates ? longitude : undefined,
+    food,
+    occasion,
+    priceRange,
+    allergies,
+    suggestedRestaurants,
+    avoidedRestaurants,
+    preferenceSignals: [],
+  });
+
+  if (requestedMode === "free" && !whitelisted) {
+    const usage = dailyUsage(request);
+    const dailyLimit = FREE_DAILY_LIMIT + dailySuggestionBonus(request, usage.today);
+    if (usage.count >= dailyLimit) {
+      return NextResponse.json({ error: `You have used today's ${dailyLimit} Free searches. Premium searches are unlimited.`, freeSearchesRemaining: 0, freeSearchesLimit: dailyLimit }, { status: 429 });
+    }
+    try {
+      const data = await runPublicDiscovery(input, mode);
+      const nextCount = usage.count + 1;
+      const response = NextResponse.json(
+        { ...data, freeSearchesRemaining: Math.max(0, dailyLimit - nextCount), freeSearchesLimit: dailyLimit },
+        { headers: { "Cache-Control": "private, no-store" } },
+      );
+      return setDailyUsage(response, usage.today, nextCount);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Free restaurant search failed.";
+      return NextResponse.json({ error: message, freeSearchesRemaining: dailyLimit - usage.count, freeSearchesLimit: dailyLimit }, { status: 502 });
+    }
+  }
+
+  const discovery = await discoverRestaurants({
+    ...input,
+    suggestedRestaurants: [...new Set(input.suggestedRestaurants)],
+  });
+
+  if (discovery.status === "skipped" || discovery.status === "quota") {
+    try {
+      const data = await runPublicDiscovery(input, mode);
+      return NextResponse.json(
+        {
+          ...data,
+          aiStatus: discovery.status,
+          premiumFallbackReason: discovery.status === "quota" ? "openai-quota" : "openai-key-missing",
+          whitelisted,
+          freeSearchesRemaining: whitelisted ? null : undefined,
+          freeSearchesLimit: whitelisted ? null : undefined,
+        },
+        { headers: { "Cache-Control": "private, no-store" } },
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Premium fallback search failed.";
+      return NextResponse.json({ error: message }, { status: 502 });
+    }
+  }
+  if (discovery.status === "unavailable") {
+    return NextResponse.json({ error: "OpenAI restaurant research is temporarily unavailable. Please try again." }, { status: 502 });
+  }
+
+  const restaurants = discovery.restaurants.map((restaurant, index) => ({
+    id: `ai-${index + 1}-${normalizedId(restaurant.name)}`,
+    name: restaurant.name,
+    cuisine: restaurant.cuisine,
+    address: restaurant.locations[0].address,
+    distanceKm: null,
+    website: restaurant.website,
+    dietary: {},
+    latitude: null,
+    longitude: null,
+    source: "ai" as const,
+    sourceUrl: restaurant.menuSourceUrl,
+    menuSourceUrl: restaurant.menuSourceUrl,
+    qualitySourceUrl: restaurant.qualitySourceUrl,
+    evidenceSummary: restaurant.evidenceSummary,
+    popularitySummary: restaurant.popularitySummary,
+    rankingReason: restaurant.rankingReason,
+    locations: restaurant.locations,
+  }));
+
+  return NextResponse.json(
+    {
+      location: discovery.locationLabel,
+      restaurants,
+      aiStatus: discovery.status,
+      mode,
+      premiumFallback: false,
+      whitelisted,
+      freeSearchesRemaining: whitelisted ? null : undefined,
+      freeSearchesLimit: whitelisted ? null : undefined,
+    },
+    { headers: { "Cache-Control": "private, no-store" } },
+  );
 }

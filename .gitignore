@@ -40,6 +40,5 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
-
 # local pnpm cache
 /.pnpm-store/
