@@ -5,9 +5,9 @@ import * as schema from "./schema";
 let analyticsSchemaReady: Promise<void> | null = null;
 
 export function getDb() {
-  if (!env.DB) {
-    throw new Error("The Cloudflare D1 binding DB is unavailable.");
-  }
+  // Avoid failing during the worker's startup validation, which runs before
+  // runtime bindings are attached. Database operations still validate the
+  // binding when a request actually uses them.
   return drizzle(env.DB, { schema });
 }
 
