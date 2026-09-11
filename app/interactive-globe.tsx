@@ -634,6 +634,7 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
   const draggingRef = useRef({ active: false, x: 0, y: 0, startX: 0, startY: 0, moved: false, touch: false });
   const touchesRef = useRef(new Map<number, { x: number; y: number }>());
   const pinchDistanceRef = useRef(0);
+  const pinchCenterRef = useRef<{ x: number; y: number } | null>(null);
   // Render only while interaction/asset loading needs it. Keeping this short
   // prevents a pointer move from waking a long tail of expensive WebGL frames.
   const renderFramesRef = useRef(36);
@@ -689,6 +690,7 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
       draggingRef.current.active = false;
       touchesRef.current.clear();
       pinchDistanceRef.current = 0;
+      pinchCenterRef.current = null;
     };
     window.addEventListener("blur", stopDrag);
 
@@ -1351,6 +1353,7 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
       if (touchesRef.current.size > 1) {
         const [a, b] = [...touchesRef.current.values()];
         pinchDistanceRef.current = Math.hypot(a.x - b.x, a.y - b.y);
+        pinchCenterRef.current = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
         draggingRef.current.moved = true;
         return;
       }
@@ -1368,6 +1371,10 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
       if (touchesRef.current.size > 1) {
         const [a, b] = [...touchesRef.current.values()];
         const distance = Math.hypot(a.x - b.x, a.y - b.y);
+        const center = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+        const previousCenter = pinchCenterRef.current;
+        if (previousCenter) rotateByDelta(center.x - previousCenter.x, center.y - previousCenter.y);
+        pinchCenterRef.current = center;
         if (distance > 0 && pinchDistanceRef.current > 0) {
           cameraTransitionRef.current = null;
           zoomTargetRef.current = THREE.MathUtils.clamp(zoomTargetRef.current * pinchDistanceRef.current / distance, MIN_ZOOM, MAX_ZOOM);
@@ -1409,6 +1416,12 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
     const drag = draggingRef.current;
     touchesRef.current.delete(event.pointerId);
     pinchDistanceRef.current = 0;
+    pinchCenterRef.current = null;
+    if (touchesRef.current.size > 1) {
+      const [a, b] = [...touchesRef.current.values()];
+      pinchDistanceRef.current = Math.hypot(a.x - b.x, a.y - b.y);
+      pinchCenterRef.current = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    }
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     const remaining = touchesRef.current.values().next().value;
     if (remaining) {

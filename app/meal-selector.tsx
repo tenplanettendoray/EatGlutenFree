@@ -106,11 +106,15 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
   const scrollTarget = useRef(0);
   const activeRef = useRef(0);
   const requestedIndex = useRef<number | null>(null);
-  const drag = useRef({ active: false, x: 0, scroll: 0, moved: false });
+  const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touching = useRef(false);
+  const drag = useRef({ active: false, x: 0, scroll: 0, moved: false, lastX: 0, lastTime: 0, velocity: 0 });
   const [active, setActive] = useState(0);
   const [anythingSelected, setAnythingSelected] = useState(!food.trim());
   const initializedCategory = useRef<string | null>(null);
   const cancelScroll = () => {
+    if (settleTimer.current) clearTimeout(settleTimer.current);
+    settleTimer.current = null;
     cancelAnimationFrame(frame.current);
     frame.current = 0;
     requestedIndex.current = null;
@@ -119,7 +123,7 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
     const element = rail.current;
     if (!element) return;
     scrollTarget.current = Math.max(0, Math.min(element.scrollWidth - element.clientWidth, left));
-    if (reducedMotion) { element.scrollLeft = scrollTarget.current; return; }
+    if (reducedMotion) { element.scrollLeft = scrollTarget.current; requestedIndex.current = null; return; }
     if (frame.current) return;
     let previous = performance.now();
     const tick = (now: number) => {
@@ -130,6 +134,7 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
         element.scrollLeft = scrollTarget.current;
         frame.current = 0;
         requestedIndex.current = null;
+        scheduleSnap();
         return;
       }
       element.scrollLeft += remaining * (1 - Math.exp(-dt / 125));
@@ -152,6 +157,46 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
     });
     return nearest;
   };
+  // Native touch/trackpad momentum must finish before centering an option.
+  // Every scroll event postpones this, so fast swipes are never pulled back.
+  function scheduleSnap() {
+    if (settleTimer.current) clearTimeout(settleTimer.current);
+    settleTimer.current = setTimeout(() => {
+      settleTimer.current = null;
+      if (touching.current || drag.current.active || frame.current) return;
+      const element = rail.current;
+      if (!element) return;
+      const index = updateEmphasis();
+      const node = element.children[index] as HTMLElement | undefined;
+      if (!node) return;
+      const left = node.offsetLeft + node.offsetWidth / 2 - element.clientWidth / 2;
+      if (Math.abs(element.scrollLeft - left) > 1) go(index);
+    }, 140);
+  }
+  function releaseWithMomentum() {
+    const element = rail.current;
+    if (!element) return;
+    let velocity = performance.now() - drag.current.lastTime > 100 ? 0 : drag.current.velocity;
+    if (reducedMotion || Math.abs(velocity) <= .12) { go(updateEmphasis()); return; }
+    let previous = performance.now();
+    const coast = (now: number) => {
+      const dt = Math.min(now - previous, 40);
+      previous = now;
+      const decay = Math.exp(-dt / 240);
+      const before = element.scrollLeft;
+      element.scrollLeft += velocity * 240 * (1 - decay);
+      scrollTarget.current = element.scrollLeft;
+      velocity *= decay;
+      // Only engage the centering animation once speed falls below 120px/s.
+      if (Math.abs(velocity) <= .12 || Math.abs(element.scrollLeft - before) < .1) {
+        frame.current = 0;
+        go(updateEmphasis());
+        return;
+      }
+      frame.current = requestAnimationFrame(coast);
+    };
+    frame.current = requestAnimationFrame(coast);
+  }
   useEffect(() => {
     if (initializedCategory.current === category) return;
     initializedCategory.current = category;
@@ -171,8 +216,11 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
       const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? element.clientWidth : 1);
       if (!delta) return;
       event.preventDefault();
+      const target = requestedIndex.current === null && frame.current ? scrollTarget.current : element.scrollLeft;
+      cancelScroll();
       requestedIndex.current = null;
-      animateTo((frame.current ? scrollTarget.current : element.scrollLeft) + delta * .85);
+      animateTo(target + delta * .85);
+      scheduleSnap();
     };
     const resize = new ResizeObserver(() => {
       cancelScroll();
@@ -193,10 +241,11 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
   };
   const go = (index: number) => {
     index = Math.max(0, Math.min(list.length - 1, index));
+    cancelScroll();
     requestedIndex.current = index;
     const node = rail.current?.children[index] as HTMLElement | undefined;
     if (node && rail.current) animateTo(node.offsetLeft + node.offsetWidth / 2 - rail.current.clientWidth / 2);
-    if (index === activeRef.current) select(index);
+    select(index);
   };
   useEffect(() => {
     const continueOnEnter = (event: KeyboardEvent) => {
@@ -220,13 +269,15 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
         onKeyDown={event => { if (event.key === "ArrowRight" || event.key === "ArrowLeft") { event.preventDefault(); go((requestedIndex.current ?? activeRef.current) + (event.key === "ArrowRight" ? 1 : -1)); } }}
         onScroll={() => {
           const nearest = updateEmphasis();
+          scheduleSnap();
           if (requestedIndex.current !== null) return;
           if (nearest !== activeRef.current) select(nearest);
         }}
-        onPointerDown={event => { cancelScroll(); if (event.pointerType !== "mouse" || event.button !== 0) return; drag.current = { active: true, x: event.clientX, scroll: event.currentTarget.scrollLeft, moved: false }; }}
-        onPointerMove={event => { const d = drag.current; if (!d.active) return; const dx = event.clientX - d.x; if (Math.abs(dx) > 5) { d.moved = true; event.currentTarget.setPointerCapture(event.pointerId); } if (d.moved) event.currentTarget.scrollLeft = d.scroll - dx; }}
-        onPointerUp={event => { const d = drag.current; d.active = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); if (d.moved) go(updateEmphasis()); }}
-        onPointerCancel={() => { drag.current.active = false; }}>
+        onPointerDown={event => { cancelScroll(); drag.current.moved = false; if (event.pointerType !== "mouse") { touching.current = true; return; } if (event.button !== 0) return; drag.current = { active: true, x: event.clientX, scroll: event.currentTarget.scrollLeft, moved: false, lastX: event.clientX, lastTime: performance.now(), velocity: 0 }; }}
+        onPointerMove={event => { const d = drag.current; if (!d.active) return; const dx = event.clientX - d.x; const now = performance.now(); const dt = now - d.lastTime; if (dt > 0) d.velocity = d.velocity * .25 + (d.lastX - event.clientX) / dt * .75; d.lastX = event.clientX; d.lastTime = now; if (Math.abs(dx) > 5) { d.moved = true; event.currentTarget.setPointerCapture(event.pointerId); } if (d.moved) event.currentTarget.scrollLeft = d.scroll - dx; }}
+        onPointerUp={event => { touching.current = false; const d = drag.current; const wasDragging = d.active; d.active = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); if (wasDragging && d.moved) releaseWithMomentum(); else scheduleSnap(); }}
+        onPointerCancel={() => { touching.current = false; drag.current.active = false; scheduleSnap(); }}
+        onLostPointerCapture={() => { touching.current = false; drag.current.active = false; scheduleSnap(); }}>
         {list.map((meal, index) => <button type="button" key={meal.name} className={`ss-meal-pillar ${active === index ? "is-centered" : ""}`} aria-pressed={food === (meal.query ?? meal.name)} aria-label={`Choose ${meal.name}`} onClick={() => { if (!drag.current.moved) { go(index); select(index); } drag.current.moved = false; }}>
           <span className="ss-meal-halo" aria-hidden="true" />
           <MealPhoto meal={meal} />
