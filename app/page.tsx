@@ -218,7 +218,7 @@ function RestaurantMap({ restaurants }: { restaurants: Restaurant[] }) {
     <section className="ai-location-map" aria-label="Map of AI-researched restaurant locations">
       <div className="map-heading">
         <div><span className="section-kicker">Location overview</span><h3>Restaurant location map</h3></div>
-        <p>{places.length} mapped {places.length === 1 ? "location" : "locations"} · choose a place</p>
+        <p>{places.length} {places.length === 1 ? "location" : "locations"}</p>
       </div>
       <div className="map-canvas">
         <iframe src={mapUrl} title={`Map showing ${active.restaurant.name}, ${active.location.label}`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
@@ -867,7 +867,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
         <motion.div className="search-card-shell" initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .18 }} transition={{ duration: shouldReduceMotion ? 0 : .28, ease: "easeOut" }}>
         <form className="search-card" onSubmit={submitSearch}>
           <motion.div className="card-heading" initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .7 }} transition={{ duration: .2 }}>
-            <h2><WordGroups text="Start your search" /></h2>
+            <h2><WordGroups text="Find a table" /></h2>
             <motion.span key={`${freeSearchesRemaining}-${searchMode}-${premiumAccess}`} className="search-credit-pill heading-credit-pill" initial={shouldReduceMotion ? false : { opacity: 0, scale: .92, y: -3 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: .18, ease: "easeOut" }}><WordGroups text={freeSearchesRemaining === null || (premiumAccess && searchMode === "premium") ? "Unlimited" : `${freeSearchesRemaining ?? freeSearchesLimit} left`} /></motion.span>
           </motion.div>
           <div className="search-mode-switch" aria-label="Search mode">
@@ -954,7 +954,6 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
           <div className="location-picker-copy">
             <span className="section-kicker">Destination</span>
             <h2 id="location-picker-title">Choose your <em>destination.</em></h2>
-            <p>Enter a city, country, neighbourhood, or ZIP. Or pick a place on the globe.</p>
             <label htmlFor="location-picker-input">Location</label>
             <div className="location-picker-input"><span aria-hidden="true">⌖</span><CityInput id="location-picker-input" value={location} options={cityOptions} onChange={updateLocation} onChoose={city => { updateLocation(city); setLocationPickerOpen(false); }} /></div>
           </div>

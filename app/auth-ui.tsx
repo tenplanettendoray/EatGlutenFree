@@ -126,7 +126,6 @@ function CustomSignIn() {
       <div className="auth-card-logo"><SafeServeMark /></div>
       <span className="section-kicker">Safe Serve</span>
       <h1>Welcome back</h1>
-      <p className="auth-intro">Sign in to keep your restaurant searches and allergy preferences together.</p>
       <SocialButtons mode="sign-in" />
       <form className="safe-auth-form" onSubmit={submit}>
         <label htmlFor="sign-in-email">Email</label>
@@ -174,7 +173,6 @@ function CustomSignUp() {
       <div className="auth-card-logo"><SafeServeMark /></div>
       <span className="section-kicker">Safe Serve</span>
       <h1>Create your account</h1>
-      <p className="auth-intro">Save your preferences and return to safer restaurant research anytime.</p>
       <SocialButtons mode="sign-up" />
       <form className="safe-auth-form" onSubmit={register}>
         <label htmlFor="sign-up-email">Email</label>
@@ -299,8 +297,7 @@ export function OAuthOnboarding() {
   return (
     <div className="safe-auth-panel onboarding-panel">
       <span className="section-kicker">One last step</span>
-      <h1>Choose how we greet you.</h1>
-      <p className="auth-intro">Your username is optional. Add a password so you can also sign in directly later.</p>
+      <h1>Your profile</h1>
       <form className="safe-auth-form" onSubmit={finish}>
         <label htmlFor="onboarding-username">Username <span>optional</span></label>
         <input id="onboarding-username" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} placeholder={suggested} />

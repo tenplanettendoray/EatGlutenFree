@@ -75,7 +75,6 @@ export function SearchFoodPicker({ food, onChoose, onClose }: {
     <button type="button" className="location-picker-close" onClick={onClose} aria-label="Close food picker">×</button>
     <header className="search-food-picker-heading">
       <div><span className="section-kicker">Food and cuisine</span><h2 id="search-food-picker-title">Choose what you’re <em>craving.</em></h2></div>
-      <p>Pick an option to add it to your search instantly, or close this menu and type anything you like.</p>
     </header>
     <div className="search-food-picker-tabs" role="group" aria-label="Food choice type">
       <button type="button" aria-pressed={category === "meals"} onClick={() => setCategory("meals")}>Meals &amp; dishes</button>
@@ -95,7 +94,7 @@ export function SearchFoodPicker({ food, onChoose, onClose }: {
   </section>;
 }
 
-export function MealSelector({ food, location, allergies, reducedMotion, onChange, onBack, onStart }: {
+export function MealSelector({ food, location, reducedMotion, onChange, onBack, onStart }: {
   food: string; location: string; allergies: string[]; reducedMotion: boolean | null;
   onChange: (value: string) => void; onBack: () => void; onStart: () => void;
 }) {
@@ -262,7 +261,7 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
     return () => window.removeEventListener("keydown", continueOnEnter);
   }, [food, location, anythingSelected, onStart]);
   return <div className="ss-meal-stage">
-    <div className="ss-meal-intro"><span className="ss-meal-eyebrow">Step 03</span><h1>A world of <em>flavors.</em></h1></div>
+    <div className="ss-meal-intro"><h1>A world of <em>flavors.</em></h1></div>
     <div className="ss-meal-tabs" role="group" aria-label="Browse food options">{(["meals", "cuisines"] as const).map(value => <button key={value} type="button" aria-pressed={category === value} onClick={() => { cancelScroll(); setCategory(value); }} >{value === "meals" ? "Meals & dishes" : "Around the world"}</button>)}</div>
     <div className="ss-meal-gallery">
       <div key={category} ref={rail} className="ss-meal-rail" role="region" aria-roledescription="carousel" aria-label="Choose a meal or cuisine" tabIndex={0}
@@ -285,10 +284,10 @@ export function MealSelector({ food, location, allergies, reducedMotion, onChang
           <span className="ss-pillar-label"><strong>{meal.name}</strong></span>
         </button>)}
       </div>
-      <div className="ss-meal-navigation"><button type="button" onClick={() => go((requestedIndex.current ?? activeRef.current) - 1)} disabled={active === 0} aria-label="Previous option"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m14 5-7 7 7 7" /></svg></button><span aria-live="polite">{list[active]?.name}<small>{active + 1} of {list.length} · Swipe or scroll to explore</small></span><button type="button" onClick={() => go((requestedIndex.current ?? activeRef.current) + 1)} disabled={active === list.length - 1} aria-label="Next option"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m10 5 7 7-7 7" /></svg></button></div>
+      <div className="ss-meal-navigation"><button type="button" onClick={() => go((requestedIndex.current ?? activeRef.current) - 1)} disabled={active === 0} aria-label="Previous option"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m14 5-7 7 7 7" /></svg></button><span aria-live="polite">{list[active]?.name}<small>{active + 1} / {list.length}</small></span><button type="button" onClick={() => go((requestedIndex.current ?? activeRef.current) + 1)} disabled={active === list.length - 1} aria-label="Next option"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m10 5 7 7-7 7" /></svg></button></div>
       <div className="ss-meal-dots" aria-hidden="true">{list.map((meal, index) => <i key={meal.name} className={index === active ? "is-active" : ""} />)}</div>
     </div>
-    <div className="ss-meal-finish"><div><label htmlFor="quest-food">Your choice, or something else <span>(optional)</span></label><input id="quest-food" value={food} onChange={event => { setAnythingSelected(false); onChange(event.target.value); }} placeholder="Anything — or type a dish or cuisine" /><p>{location} · {allergies.length ? `${allergies.length} allergy filters applied` : "No allergy filters selected"}</p></div><button type="button" className="ss-primary" onClick={onStart} disabled={!location.trim()}>Find places to eat <span>→</span></button></div>
+    <div className="ss-meal-finish"><div><label htmlFor="quest-food">Meal or cuisine <span>(optional)</span></label><input id="quest-food" value={food} onChange={event => { setAnythingSelected(false); onChange(event.target.value); }} placeholder="Anything" /><p>{location}</p></div><button type="button" className="ss-primary" onClick={onStart} disabled={!location.trim()}>Find places to eat <span>→</span></button></div>
     <button type="button" className="ss-meal-back" onClick={onBack}>← Change destination</button>
   </div>;
 }

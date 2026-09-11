@@ -23,6 +23,10 @@ const foodStyle = (index: number): CSSProperties => ({
   "--food-x": `${(index % 5) * 25}%`, "--food-y": `${Math.floor(index / 5) * 100}%`,
 } as CSSProperties);
 
+// The image atlas keeps its original order even when the visible list is shorter.
+const foodAtlas = ["peanuts", "tree nuts", "milk", "eggs", "wheat", "soy", "fish", "shellfish", "sesame", "gluten"];
+const foodIndex = (name: string) => foodAtlas.indexOf(name.trim().toLowerCase());
+
 export function AllergyQuest(props: Props) {
   const { allergies, allergyOptions, customAllergy, location, food, cityOptions, reducedMotion,
     onToggleAllergy, onCustomAllergyChange, onLocationChange, onFoodChange, onGlobeLocationSelect, onStart } = props;
@@ -152,27 +156,40 @@ export function AllergyQuest(props: Props) {
       {step === 1 ? <motion.section className="ss-table-scene" key="table" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
         <aside className="ss-sidebar">
           <h1>Your allergy profile</h1>
-          <p>Tap the ingredients you avoid.</p>
-          <div className="ss-safety-note"><SafeServeMark /><span>We’ll use these filters in every search. Always confirm with restaurant staff.</span></div>
-          <div className="ss-sidebar-status" aria-live="polite"><span className="ss-selection-count">{allergies.length.toString().padStart(2, "0")}</span><span>{selectionLabel}</span></div>
         </aside>
         <div className="ss-table">
           <div className="ss-plate-grid" aria-label="Choose allergies to avoid">
-            {allergyOptions.map((name, index) => <button key={name} type="button" className={`ss-ingredient ${allergies.includes(name) ? "is-chosen" : ""} ${drag?.name === name ? "is-held" : ""}`} style={{ ...foodStyle(index), "--entry": index } as CSSProperties}
+            {allergyOptions.map((name, index) => <button key={name} type="button" className={`ss-ingredient ${allergies.includes(name) ? "is-chosen" : ""} ${drag?.name === name ? "is-held" : ""}`} style={{ ...foodStyle(foodIndex(name)), "--entry": index } as CSSProperties}
               aria-pressed={allergies.includes(name)} aria-label={`${name}: ${allergies.includes(name) ? "remove from" : "add to"} avoid list`}
-              onPointerDown={e => begin(e, name, index)} onPointerMove={move} onPointerUp={e => finish(e)} onPointerCancel={e => finish(e, true)} onPointerLeave={e => resetHover(e.currentTarget)}
+              onPointerDown={e => begin(e, name, foodIndex(name))} onPointerMove={move} onPointerUp={e => finish(e)} onPointerCancel={e => finish(e, true)} onPointerLeave={e => resetHover(e.currentTarget)}
               onClick={e => { if (e.detail === 0) onToggleAllergy(name); }}>
               <span className="ss-food-plate"><span className="ss-food" /></span><strong className="ss-name-tag">{name}</strong><span className="ss-check" aria-hidden="true">✓</span>
             </button>)}
             <div ref={targetRef} className={`ss-drop-plate ${overTarget ? "is-over" : ""}`} aria-label="Ingredients to avoid">
-              <div className="ss-drop-content"><span>Ingredients to avoid</span><div className="ss-selected-tags" aria-live="polite"><AnimatePresence initial={false}>{allergies.length ? allergies.map(name => <motion.button type="button" key={name} onClick={() => onToggleAllergy(name)} aria-label={`Remove ${name}`} initial={reducedMotion ? false : { opacity: 0, scale: .75 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .7 }} transition={transition}>{name}<b>×</b></motion.button>) : <motion.p key="empty">These are the ones<br />you want to avoid.</motion.p>}</AnimatePresence></div></div>
+              <div className="ss-drop-content">
+                <div className="ss-selected-plates">
+                  <AnimatePresence initial={false}>{allergies.map(name => <motion.button
+                    type="button" key={name} className="ss-selected-plate" style={foodStyle(foodIndex(name))}
+                    onClick={() => onToggleAllergy(name)} aria-label={`Remove ${name}`} title={name}
+                    initial={reducedMotion ? false : { opacity: 0, scale: .55, y: -12 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: .6 }} transition={transition}
+                  ><span className="ss-food-plate" aria-hidden="true">{foodIndex(name) >= 0 && <span className="ss-food" />}</span></motion.button>)}</AnimatePresence>
+                </div>
+              </div>
             </div>
-            <div className="ss-custom-plate"><button className="ss-custom-focus" type="button" onClick={() => document.getElementById("quest-custom-allergy")?.focus()} aria-label="Add another allergy"><span>+</span></button><label htmlFor="quest-custom-allergy" className="ss-name-tag">Add other allergy</label><div className="ss-custom-input"><input id="quest-custom-allergy" value={customAllergy} onChange={e => onCustomAllergyChange(e.target.value)} onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addCustom(); } }} placeholder="Other allergy" maxLength={60} /><button type="button" onClick={addCustom} disabled={!customAllergy.trim()} aria-label="Add custom allergy">+</button></div></div>
+            <div className="ss-custom-plate">
+              <label htmlFor="quest-custom-allergy" className="ss-custom-label">Add an allergy</label>
+              <div className="ss-custom-input">
+                <input id="quest-custom-allergy" value={customAllergy} onChange={e => onCustomAllergyChange(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) { e.preventDefault(); addCustom(); } }} placeholder="e.g. Sesame" autoComplete="off" maxLength={60} />
+                <button type="button" onClick={addCustom} disabled={!customAllergy.trim()} aria-label="Add custom allergy"><span aria-hidden="true">+</span> Add</button>
+              </div>
+              {allergies.some(name => foodIndex(name) < 0) && <div className="ss-custom-selections">{allergies.filter(name => foodIndex(name) < 0).map(name => <button type="button" key={name} onClick={() => onToggleAllergy(name)} aria-label={`Remove custom allergy ${name}`}>{name}<span aria-hidden="true">×</span></button>)}</div>}
+            </div>
           </div>
-          <div className="ss-table-actions"><span>{selectionLabel}<small>Tap a plate to select it, too.</small></span><button type="button" className="ss-primary" onClick={() => goToStep(2)}>Continue <span>→</span></button></div>
+          <div className="ss-table-actions"><span aria-live="polite">{selectionLabel}</span><button type="button" className="ss-primary" onClick={() => goToStep(2)}>Continue <span>→</span></button></div>
         </div>
       </motion.section> : <motion.section className={`ss-destination ss-journey-scene ${step === 3 ? "is-meal-scene" : ""}`} key="destination" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
-        <div className="ss-destination-copy" hidden={step === 3}><h1>Where to?</h1><p>Search a city or tap the globe.</p>
+        <div className="ss-destination-copy" hidden={step === 3}><h1>Where to?</h1>
           <label htmlFor="quest-location">Location</label><div className="ss-location-field"><CityInput id="quest-location" value={location} options={cityOptions} onChange={onLocationChange} onChoose={city => { onLocationChange(city); goToStep(3); }} /><span aria-hidden="true">⌖</span></div>
           <button className="ss-back" type="button" onClick={() => goToStep(1)}>← Allergy profile</button>
         </div>

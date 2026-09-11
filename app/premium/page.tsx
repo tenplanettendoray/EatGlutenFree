@@ -9,12 +9,12 @@ import { readJson } from "../lib/http-json";
 type Plan = "monthly" | "annual";
 
 const benefits = [
-  ["Unlimited searches", "Search whenever plans change, without a daily cap."],
-  ["Every ranked match", "Unlock the full result list instead of stopping after three."],
-  ["Community ranking", "Suggest restaurants you trust and lower places you want to avoid."],
-  ["Deeper restaurant research", "Use the Premium search and its automatic free fallback when needed."],
-  ["Source-linked menu checks", "Open deeper restaurant summaries with current reference links."],
-  ["Live preference updates", "New suggestions can enter the top three without changing the saved AI result."],
+  "Unlimited searches",
+  "Every ranked match",
+  "Community ranking",
+  "Deeper restaurant research",
+  "Source-linked menu checks",
+  "Live preference updates",
 ];
 
 export default function PremiumPage() {
@@ -79,14 +79,13 @@ export default function PremiumPage() {
         <div className="premium-story">
           <span className="premium-kicker">Safe Serve Premium</span>
           <h1>More strong matches.<br /><em>Fewer dead ends.</em></h1>
-          <p>Search without limits, unlock every ranked restaurant, and shape results with community suggestions and avoids.</p>
           <div className="premium-limit-visual" aria-label="Upgrade from three daily searches to unlimited searches">
             <div><small>Daily limit</small><strong>3</strong></div>
             <span aria-hidden="true">becomes</span>
             <div><small>Premium</small><strong>∞</strong></div>
           </div>
           <div className="premium-benefit-grid">
-            {benefits.map(([title, copy]) => <article key={title}><span aria-hidden="true">✓</span><div><strong>{title}</strong><p>{copy}</p></div></article>)}
+            {benefits.map(title => <article key={title}><span aria-hidden="true">✓</span><div><strong>{title}</strong></div></article>)}
           </div>
         </div>
 
@@ -99,7 +98,7 @@ export default function PremiumPage() {
           <div className="premium-price-summary"><span>{plan === "annual" ? "Billed annually" : "Billed monthly"}</span><strong>{plan === "annual" ? "$29.99/year" : "$2.99/month"}</strong></div>
           <button type="button" className="premium-subscribe-button" onClick={choosePlan} disabled={status === "loading" || status === "active"}>{status === "loading" ? "Activating Premium..." : status === "active" ? "Premium active" : authenticated === false ? "Sign in to continue" : `Choose ${plan}`}</button>
           {message && <p className={`premium-checkout-message ${status}`}>{message}</p>}
-          <p className="premium-preview-note">Paid checkout is coming soon. No payment is collected here. Test activation is available only in explicitly enabled local development.</p>
+          <p className="premium-preview-note">Paid checkout coming soon. No payment is collected.</p>
           <p className="premium-safety-note">Safe Serve provides research, not medical certification. Always confirm ingredients and cross-contact with restaurant staff.</p>
         </aside>
       </section>
