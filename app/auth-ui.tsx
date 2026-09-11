@@ -59,7 +59,7 @@ function SocialButtons({ mode }: { mode: AuthMode }) {
   useEffect(() => {
     let active = true;
     fetch("/api/auth-providers", { cache: "no-store" })
-      .then((response) => response.ok ? response.json() : { providers: [] })
+      .then((response) => response.ok ? response.json() as Promise<{ providers?: SocialProvider[] }> : { providers: [] })
       .then((data: { providers?: SocialProvider[] }) => { if (active) setEnabledProviders(data.providers || []); })
       .catch(() => { if (active) setEnabledProviders([]); });
     return () => { active = false; };
@@ -70,6 +70,7 @@ function SocialButtons({ mode }: { mode: AuthMode }) {
 
   async function continueWith(provider: SocialProvider) {
     setBusy(provider); setError("");
+    try {
     const result = await authClient.signIn.social({
       provider,
       callbackURL: mode === "sign-up" ? "/onboarding" : "/",
@@ -77,6 +78,10 @@ function SocialButtons({ mode }: { mode: AuthMode }) {
     });
     if (result.error) {
       setError(result.error.message || `${provider} sign-in is not configured yet.`);
+      setBusy(null);
+    }
+    } catch {
+      setError("Sign-in could not connect. Please try again.");
       setBusy(null);
     }
   }
@@ -200,6 +205,16 @@ function SimpleProfile({ user }: { user: { email: string; name: string; username
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [accountAccess, setAccountAccess] = useState<{ premium: boolean; plan?: string | null; admin?: boolean } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/subscription", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() as Promise<{ premium: boolean; plan?: string | null; admin?: boolean }> : null)
+      .then((access) => { if (active) setAccountAccess(access); })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, []);
 
   async function changePassword(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError(""); setStatus("");
@@ -221,6 +236,11 @@ function SimpleProfile({ user }: { user: { email: string; name: string; username
       <span className="section-kicker">Account</span>
       <h1>Hello, {user.username || user.name || defaultUsername(user.email)}.</h1>
       <p className="account-intro">{user.email}</p>
+      <div className="account-access-row">
+        <span className={accountAccess?.premium ? "premium" : "free"}>{accountAccess?.premium ? `${accountAccess.plan ? `${accountAccess.plan} ` : ""}Premium` : "Free account"}</span>
+        {!accountAccess?.premium && <Link href="/premium?return=%2Faccount">Explore Premium</Link>}
+        {accountAccess?.admin && <Link className="admin-account-link" href="/admin">Open admin panel</Link>}
+      </div>
       <form className="safe-auth-form password-form" onSubmit={changePassword}>
         <h2>Change password</h2>
         <label htmlFor="current-password">Current password</label>

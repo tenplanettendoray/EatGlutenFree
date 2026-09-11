@@ -5,10 +5,13 @@ import * as THREE from "three";
 import { feature } from "topojson-client";
 
 type GlobeSelection = { label: string; latitude: number; longitude: number };
-type InteractiveGlobeProps = { location: string; reducedMotion: boolean | null; onSelectCountry: (selection: GlobeSelection) => void };
+type InteractiveGlobeProps = { location: string; reducedMotion: boolean | null; presentation?: "destination" | "meal"; onSelectCountry: (selection: GlobeSelection) => void };
 
 type Topology = { objects: Record<string, unknown> };
-type CountryFeature = { geometry?: { type: string; coordinates: unknown }; properties?: { name?: string } };
+type CountryFeature = {
+  geometry?: { type: "Polygon"; coordinates: number[][][] } | { type: "MultiPolygon"; coordinates: number[][][][] };
+  properties?: { name?: string };
+};
 type CityMarker = { name: string; longitude: number; latitude: number; country?: string };
 const MIN_ZOOM = 2.2;
 const MAX_ZOOM = 7.6;
@@ -429,7 +432,11 @@ function lineFromCoordinates(coordinates: number[][], radius: number) {
     const theta = (longitude + 180) * (Math.PI / 180);
     return new THREE.Vector3(-radius * Math.sin(phi) * Math.cos(theta), radius * Math.cos(phi), radius * Math.sin(phi) * Math.sin(theta));
   });
-  return new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: 0xcff6e6, transparent: true, opacity: .48 }));
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  geometry.computeBoundingSphere();
+  const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0xd7ddbb, transparent: true, opacity: 0, depthTest: true, depthWrite: false }));
+  line.visible = false;
+  return line;
 }
 
 function spherePoint(longitude: number, latitude: number, radius: number) {
@@ -527,34 +534,34 @@ function countryKey(country?: string | null) {
 function cityLabelSprite(city: CityMarker) {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
-  canvas.width = 256;
-  canvas.height = 72;
   if (!context) return null;
-  context.font = "800 23px Arial, sans-serif";
-  context.shadowColor = "rgba(255, 255, 255, .9)";
-  context.shadowBlur = 7;
-  context.fillStyle = "#f7fff7";
-  context.strokeStyle = "rgba(12, 42, 37, .82)";
-  context.lineWidth = 5;
+  const fontSize = 28;
+  context.font = `600 ${fontSize}px Arial, sans-serif`;
+  const logicalWidth = Math.ceil(context.measureText(city.name).width) + 32;
+  canvas.width = logicalWidth * 2;
+  canvas.height = 104;
+  context.scale(2, 2);
+  context.font = `600 ${fontSize}px Arial, sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.strokeText(city.name, canvas.width / 2, 34);
-  context.fillText(city.name, canvas.width / 2, 34);
-  context.shadowBlur = 0;
-  context.fillStyle = "#ff805f";
+  context.lineJoin = "round";
+  context.strokeStyle = "#07101e";
+  context.lineWidth = 4;
+  context.strokeText(city.name, logicalWidth / 2, 19);
+  context.fillStyle = "#ffffff";
+  context.fillText(city.name, logicalWidth / 2, 19);
+  context.fillStyle = "#ffc980";
   context.beginPath();
-  context.arc(canvas.width / 2, 60, 5, 0, Math.PI * 2);
+  context.arc(logicalWidth / 2, 43, 3, 0, Math.PI * 2);
   context.fill();
-  context.strokeStyle = "rgba(255, 255, 255, .85)";
-  context.lineWidth = 2;
-  context.beginPath();
-  context.arc(canvas.width / 2, 60, 6, 0, Math.PI * 2);
-  context.stroke();
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
-  const material = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0, depthTest: true, depthWrite: false });
-  const width = Math.min(.54, Math.max(.22, city.name.length * .021));
+  texture.generateMipmaps = false;
+  texture.minFilter = THREE.LinearFilter;
+  const material = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0, depthTest: false, depthWrite: false, toneMapped: false });
+  const width = logicalWidth;
   const sprite = new THREE.Sprite(material);
+  sprite.userData.labelWidth = logicalWidth;
   const normal = spherePoint(city.longitude, city.latitude, 1).normalize();
   // Keep the city marker on the country surface. The small outward offset is
   // only enough to avoid z-fighting with the Earth texture and border lines.
@@ -562,7 +569,8 @@ function cityLabelSprite(city: CityMarker) {
   // The orange dot is the anchor: text grows upward from the point on the globe
   // instead of placing the whole billboard above it.
   sprite.center.set(.5, .17);
-  sprite.scale.set(width, width * .28, 1);
+  sprite.scale.set(width * .002, .104, 1);
+  sprite.visible = false;
   sprite.userData.surfaceNormal = normal;
   sprite.userData.city = city;
   sprite.userData.country = city.country;
@@ -611,22 +619,33 @@ function countryAt(point: [number, number], countries: CountryFeature[]) {
   })?.properties?.name;
 }
 
-export function InteractiveGlobe({ location, reducedMotion, onSelectCountry }: InteractiveGlobeProps) {
+export function InteractiveGlobe({ location, reducedMotion, presentation = "destination", onSelectCountry }: InteractiveGlobeProps) {
   const mountRef = useRef<HTMLDivElement>(null);
   const globeGroupRef = useRef<THREE.Group | null>(null);
   const globeMeshRef = useRef<THREE.Mesh | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const selectionRef = useRef<THREE.Object3D | null>(null);
-  const pinTextureRef = useRef<THREE.Texture | null>(null);
+  const selectedCoordinatesRef = useRef<{ longitude: number; latitude: number } | null>(null);
   const cityLabelsRef = useRef<THREE.Sprite[]>([]);
   const countriesRef = useRef<CountryFeature[]>([]);
   const countryCentersRef = useRef<Map<string, [number, number]>>(new Map());
   const hoveredCountryRef = useRef<string | null>(null);
+  const hoveredPointLocalRef = useRef<THREE.Vector3 | null>(null);
+  const countryLinesRef = useRef<THREE.Line[]>([]);
+  const lastHoverSampleRef = useRef(0);
   const skipLocationRotationRef = useRef(false);
-  const draggingRef = useRef({ active: false, x: 0, y: 0 });
+  const draggingRef = useRef({ active: false, x: 0, y: 0, startX: 0, startY: 0, moved: false, touch: false });
+  // Render only while interaction/asset loading needs it. Keeping this short
+  // prevents a pointer move from waking a long tail of expensive WebGL frames.
+  const renderFramesRef = useRef(36);
   const rotationTargetRef = useRef(new THREE.Euler(.13, -.78, -.08));
-  const zoomTargetRef = useRef(4.9);
+  const zoomTargetRef = useRef(5.1);
+  const presentationRef = useRef(presentation);
+  const destinationZoomRef = useRef<number | null>(null);
+  const cameraTransitionRef = useRef<{ from: number; to: number; elapsed: number } | null>(null);
+  const mealTiltRef = useRef({ base: .6, elapsed: 0 });
   const [selected, setSelected] = useState<string | null>(null);
+  const [textureReady, setTextureReady] = useState(false);
 
   function pointerRay(event: React.PointerEvent<HTMLDivElement>, camera: THREE.PerspectiveCamera, raycaster: THREE.Raycaster) {
     const canvas = mountRef.current?.querySelector("canvas");
@@ -641,48 +660,244 @@ export function InteractiveGlobe({ location, reducedMotion, onSelectCountry }: I
     const mount = mountRef.current;
     if (!mount) return;
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(34, 1, .1, 100);
-    camera.position.set(0, 0, 4.9);
+    const camera = new THREE.PerspectiveCamera(34, 1, .1, 20000);
+    const overviewDiameter = Math.min(mount.clientHeight * 1.08, mount.clientWidth * (mount.clientWidth > 600 ? .62 : .92));
+    const overviewDistance = 1.45 / Math.sin(Math.atan((overviewDiameter / Math.max(1, mount.clientHeight)) * Math.tan(THREE.MathUtils.degToRad(17))));
+    zoomTargetRef.current = THREE.MathUtils.clamp(overviewDistance, MIN_ZOOM, MAX_ZOOM);
+    camera.position.set(0, 0, zoomTargetRef.current);
     cameraRef.current = camera;
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    let renderer: THREE.WebGLRenderer;
+    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" }); }
+    catch { return; } // Keep the static Earth preview and the location input usable.
+    // A 1.25x cap keeps the globe crisp without multiplying every fragment on
+    // high-DPI displays. The Earth texture itself supplies the detail.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.16;
     mount.replaceChildren(renderer.domElement);
     const handleNativeWheel = (event: WheelEvent) => {
+      if (presentationRef.current === "meal") return;
+      cameraTransitionRef.current = null;
       event.preventDefault();
       event.stopPropagation();
-      zoomTargetRef.current = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomTargetRef.current + event.deltaY * .0045));
+      zoomTargetRef.current = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomTargetRef.current * Math.exp(THREE.MathUtils.clamp(event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? mount.clientHeight : 1), -180, 180) * .0015)));
+      renderFramesRef.current = 30;
     };
     mount.addEventListener("wheel", handleNativeWheel, { passive: false });
+    const stopDrag = () => {
+      draggingRef.current.active = false;
+    };
+    window.addEventListener("blur", stopDrag);
 
     const group = new THREE.Group();
-    group.rotation.set(.13, -.78, -.08);
-    rotationTargetRef.current.set(.13, -.78, -.08);
+    group.rotation.set(.6, -1.62, 0);
+    rotationTargetRef.current.set(.6, -1.62, 0);
     globeGroupRef.current = group;
     scene.add(group);
-    const globe = new THREE.Mesh(new THREE.SphereGeometry(1.45, 96, 96), new THREE.MeshPhongMaterial({ color: 0x2f91ac, shininess: 9, specular: 0x23465d }));
+    const globe = new THREE.Mesh(new THREE.SphereGeometry(1.45, 64, 48), new THREE.MeshPhongMaterial({ transparent: true, opacity: 0 }));
     globeMeshRef.current = globe;
     group.add(globe);
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load("/globe-pin-marker.png", (texture) => {
+    let disposed = false;
+    const sunlightDirection = new THREE.Vector3(1, 1, -1).normalize();
+    // Natural colour and relief maps retain the reference Earth detail.
+    textureLoader.load("/earth-day-5400.jpg", (texture) => {
+      if (disposed) {
+        texture.dispose();
+        return;
+      }
       texture.colorSpace = THREE.SRGBColorSpace;
-      pinTextureRef.current = texture;
+      (globe.material as THREE.Material).dispose();
+      texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+      globe.material = new THREE.MeshPhongMaterial({
+        map: texture,
+        color: 0xffffff,
+        shininess: 48,
+        specular: 0xb8a485,
+        emissive: 0x030916,
+        emissiveIntensity: .12,
+      });
+      (globe.material as THREE.MeshPhongMaterial).onBeforeCompile = shader => {
+        // The cool readability fill must never create a second "sun" reflection.
+        // Only the actual solar light contributes to specular ocean highlights.
+        shader.uniforms.solarDirection = { value: sunlightDirection };
+        shader.fragmentShader = "uniform vec3 solarDirection;\n" + shader.fragmentShader;
+        shader.fragmentShader = shader.fragmentShader.replace("#include <lights_phong_pars_fragment>", THREE.ShaderChunk.lights_phong_pars_fragment.replace(
+          "reflectedLight.directSpecular += irradiance",
+          "reflectedLight.directSpecular += irradiance * smoothstep(.995, .999, dot(directLight.direction, solarDirection))"
+        ));
+        shader.fragmentShader = shader.fragmentShader.replace("#include <map_fragment>", `
+          #include <map_fragment>
+          float luminance = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(luminance), 0.28);
+          diffuseColor.rgb = pow(max(diffuseColor.rgb, vec3(0.0)), vec3(0.92)) * 0.86 + vec3(0.018, 0.024, 0.031);
+        `);
+      };
+      textureLoader.load("/earth-specular.jpg", detail => {
+        if (disposed) { detail.dispose(); return; }
+        const material = globe.material as THREE.MeshPhongMaterial;
+        material.specularMap = detail;
+        material.needsUpdate = true;
+        renderFramesRef.current = 30;
+      });
+      setTextureReady(true);
+      renderFramesRef.current = 30;
+      textureLoader.load("/earth-normal.jpg", detail => {
+        if (disposed) { detail.dispose(); return; }
+        const material = globe.material as THREE.MeshPhongMaterial;
+        detail.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+        material.normalMap = detail;
+        material.normalScale.set(.085, .085);
+        material.needsUpdate = true;
+        renderFramesRef.current = 30;
+      });
     });
-    textureLoader.load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg", (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      globe.material = new THREE.MeshPhongMaterial({ map: texture, shininess: 7, specular: 0x213c56 });
-    });
-    const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.49, 96, 96), new THREE.MeshBasicMaterial({ color: 0x83e8ff, transparent: true, opacity: .13, side: THREE.BackSide }));
+    // Warm directional sunlight and a cool fill preserve natural land/sea contrast.
+    const light = new THREE.DirectionalLight(0xffe8cc, 2.2);
+    light.position.set(3, 2, 4);
+    scene.add(light, new THREE.AmbientLight(0xe0e5e8, 1.65));
+    const sun = new THREE.Mesh(new THREE.SphereGeometry(.21, 48, 32), new THREE.ShaderMaterial({
+      toneMapped: false, transparent: true, depthWrite: false,
+      vertexShader: `varying vec3 n; varying vec3 v; varying vec3 p; void main(){ vec4 view=modelViewMatrix*vec4(position,1.); n=normalize(normalMatrix*normal); v=normalize(-view.xyz); p=position; gl_Position=projectionMatrix*view; }`,
+      fragmentShader: `
+        varying vec3 n; varying vec3 v; varying vec3 p;
+        float hash(vec3 q){ return fract(sin(dot(q,vec3(127.1,311.7,74.7)))*43758.5453); }
+        float noise(vec3 q){
+          vec3 i=floor(q),f=fract(q); f=f*f*(3.-2.*f);
+          return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);
+        }
+        void main(){
+          float facing=max(dot(normalize(n),normalize(v)),0.);
+          vec3 surface=normalize(p);
+          float convection=noise(surface*14.);
+          float granules=noise(surface*95.+convection*2.);
+          float filaments=pow(1.-abs(noise(surface*37.)*2.-1.),9.);
+          float heat=clamp(.4+convection*.32+granules*.25+filaments*.08,0.,1.);
+          vec3 plasma=mix(vec3(1.,.38,.07),vec3(1.,.86,.44),heat);
+          float center=pow(facing,.55);
+          vec3 color=mix(plasma,vec3(1.,.985,.9),center*(.57+heat*.26));
+          gl_FragColor=vec4(color,smoothstep(0.,.14,facing));
+        }`,
+    }));
+    const corona = new THREE.Mesh(new THREE.SphereGeometry(.56, 48, 32), new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
+      vertexShader: `varying vec3 n; varying vec3 v; void main(){ vec4 p=modelViewMatrix*vec4(position,1.); n=normalize(normalMatrix*normal); v=normalize(-p.xyz); gl_Position=projectionMatrix*p; }`,
+      fragmentShader: `varying vec3 n; varying vec3 v; void main(){ float f=max(dot(normalize(n),normalize(v)),0.); float glow=pow(smoothstep(.3,.94,f),3.)*(1.-smoothstep(.91,.985,f))*.36; gl_FragColor=vec4(1.,.73,.32,glow); }`,
+    }));
+    sun.add(corona);
+    // Actual tapered volumes distributed over a sphere, rendered in one batch.
+    const sunRays = new THREE.InstancedMesh(new THREE.ConeGeometry(1, 1, 7, 6, true), new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.AdditiveBlending, toneMapped: false, side: THREE.DoubleSide,
+      uniforms: { rayTime: { value: 0 } },
+      vertexShader: `uniform float rayTime; varying float along; varying vec3 n; varying vec3 v; void main(){ along=uv.y; vec4 local=instanceMatrix*vec4(position,1.); vec3 radial=normalize(instanceMatrix[3].xyz); vec3 tangent=cross(radial,vec3(.31,.87,.38)); local.xyz+=tangent*sin(rayTime*.8+dot(radial,vec3(7.,13.,19.))+along*3.)*.045*along*along; vec4 p=modelViewMatrix*local; n=normalize(normalMatrix*mat3(instanceMatrix)*normal); v=normalize(-p.xyz); gl_Position=projectionMatrix*p; }`,
+      fragmentShader: `varying float along; varying vec3 n; varying vec3 v; void main(){ float taper=pow(1.-along,2.8)*smoothstep(0.,.1,along); float feather=smoothstep(0.,.55,abs(dot(normalize(n),normalize(v)))); gl_FragColor=vec4(1.,.78,.45,taper*feather*.24); }`,
+    }), 96);
+    const rayTransform = new THREE.Object3D();
+    const rayDirection = new THREE.Vector3();
+    const rayUp = new THREE.Vector3(0, 1, 0);
+    for (let i = 0; i < 96; i++) {
+      const y = 1 - 2 * (i + .5) / 96;
+      const angle = i * 2.3999632297;
+      const radius = Math.sqrt(1 - y * y);
+      rayDirection.set(radius * Math.cos(angle), y, radius * Math.sin(angle));
+      const length = .27 + (.5 + .5 * Math.sin(i * 17.17)) * .38;
+      const width = .007 + (.5 + .5 * Math.sin(i * 9.71)) * .012;
+      rayTransform.position.copy(rayDirection).multiplyScalar(.205 + length / 2);
+      rayTransform.quaternion.setFromUnitVectors(rayUp, rayDirection);
+      rayTransform.scale.set(width, length, width);
+      rayTransform.updateMatrix();
+      sunRays.setMatrixAt(i, rayTransform.matrix);
+    }
+    sunRays.instanceMatrix.needsUpdate = true;
+    sun.add(sunRays);
+    // Distant source: thousands of Earth radii away, with a scaled solar
+    // body/corona so the apparent size stays readable instead of vanishing.
+    sun.position.set(3000, 2600, -4800);
+    sun.scale.setScalar(600);
+    const spaceOrbit = new THREE.Group();
+    spaceOrbit.add(sun);
+    scene.add(spaceOrbit);
+    const initialRotationInverse = group.quaternion.clone().invert();
+    const oceanFill = new THREE.DirectionalLight(0xb7d1e7, .7);
+    oceanFill.position.set(-4, 1, 3);
+    scene.add(oceanFill);
+    const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.59, 80, 56), new THREE.ShaderMaterial({
+      uniforms: { sunDirection: { value: new THREE.Vector3(1, 1, -1).normalize() } },
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `varying vec3 n; varying vec3 v; void main(){ vec4 p=modelViewMatrix*vec4(position,1.0); n=normalize(normalMatrix*normal); v=normalize(-p.xyz); gl_Position=projectionMatrix*p; }`,
+      fragmentShader: `
+        uniform vec3 sunDirection; varying vec3 n; varying vec3 v;
+        void main(){
+          vec3 normal=normalize(n);
+          float facing=max(dot(normal,normalize(v)),0.);
+          float feather=smoothstep(0.,.52,facing);
+          float rim=pow(1.-facing,2.7)*feather*feather;
+          // Project the source onto the sky: its nearest limb stays luminous
+          // even when the solid Earth occludes the distant solar disk.
+          vec2 towardSun=length(sunDirection.xy)>.001?normalize(sunDirection.xy):normalize(vec2(1.,1.));
+          vec2 edgeDirection=length(normal.xy)>.001?normalize(normal.xy):vec2(0.);
+          float sunward=smoothstep(-.25,.9,dot(edgeDirection,towardSun));
+          vec3 glow=mix(vec3(.32,.53,.76),vec3(1.,.81,.48),sunward);
+          gl_FragColor=vec4(glow,rim*(.7+sunward*1.7));
+        }`,
+    }));
     group.add(atmosphere);
-    const light = new THREE.DirectionalLight(0xffffff, 2.8);
-    light.position.set(3, 3, 5);
-    scene.add(light, new THREE.AmbientLight(0x80c7df, 1.05));
+    const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.456, 64, 48), new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false }));
+    group.add(clouds);
+    textureLoader.load("/earth-clouds.jpg", texture => {
+      if (disposed) { texture.dispose(); return; }
+      clouds.material.alphaMap = texture;
+      clouds.material.opacity = .3;
+      clouds.material.needsUpdate = true;
+      renderFramesRef.current = 30;
+    });
+    // A single GPU point batch: soft cores and velocity-shaped trails, without
+    // full-screen blur passes or individual DOM stars.
+    const starPositions = new Float32Array(1100 * 3);
+    const starSizes = new Float32Array(1100);
+    // Seeded randomness keeps this sky stable across remounts while avoiding
+    // a visible grid. Mix sparse background stars with loose spherical clusters.
+    let seed = 19471;
+    const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+    const randomDirection = () => {
+      const y = random() * 2 - 1;
+      const angle = random() * Math.PI * 2;
+      const radius = Math.sqrt(1 - y * y);
+      return new THREE.Vector3(radius * Math.cos(angle), y, radius * Math.sin(angle));
+    };
+    const clusters = Array.from({ length: 22 }, () => ({ center: randomDirection(), spread: .07 + random() * .20 }));
+    for (let i = 0; i < 1100; i++) {
+      const position = randomDirection();
+      if (random() < .58) {
+        const cluster = clusters[Math.floor(random() * clusters.length)];
+        position.multiplyScalar(cluster.spread * Math.sqrt(random())).add(cluster.center).normalize();
+      }
+      position.multiplyScalar(32);
+      starPositions.set([position.x, position.y, position.z], i * 3);
+      starSizes[i] = 3 + Math.pow(random(), 2) * 10;
+    }
+    const starGeometry = new THREE.BufferGeometry();
+    starGeometry.setAttribute("position", new THREE.BufferAttribute(starPositions, 3));
+    starGeometry.setAttribute("size", new THREE.BufferAttribute(starSizes, 1));
+    const starMaterial = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: { velocity: { value: new THREE.Vector2() }, pixelRatio: { value: renderer.getPixelRatio() } },
+      vertexShader: `attribute float size; uniform vec2 velocity; uniform float pixelRatio; varying float trail; void main(){ trail=min(length(velocity)*4.0,1.8); gl_PointSize=(size+trail*3.0)*pixelRatio; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+      fragmentShader: `uniform vec2 velocity; varying float trail; void main(){ vec2 p=gl_PointCoord-0.5; vec2 direction=length(velocity)>0.001?normalize(velocity):vec2(1.,0.); vec2 q=vec2(dot(p,direction),dot(p,vec2(-direction.y,direction.x))); float core=exp(-dot(p,p)*80.0)+0.22*exp(-dot(p,p)*14.0); float streak=exp(-q.x*q.x*22.0-q.y*q.y*(80.0+trail*160.0)); float alpha=mix(core,streak,min(trail*.3,.45)); gl_FragColor=vec4(0.78,0.86,1.0,alpha*.78); }`,
+    });
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    stars.frustumCulled = false;
+    spaceOrbit.add(stars);
     const cityLabels = CITY_MARKERS.map(cityLabelSprite).filter((label): label is THREE.Sprite => Boolean(label));
     cityLabelsRef.current = cityLabels;
     cityLabels.forEach((label) => group.add(label));
 
-    void fetch("/world-countries-110m.json").then((response) => response.json()).then((topology: Topology) => {
+    void fetch("/world-countries-110m.json").then((response) => response.json()).then((raw: unknown) => {
+      const topology = raw as Topology;
+      if (disposed) return;
       const countryObject = topology.objects.countries;
       if (!countryObject) return;
       const world = feature(topology as never, countryObject as never) as { features?: CountryFeature[] };
@@ -701,63 +916,299 @@ export function InteractiveGlobe({ location, reducedMotion, onSelectCountry }: I
         if (city && !label.userData.country) label.userData.country = countryAt([city.longitude, city.latitude], countriesRef.current);
         label.userData.countryKey = countryKey(label.userData.country as string | undefined);
       });
+      const countryLines: THREE.Line[] = [];
       world.features?.forEach((country) => {
         const geometry = country.geometry;
         if (!geometry) return;
         const rings = geometry.type === "Polygon" ? [geometry.coordinates] : geometry.type === "MultiPolygon" ? geometry.coordinates : [];
-        rings.forEach((polygon) => (polygon as number[][][]).forEach((ring) => group.add(lineFromCoordinates(ring, 1.462))));
+        rings.forEach((polygon) => (polygon as number[][][]).forEach((ring) => {
+          const line = lineFromCoordinates(ring, 1.462);
+          line.userData.countryKey = countryKey(country.properties?.name);
+          countryLines.push(line);
+          group.add(line);
+        }));
       });
+      countryLinesRef.current = countryLines;
+      renderFramesRef.current = 30;
     }).catch(() => undefined);
 
     let frame = 0;
-    const render = () => {
-      group.rotation.x += (rotationTargetRef.current.x - group.rotation.x) * .16;
-      group.rotation.y += (rotationTargetRef.current.y - group.rotation.y) * .16;
-      camera.position.z += (zoomTargetRef.current - camera.position.z) * .14;
+    let visible = true;
+    const visibility = new IntersectionObserver(entries => { visible = entries[0]?.isIntersecting ?? true; if (visible) renderFramesRef.current = 30; });
+    visibility.observe(mount);
+    const worldPosition = new THREE.Vector3();
+    let labelExclusions: { left: number; right: number; top: number; bottom: number }[] = [];
+    const destinationScene = mount.closest<HTMLElement>(".ss-destination");
+    let panelProgress = 0;
+    let panelsHidden = false;
+    let revealUntil = 0;
+    let panelTimer: ReturnType<typeof setTimeout> | undefined;
+    const panels = Array.from(destinationScene?.querySelectorAll<HTMLElement>(".ss-destination-copy,.ss-destination-summary") || []);
+    const syncPanels = () => {
+      if (presentationRef.current === "meal") return;
+      const editing = panels.some(panel => panel.contains(document.activeElement)) && document.activeElement?.matches("input,textarea");
+      const target = performance.now() < revealUntil || editing ? 0 : THREE.MathUtils.smoothstep((4.9 - camera.position.z) / 1.7, 0, 1);
+      if (Math.abs(target - panelProgress) > .001) renderFramesRef.current = Math.max(renderFramesRef.current, 2);
+      panelProgress += (target - panelProgress) * (reducedMotion ? 1 : .18);
+      destinationScene?.style.setProperty("--panel-progress", panelProgress.toFixed(4));
+      const hidden = panelProgress > .97;
+      if (hidden !== panelsHidden) {
+        panelsHidden = hidden;
+        destinationScene?.classList.toggle("is-globe-immersive", hidden);
+        panels.forEach(panel => panel.setAttribute("aria-hidden", String(hidden)));
+      }
+    };
+    const revealPanels = () => {
+      revealUntil = performance.now() + 3000;
+      clearTimeout(panelTimer);
+      syncPanels();
+      panelTimer = setTimeout(syncPanels, 3010);
+    };
+    destinationScene?.addEventListener("input", revealPanels);
+    destinationScene?.addEventListener("keydown", revealPanels);
+    destinationScene?.addEventListener("focusin", revealPanels);
+    destinationScene?.addEventListener("focusout", revealPanels);
+    let lastPaint = 0;
+    const rayStartedAt = performance.now();
+    let lastFrame = performance.now();
+    const render = (now = performance.now()) => {
+      frame = requestAnimationFrame(render);
+      if (!visible || document.hidden) { lastFrame = now; return; }
+      const mealMode = presentationRef.current === "meal";
+      const idle = renderFramesRef.current <= 0;
+      // Let the corona breathe at 24 fps when idle; interactions retain full RAF.
+      if (idle && !mealMode && (reducedMotion || now - lastPaint < 1000 / 24)) return;
+      if (mealMode && reducedMotion && idle) return;
+      const delta = Math.min((now - lastFrame) / 1000, .05);
+      lastFrame = now;
+      lastPaint = now;
+      renderFramesRef.current = Math.max(0, renderFramesRef.current - 1);
+      const ease = reducedMotion ? 1 : 1 - Math.exp(-12 * delta);
+      if (mealMode && !reducedMotion) {
+        rotationTargetRef.current.y += delta * .035;
+        const tilt = mealTiltRef.current;
+        tilt.elapsed += delta;
+        rotationTargetRef.current.x = tilt.base + Math.sin(tilt.elapsed * .14) * .085;
+      }
+      const previousX = group.rotation.x, previousY = group.rotation.y;
+      group.rotation.x += (rotationTargetRef.current.x - group.rotation.x) * ease;
+      group.rotation.y += (rotationTargetRef.current.y - group.rotation.y) * ease;
+      // The sun orbits in world space, so perspective and Earth occlusion
+      // determine its apparent size and the ocean's specular highlight.
+      // One Earth-centered orbit keeps the entire sky coherent with dragging.
+      // The sun now follows the full rotation (previously only one tenth).
+      const rayTime = reducedMotion ? 0 : (now - rayStartedAt) / 1000;
+      sunRays.material.uniforms.rayTime.value = rayTime;
+      sunRays.rotation.set(rayTime * .027, rayTime * .045, rayTime * .018);
+      // Fixed physical radius: size changes come exclusively from perspective.
+      // Rotation moves the distant sun through an orbit with genuine depth.
+      const orbitPhase = reducedMotion ? 0 : (group.rotation.y + 1.62) * .6;
+      sun.position.set(3000 + 450 * Math.sin(orbitPhase), 2600 + 220 * Math.sin(orbitPhase * .7), -4800 + 1200 * Math.sin(orbitPhase));
+      if (!reducedMotion) spaceOrbit.quaternion.copy(group.quaternion).multiply(initialRotationInverse);
+      spaceOrbit.updateMatrixWorld(true);
+      sun.getWorldPosition(light.position);
+      sunlightDirection.copy(light.position).transformDirection(camera.matrixWorldInverse);
+      atmosphere.material.uniforms.sunDirection.value.copy(light.position).transformDirection(camera.matrixWorldInverse);
+      const velocity = starMaterial.uniforms.velocity.value as THREE.Vector2;
+      velocity.lerp(new THREE.Vector2(reducedMotion ? 0 : (group.rotation.y - previousY) / Math.max(delta, .001), reducedMotion ? 0 : -(group.rotation.x - previousX) / Math.max(delta, .001)), 1 - Math.exp(-16 * delta));
+      if (velocity.lengthSq() > .00001) renderFramesRef.current = Math.max(renderFramesRef.current, 2);
+      const cameraTransition = cameraTransitionRef.current;
+      if (cameraTransition) {
+        cameraTransition.elapsed += delta;
+        const progress = reducedMotion ? 1 : Math.min(cameraTransition.elapsed / 2.05, 1);
+        // Smootherstep has zero velocity and zero acceleration at both ends,
+        // making the Earth grow continuously without a visible size step.
+        const eased = progress * progress * progress * (progress * (progress * 6 - 15) + 10);
+        camera.position.z = THREE.MathUtils.lerp(cameraTransition.from, cameraTransition.to, eased);
+        if (progress === 1) cameraTransitionRef.current = null;
+        else renderFramesRef.current = Math.max(renderFramesRef.current, 2);
+      } else camera.position.z += (zoomTargetRef.current - camera.position.z) * ease;
+      if (selectionRef.current) selectionRef.current.visible = true;
+      syncPanels();
+      const moving = Math.abs(rotationTargetRef.current.x - group.rotation.x) + Math.abs(rotationTargetRef.current.y - group.rotation.y) + Math.abs(zoomTargetRef.current - camera.position.z) > .0001;
+      if (moving || draggingRef.current.active) renderFramesRef.current = Math.max(renderFramesRef.current, 2);
+      group.updateMatrixWorld(true);
+      camera.updateMatrixWorld();
+      if (selectionRef.current?.userData.billboard) selectionRef.current.quaternion.copy(group.quaternion).invert().multiply(camera.quaternion);
       if (selectionRef.current?.userData.bornAt) {
-        const age = Math.min(1, (performance.now() - selectionRef.current.userData.bornAt) / 430);
+        const selectedAgeMs = performance.now() - selectionRef.current.userData.bornAt;
+        const age = reducedMotion ? 1 : Math.min(1, selectedAgeMs / 430);
         const bounce = Math.sin(age * Math.PI) * .48;
         const rock = Math.sin(age * Math.PI * 6) * (1 - age) * .62;
         const baseScale = selectionRef.current.userData.baseScale as THREE.Vector3 | undefined;
         const basePosition = selectionRef.current.userData.basePosition as THREE.Vector3 | undefined;
         if (baseScale) selectionRef.current.scale.copy(baseScale).multiplyScalar(1 + bounce);
         if (basePosition) selectionRef.current.position.copy(basePosition).multiplyScalar(1 + Math.sin(age * Math.PI) * .018);
-        const material = selectionRef.current instanceof THREE.Sprite ? selectionRef.current.material as THREE.SpriteMaterial : null;
-        if (material) material.rotation = rock;
+        const pulseRings = selectionRef.current.userData.pulseRings as THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>[] | undefined;
+        pulseRings?.forEach((ring, index) => {
+          const pulse = reducedMotion ? 1 : THREE.MathUtils.clamp((selectedAgeMs - index * 180) / 980, 0, 1);
+          const opacity = Math.sin(pulse * Math.PI) * (index ? .34 : .5);
+          ring.visible = opacity > .01;
+          ring.scale.setScalar(.82 + pulse * 2.4);
+          ring.material.opacity = opacity;
+        });
+        const spinGroup = selectionRef.current.userData.spinGroup as THREE.Group | undefined;
+        if (spinGroup && !reducedMotion) {
+          spinGroup.rotation.y = rayTime * 2.4;
+          spinGroup.rotation.z = Math.sin(rayTime * 6.8) * .025 + rock * .035;
+          renderFramesRef.current = Math.max(renderFramesRef.current, 2);
+        }
       }
-      const cityOpacity = THREE.MathUtils.clamp((4.85 - camera.position.z) / 1.25, 0, .9);
+      const revealEase = reducedMotion ? 1 : 1 - Math.exp(-10 * delta);
       const hoveredCountry = hoveredCountryRef.current;
-      cityLabelsRef.current.forEach((label) => {
-        const material = label.material as THREE.SpriteMaterial;
-        const worldPosition = label.getWorldPosition(new THREE.Vector3()).normalize();
-        const facingCamera = worldPosition.z > -.16;
-        const matchesHover = Boolean(hoveredCountry && label.userData.countryKey === hoveredCountry);
-        material.opacity += (((facingCamera && matchesHover ? cityOpacity : 0)) - material.opacity) * .18;
-        label.visible = material.opacity > .01;
+      const zoomReveal = mealMode ? 0 : THREE.MathUtils.clamp((5.08 - camera.position.z) / 2.45, 0, 1);
+      const hoverPoint = hoveredPointLocalRef.current;
+      const hoverWorld = hoverPoint ? group.localToWorld(hoverPoint.clone()) : null;
+      const hoverScreen = hoverWorld ? hoverWorld.clone().project(camera) : null;
+      countryLinesRef.current.forEach((line) => {
+        const material = line.material as THREE.LineBasicMaterial;
+        const center = line.geometry.boundingSphere?.center;
+        let localStrength = 0;
+        if (center && hoverScreen) {
+          const worldCenter = group.localToWorld(center.clone());
+          const screenCenter = worldCenter.project(camera);
+          const distance = Math.hypot(screenCenter.x - hoverScreen.x, screenCenter.y - hoverScreen.y);
+          // Use a fixed screen-space falloff so large countries do not turn
+          // the hover treatment into a full-outline glow.
+          localStrength = THREE.MathUtils.clamp(1 - distance / .22, 0, 1);
+        }
+        const sameCountry = Boolean(hoveredCountry && line.userData.countryKey === hoveredCountry);
+        const opacity = Math.max(zoomReveal * .34, sameCountry ? localStrength * .62 : localStrength * .42);
+        material.opacity += (opacity - material.opacity) * revealEase;
+        if (Math.abs(opacity - material.opacity) > .003) renderFramesRef.current = Math.max(renderFramesRef.current, 2);
+        line.visible = material.opacity > .008;
       });
+      // Avoid projecting every city sprite while the cities are hidden at the
+      // normal overview zoom. This is a sizeable CPU saving on pointer drags.
+      const labelsVisible = zoomReveal > .001 || Boolean(hoveredCountry) || cityLabelsRef.current.some(label => (label.material as THREE.SpriteMaterial).opacity > .01);
+      if (labelsVisible) {
+        const occupied: { x: number; y: number; width: number }[] = [];
+        cityLabelsRef.current.forEach((label) => {
+          const material = label.material as THREE.SpriteMaterial;
+          worldPosition.copy(label.position).applyMatrix4(group.matrixWorld);
+          const facingCamera = worldPosition.z > (1.466 * 1.466) / camera.position.z + .035;
+          const matchesHover = Boolean(hoveredCountry && label.userData.countryKey === hoveredCountry);
+
+          const distance = camera.position.z - worldPosition.z;
+          const unit = 2 * distance * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / mount.clientHeight;
+          const width = label.userData.labelWidth * .5;
+          label.scale.set(width * unit, 26 * unit, 1);
+          worldPosition.project(camera);
+          const localStrength = hoverScreen ? THREE.MathUtils.clamp(1 - Math.hypot(worldPosition.x - hoverScreen.x, worldPosition.y - hoverScreen.y) / .22, 0, 1) : 0;
+          const reveal = Math.max(zoomReveal * .85, localStrength * (matchesHover ? 1 : .68));
+          const eligible = facingCamera && reveal > .01;
+          const x = (worldPosition.x + 1) * mount.clientWidth / 2;
+          const y = (1 - worldPosition.y) * mount.clientHeight / 2;
+          const behindControl = !panelsHidden && labelExclusions.some(r => x + width / 2 > r.left && x - width / 2 < r.right && y > r.top - 8 && y < r.bottom + 28);
+          const clear = eligible && !behindControl && !occupied.some(p => Math.abs(p.x - x) < (p.width + width) / 2 + 8 && Math.abs(p.y - y) < 30);
+          if (clear) occupied.push({ x, y, width });
+          const targetOpacity = clear ? reveal : 0;
+          material.opacity += (targetOpacity - material.opacity) * revealEase;
+          // Occlusion must remain immediate so text cannot float over the back
+          // of the Earth or over controls while its visibility fades.
+          if (!facingCamera || behindControl) material.opacity = 0;
+          else if (Math.abs(targetOpacity - material.opacity) > .003) renderFramesRef.current = Math.max(renderFramesRef.current, 2);
+          label.visible = material.opacity > .01;
+        });
+      }
       renderer.render(scene, camera);
-      frame = requestAnimationFrame(render);
     };
     render();
-    const resize = () => { const size = Math.min(mount.clientWidth, mount.clientHeight); renderer.setSize(size, size); camera.aspect = 1; camera.updateProjectionMatrix(); };
+    const resize = () => {
+      const bounds = mount.getBoundingClientRect();
+      labelExclusions = Array.from(mount.closest(".ss-destination")?.querySelectorAll(".ss-destination-copy,.ss-destination-summary") || []).map(element => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left - bounds.left, right: rect.right - bounds.left, top: rect.top - bounds.top, bottom: rect.bottom - bounds.top };
+      });
+      const width = mount.clientWidth, height = mount.clientHeight; if (!width || !height) return; renderer.setSize(width, height); camera.aspect = width / height; camera.setViewOffset(width, height, width > 600 ? -width * .04 : 0, -height * .09, width, height); camera.updateProjectionMatrix(); renderFramesRef.current = 18; };
     const observer = new ResizeObserver(resize);
+    resize();
     observer.observe(mount);
     return () => {
+      disposed = true;
+      clearTimeout(panelTimer);
+      destinationScene?.removeEventListener("input", revealPanels);
+      destinationScene?.removeEventListener("keydown", revealPanels);
+      destinationScene?.removeEventListener("focusin", revealPanels);
+      destinationScene?.removeEventListener("focusout", revealPanels);
+      destinationScene?.classList.remove("is-globe-immersive");
+      destinationScene?.style.removeProperty("--panel-progress");
+      panels.forEach(panel => panel.removeAttribute("aria-hidden"));
+      destinationScene?.style.removeProperty("--sun-turn");
+      destinationScene?.style.removeProperty("--sun-scale");
       cancelAnimationFrame(frame);
       observer.disconnect();
+      visibility.disconnect();
       mount.removeEventListener("wheel", handleNativeWheel);
+      window.removeEventListener("blur", stopDrag);
+      stopDrag();
       cityLabels.forEach((label) => {
         label.material.map?.dispose();
         label.material.dispose();
       });
       cityLabelsRef.current = [];
-      pinTextureRef.current?.dispose();
-      pinTextureRef.current = null;
+      countryLinesRef.current = [];
+      hoveredPointLocalRef.current = null;
+      selectionRef.current?.traverse(object => {
+        if (object instanceof THREE.Mesh) { object.geometry.dispose(); (object.material as THREE.Material).dispose(); }
+      });
+      selectionRef.current = null;
+      sunRays.geometry.dispose();
+      sunRays.material.dispose();
+      sun.geometry.dispose();
+      sun.material.dispose();
+      corona.geometry.dispose();
+      corona.material.dispose();
+      starGeometry.dispose();
+      starMaterial.dispose();
       renderer.dispose();
+      clouds.geometry.dispose();
+      clouds.material.alphaMap?.dispose();
+      clouds.material.dispose();
+      atmosphere.geometry.dispose();
+      atmosphere.material.dispose();
       globe.geometry.dispose();
-      (globe.material as THREE.Material).dispose();
+      const globeMaterial = globe.material as THREE.MeshPhongMaterial;
+      globeMaterial.map?.dispose();
+      globeMaterial.normalMap?.dispose();
+      globeMaterial.specularMap?.dispose();
+      globeMaterial.dispose();
+      group.traverse(object => { if (object instanceof THREE.Line) { object.geometry.dispose(); (object.material as THREE.Material).dispose(); } });
+      mount.replaceChildren();
     };
   }, [reducedMotion]);
+
+  // Change the camera target without rebuilding the renderer or losing Earth orientation.
+  useEffect(() => {
+    presentationRef.current = presentation;
+    if (presentation === "meal") {
+      destinationZoomRef.current ??= zoomTargetRef.current;
+      zoomTargetRef.current = 3.55;
+      const renderedRotation = globeGroupRef.current?.rotation;
+      if (renderedRotation) {
+        // Begin from the exact displayed orientation instead of finishing an
+        // older destination target during the scene handoff.
+        rotationTargetRef.current.copy(renderedRotation);
+      }
+      mealTiltRef.current = { base: renderedRotation?.x ?? rotationTargetRef.current.x, elapsed: 0 };
+      hoveredCountryRef.current = null;
+      hoveredPointLocalRef.current = null;
+      draggingRef.current.active = false;
+    } else if (destinationZoomRef.current !== null) {
+      zoomTargetRef.current = destinationZoomRef.current;
+      destinationZoomRef.current = null;
+      const selectedCoordinates = selectedCoordinatesRef.current;
+      const renderedRotation = globeGroupRef.current?.rotation;
+      if (selectedCoordinates && renderedRotation) {
+        const destination = locationRotationFromCoordinates(selectedCoordinates.longitude, selectedCoordinates.latitude);
+        rotationTargetRef.current.x = destination.x;
+        rotationTargetRef.current.y = renderedRotation.y + THREE.MathUtils.euclideanModulo(destination.y - renderedRotation.y + Math.PI, Math.PI * 2) - Math.PI;
+      }
+    }
+    const camera = cameraRef.current;
+    if (camera) cameraTransitionRef.current = { from: camera.position.z, to: zoomTargetRef.current, elapsed: 0 };
+    renderFramesRef.current = 90;
+  }, [presentation, reducedMotion]);
 
   useEffect(() => {
     const group = globeGroupRef.current;
@@ -772,6 +1223,7 @@ export function InteractiveGlobe({ location, reducedMotion, onSelectCountry }: I
       : locationRotation(location);
     rotationTargetRef.current.x = destination.x;
     rotationTargetRef.current.y = destination.y;
+    renderFramesRef.current = 30;
   }, [location]);
 
   function selectPoint(event: React.PointerEvent<HTMLDivElement>) {
@@ -784,24 +1236,53 @@ export function InteractiveGlobe({ location, reducedMotion, onSelectCountry }: I
     if (!hit) return;
     const group = globeGroupRef.current;
     if (!group) return;
-    if (selectionRef.current) selectionRef.current.removeFromParent();
+    if (selectionRef.current) {
+      selectionRef.current.traverse(object => {
+        if (object instanceof THREE.Mesh) { object.geometry.dispose(); (object.material as THREE.Material).dispose(); }
+      });
+      selectionRef.current.removeFromParent();
+    }
     const localPoint = group.worldToLocal(hit.point.clone()).normalize();
-    const marker = pinTextureRef.current
-      ? new THREE.Sprite(new THREE.SpriteMaterial({ map: pinTextureRef.current, transparent: true, depthTest: true, depthWrite: false }))
-      : new THREE.Mesh(new THREE.SphereGeometry(.052, 20, 20), new THREE.MeshBasicMaterial({ color: 0xff805f }));
-    if (marker instanceof THREE.Sprite) marker.center.set(.5, .09);
-    const pinScale = .055;
-    marker.position.copy(localPoint.multiplyScalar(1.468));
-    marker.scale.set(pinScale, pinScale, pinScale);
-    marker.userData.baseScale = new THREE.Vector3(pinScale, pinScale, pinScale);
+    const marker = new THREE.Group();
+    // A small, camera-facing map pin retains its pointed silhouette from above.
+    const silhouette = new THREE.Shape();
+    silhouette.moveTo(0, 0);
+    silhouette.bezierCurveTo(-.010, .018, -.029, .035, -.029, .054);
+    silhouette.bezierCurveTo(-.029, .092, .029, .092, .029, .054);
+    silhouette.bezierCurveTo(.029, .035, .010, .018, 0, 0);
+    const hole = new THREE.Path();
+    hole.absarc(0, .055, .010, 0, Math.PI * 2, true);
+    silhouette.holes.push(hole);
+    const face = new THREE.Mesh(new THREE.ExtrudeGeometry(silhouette, { depth: .018, bevelEnabled: true, bevelThickness: .003, bevelSize: .003, bevelSegments: 3, steps: 1, curveSegments: 24 }), new THREE.MeshPhongMaterial({ color: 0xffb77c, emissive: 0x6a2910, emissiveIntensity: .25, shininess: 65, specular: 0xffe6bc }));
+    const spinGroup = new THREE.Group();
+    spinGroup.add(face);
+    marker.add(spinGroup);
+    const pulseRings = [0, 1].map(() => {
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(.032, .043, 48),
+        new THREE.MeshBasicMaterial({ color: 0xffd39a, transparent: true, opacity: 0, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
+      );
+      ring.position.z = -.01;
+      ring.visible = false;
+      marker.add(ring);
+      return ring;
+    });
+    marker.position.copy(localPoint.clone().multiplyScalar(1.478));
+    marker.userData.billboard = true;
+    marker.quaternion.copy(group.quaternion).invert().multiply(camera.quaternion);
+    marker.scale.setScalar(.55);
+    marker.userData.baseScale = new THREE.Vector3(.55, .55, .55);
     marker.userData.basePosition = marker.position.clone();
     marker.userData.bornAt = performance.now();
+    marker.userData.pulseRings = pulseRings;
+    marker.userData.spinGroup = spinGroup;
     group.add(marker);
     selectionRef.current = marker;
     const normal = marker.position.clone().normalize();
     const latitude = 90 - (Math.acos(normal.y) * 180) / Math.PI;
     let longitude = (Math.atan2(normal.z, -normal.x) * 180) / Math.PI - 180;
     if (longitude < -180) longitude += 360;
+    selectedCoordinatesRef.current = { longitude, latitude };
     const clickedCountry = countryAt([longitude, latitude], countriesRef.current);
     const city = clickedCountry ? nearestCityInCountry([longitude, latitude], clickedCountry, countriesRef.current) : null;
     // Never cross a border just to return a nearby city. When city coverage is
@@ -814,9 +1295,12 @@ export function InteractiveGlobe({ location, reducedMotion, onSelectCountry }: I
         return nearbyCountry ? `${nearby.name}, ${nearbyCountry}` : nearby.name;
       })();
     setSelected(place);
+    renderFramesRef.current = 30;
     const destination = locationRotationFromCoordinates(longitude, latitude);
     rotationTargetRef.current.x = destination.x;
-    rotationTargetRef.current.y = destination.y;
+    rotationTargetRef.current.y = group.rotation.y + THREE.MathUtils.euclideanModulo(destination.y - group.rotation.y + Math.PI, Math.PI * 2) - Math.PI;
+    hoveredCountryRef.current = null;
+    hoveredPointLocalRef.current = null;
     skipLocationRotationRef.current = true;
     onSelectCountry({ label: place, latitude, longitude });
   }
@@ -829,8 +1313,9 @@ export function InteractiveGlobe({ location, reducedMotion, onSelectCountry }: I
     const raycaster = new THREE.Raycaster();
     pointerRay(event, camera, raycaster);
     const hit = raycaster.intersectObject(globe)[0];
-    if (!hit) return null;
+    if (!hit) { hoveredPointLocalRef.current = null; return null; }
     const localPoint = group.worldToLocal(hit.point.clone()).normalize();
+    hoveredPointLocalRef.current = localPoint.clone();
     const latitude = 90 - (Math.acos(localPoint.y) * 180) / Math.PI;
     let longitude = (Math.atan2(localPoint.z, -localPoint.x) * 180) / Math.PI - 180;
     if (longitude < -180) longitude += 360;
@@ -845,30 +1330,50 @@ export function InteractiveGlobe({ location, reducedMotion, onSelectCountry }: I
   }
 
   function beginDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.button === 0) { selectPoint(event); return; }
-    if (event.button !== 2) return;
+    if (presentationRef.current === "meal") return;
+    if (event.button === 0 && event.pointerType !== "touch") { selectPoint(event); return; }
+    if (event.button !== 2 && event.pointerType !== "touch") return;
     event.currentTarget.setPointerCapture(event.pointerId);
     const drag = draggingRef.current;
     drag.active = true; drag.x = event.clientX; drag.y = event.clientY;
+    drag.startX = event.clientX; drag.startY = event.clientY; drag.moved = false; drag.touch = event.pointerType === "touch";
   }
   function moveDrag(event: React.PointerEvent<HTMLDivElement>) {
     const drag = draggingRef.current;
     const group = globeGroupRef.current;
     if (!drag.active || !group) {
-      hoveredCountryRef.current = hoveredPointCountry(event);
+      const now = event.timeStamp;
+      if (now - lastHoverSampleRef.current < 50) return;
+      lastHoverSampleRef.current = now;
+      const country = hoveredPointCountry(event);
+      renderFramesRef.current = 18;
+      hoveredCountryRef.current = country;
       return;
     }
     const dx = event.clientX - drag.x; const dy = event.clientY - drag.y;
-    rotationTargetRef.current.y += dx * .004;
-    rotationTargetRef.current.x = Math.max(-1.25, Math.min(1.25, rotationTargetRef.current.x + dy * .0026));
+    drag.moved ||= Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 6;
+    rotateByDelta(dx, dy);
     drag.x = event.clientX; drag.y = event.clientY;
   }
-  function endDrag(event: React.PointerEvent<HTMLDivElement>) { if (!draggingRef.current.active) return; draggingRef.current.active = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); }
-  function zoom(event: React.WheelEvent<HTMLDivElement>) { event.preventDefault(); event.stopPropagation(); zoomTargetRef.current = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomTargetRef.current + event.deltaY * .0045)); }
+  function rotateByDelta(dx: number, dy: number) {
+    renderFramesRef.current = 30;
+    // Surface distance, not center distance, keeps drag speed proportional
+    // to the visible ground as the camera approaches the Earth.
+    const camera = cameraRef.current;
+    const surfaceDistance = Math.max(.1, (camera?.position.z ?? 5.1) - 1.45);
+    const adjustedDistance = Math.sqrt(surfaceDistance * 4.5);
+    const radiansPerPixel = camera && mountRef.current
+      ? 2 * adjustedDistance * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / (1.45 * Math.max(1, mountRef.current.clientHeight))
+      : .004;
+    rotationTargetRef.current.y += dx * radiansPerPixel;
+    rotationTargetRef.current.x = Math.max(-1.25, Math.min(1.25, rotationTargetRef.current.x + dy * radiansPerPixel));
+  }
+  function endDrag(event: React.PointerEvent<HTMLDivElement>) { const drag = draggingRef.current; if (!drag.active) return; if (drag.touch && !drag.moved && event.type !== "pointercancel") selectPoint(event); drag.active = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); }
 
-  return <div className="interactive-globe-wrap">
-    <div ref={mountRef} className="interactive-globe-canvas" onContextMenu={(event) => event.preventDefault()} onWheel={zoom} onPointerDown={beginDrag} onPointerMove={moveDrag} onPointerLeave={() => { hoveredCountryRef.current = null; }} onPointerUp={endDrag} onPointerCancel={endDrag} role="img" aria-label="Interactive 3D Earth. Scroll to zoom. Right-drag to rotate country outlines. Left-click to select a country." />
+  return <div className={`interactive-globe-wrap ${textureReady ? "is-texture-ready" : "is-texture-loading"}`}>
+    <div ref={mountRef} className="interactive-globe-canvas" onContextMenu={(event) => event.preventDefault()} onPointerDown={beginDrag} onPointerMove={moveDrag} onPointerLeave={() => { hoveredCountryRef.current = null; hoveredPointLocalRef.current = null; renderFramesRef.current = 18; }} onPointerUp={endDrag} onPointerCancel={endDrag} role="img" aria-label={presentation === "meal" ? "Slowly rotating Earth behind the meal carousel" : "Interactive 3D Earth. Scroll to zoom. Hold the right mouse button and drag to rotate. Release to stop dragging. Left-click to select. On touchscreens, drag to rotate and tap to select."} />
     {location.trim() && <div className="globe-location-readout"><span>Destination</span><strong>{location}</strong></div>}
     <div className="globe-interaction-hint">{selected ? <><strong>{selected}</strong><span>Selected · scroll to zoom</span></> : <><strong>Explore the globe</strong><span>Left-click to select · right-drag to rotate · scroll to zoom</span></>}</div>
+    <a className="globe-image-credit" href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noreferrer">Earth: NASA · Clouds: Solar System Scope / CC BY 4.0</a>
   </div>;
 }

@@ -8,7 +8,7 @@ test("builds the Safe Serve homepage and catchphrase", async () => {
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(layout, /Safe Serve — CanIEatIt\?/i);
-  assert.match(homepage, /Safe Serve home/i);
+  assert.match(homepage, /aria-label="Return to the Safe Serve start page"/i);
   assert.match(homepage, /CanIEatIt\?/i);
   assert.match(homepage, /AccountControls/i);
   assert.doesNotMatch(homepage, /ClearPlate/i);

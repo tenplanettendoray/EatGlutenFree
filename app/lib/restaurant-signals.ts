@@ -1,5 +1,5 @@
-import { and, eq } from "drizzle-orm";
-import { ensureRestaurantSignalSchema, getDb } from "../../db";
+import { sql } from "drizzle-orm";
+import { getDb } from "../../db";
 import { restaurantSignal } from "../../db/schema";
 
 export type WeightedPreferenceSignal = {
@@ -58,7 +58,6 @@ export function signalScopeOverlaps(stored: string, current: string, mode: "loca
 }
 
 export async function getPublicRestaurantSignals(context: SignalContext) {
-  await ensureRestaurantSignalSchema();
   const db = getDb();
   const location = normalizedSignalScope(context.location);
   const allergies = allergySignalScope(context.allergies);
@@ -82,7 +81,7 @@ export async function getPublicRestaurantSignals(context: SignalContext) {
   }
 
   return {
-    preferenceSignals: rows.map((row) => ({
+    preferenceSignals: contextualSignals.map((row) => ({
       name: row.name,
       suggestionWeight: row.suggestionWeight,
       avoidWeight: row.avoidWeight,
@@ -108,20 +107,11 @@ export async function getPublicRestaurantSignals(context: SignalContext) {
 }
 
 export async function incrementRestaurantSignals(updates: SignalIncrement[]) {
-  await ensureRestaurantSignalSchema();
   const db = getDb();
   const now = new Date();
   for (const update of updates) {
     const normalizedName = normalizedRestaurantName(update.name);
     if (!normalizedName) continue;
-    const existing = await db.select().from(restaurantSignal).where(and(
-      eq(restaurantSignal.normalizedName, normalizedName),
-      eq(restaurantSignal.locationScope, update.locationScope),
-      eq(restaurantSignal.allergyScope, update.allergyScope),
-      eq(restaurantSignal.foodScope, update.foodScope),
-    )).limit(1).then((rows) => rows[0]);
-
-    if (!existing) {
       await db.insert(restaurantSignal).values({
         id: crypto.randomUUID(),
         name: update.name,
@@ -135,19 +125,16 @@ export async function incrementRestaurantSignals(updates: SignalIncrement[]) {
         searchWeight: Math.max(0, update.searchWeight || 0),
         createdAt: now,
         updatedAt: now,
-      });
-      continue;
-    }
-
-    await db.update(restaurantSignal)
-      .set({
-        name: update.name || existing.name,
-        suggestionWeight: Math.max(0, existing.suggestionWeight + (update.suggestionWeight || 0)),
-        avoidWeight: Math.max(0, existing.avoidWeight + (update.avoidWeight || 0)),
-        clickWeight: Math.max(0, existing.clickWeight + (update.clickWeight || 0)),
-        searchWeight: Math.max(0, existing.searchWeight + (update.searchWeight || 0)),
+      }).onConflictDoUpdate({
+        target: [restaurantSignal.normalizedName, restaurantSignal.locationScope, restaurantSignal.allergyScope, restaurantSignal.foodScope],
+        set: {
+        name: update.name,
+        suggestionWeight: sql`max(0, ${restaurantSignal.suggestionWeight} + ${update.suggestionWeight || 0})`,
+        avoidWeight: sql`max(0, ${restaurantSignal.avoidWeight} + ${update.avoidWeight || 0})`,
+        clickWeight: sql`max(0, ${restaurantSignal.clickWeight} + ${update.clickWeight || 0})`,
+        searchWeight: sql`max(0, ${restaurantSignal.searchWeight} + ${update.searchWeight || 0})`,
         updatedAt: now,
-      })
-      .where(eq(restaurantSignal.id, existing.id));
+        },
+      });
   }
 }

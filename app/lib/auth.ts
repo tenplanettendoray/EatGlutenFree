@@ -16,7 +16,8 @@ const socialProviders = {
   } : {}),
 };
 
-export const auth = betterAuth({
+function createAuth() {
+  return betterAuth({
   appName: "Safe Serve",
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
@@ -24,4 +25,18 @@ export const auth = betterAuth({
   emailAndPassword: { enabled: true, minPasswordLength: 8 },
   socialProviders,
   plugins: [username({ minUsernameLength: 3, maxUsernameLength: 30 })],
+});
+}
+
+// Workers are evaluated before deployment bindings are available. Initialize
+// the database adapter only when a request actually uses authentication.
+let instance: ReturnType<typeof createAuth> | undefined;
+export const auth = new Proxy({} as ReturnType<typeof createAuth>, {
+  has(_target, property) {
+    return property === "handler" || Boolean(instance && property in instance);
+  },
+  get(_target, property) {
+    instance ??= createAuth();
+    return Reflect.get(instance, property);
+  },
 });

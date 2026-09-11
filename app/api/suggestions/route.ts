@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import { discoverFreeRestaurants } from "@/app/lib/free-discovery";
 import { incrementRestaurantSignals } from "@/app/lib/restaurant-signals";
+import { getAccountAccess } from "@/app/lib/premium";
 import { getDb } from "../../../db";
 import { restaurantPreference } from "../../../db/schema";
 import { auth } from "../../lib/auth";
@@ -39,6 +39,10 @@ function dailySearchCount(request: NextRequest, today: string) {
 function hasSuggestionBonus(request: NextRequest, today: string) {
   const [savedDate, savedClaimed] = (request.cookies.get(FREE_SUGGESTION_COOKIE)?.value || "").split(":");
   return savedDate === today && savedClaimed === "1";
+}
+
+async function hasPremiumAccess(session: Awaited<ReturnType<typeof auth.api.getSession>>) {
+  return (await getAccountAccess(session)).premium;
 }
 
 function normalizedName(value: string) {
@@ -232,15 +236,10 @@ function compatibilityFromText(content: string): AiCompatibility | null {
 
 async function askAiCompatibility(name: string, location: string, food: string, allergies: string[]): Promise<AiCompatibilityAttempt> {
   const apiKey = (process.env.OPENROUTER_API_KEY || process.env.NVIDIA_API_KEY || "").trim();
-  if (!apiKey) return { result: null };
-  const usesOpenRouter = apiKey.startsWith("sk-or-v1-") || Boolean(process.env.OPENROUTER_API_KEY?.trim());
-  const endpoint = usesOpenRouter
-    ? "https://openrouter.ai/api/v1/chat/completions"
-    : "https://integrate.api.nvidia.com/v1/chat/completions";
-  const model = usesOpenRouter
-    ? process.env.OPENROUTER_DISCOVERY_MODEL?.trim() || process.env.OPENROUTER_MODEL?.trim() || "openrouter/free"
-    : process.env.NVIDIA_DISCOVERY_MODEL?.trim() || "nvidia/llama-3.3-nemotron-super-49b-v1.5";
-  const providerLabel = usesOpenRouter ? "OpenRouter AI" : "NVIDIA AI";
+  if (!apiKey.startsWith("sk-or-v1-")) return { result: null, error: "Free restaurant assessment is not configured." };
+  const endpoint = "https://openrouter.ai/api/v1/chat/completions";
+  const model = process.env.OPENROUTER_DISCOVERY_MODEL?.trim() || process.env.OPENROUTER_MODEL?.trim() || "z-ai/glm-5.2:free";
+  const providerLabel = "Restaurant assessment";
 
   try {
     const response = await fetch(endpoint, {
@@ -248,7 +247,8 @@ async function askAiCompatibility(name: string, location: string, food: string, 
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        ...(usesOpenRouter ? { "HTTP-Referer": "http://localhost:3000", "X-Title": "Safe Serve" } : {}),
+        "HTTP-Referer": process.env.BETTER_AUTH_URL?.trim() || "http://localhost:3000",
+        "X-Title": "Safe Serve",
       },
       body: JSON.stringify({
         model,
@@ -256,36 +256,33 @@ async function askAiCompatibility(name: string, location: string, food: string, 
           {
             role: "system",
             content: [
-              "You verify whether a restaurant suggestion is a reasonable allergy-aware lead for Safe Serve.",
-              "Use known public restaurant/menu/allergen knowledge when possible.",
-              "Do not call any restaurant safe or allergen-free. Cross-contact always needs restaurant confirmation.",
-              "Never assume a chain has the same allergy menu in every country; country-specific evidence matters.",
-              "For gluten-free burgers or bread-based foods, do not approve a fast-food chain just because it publishes allergen charts. Look for actual gluten-free/sans gluten bun or menu support.",
-              "Distinguish an offered gluten-free option from a cross-contact warning: 'may contain gluten' or shared-kitchen language does not by itself erase evidence that a gluten-free bun/option exists, but it must be mentioned as a cross-contact caution.",
-              "Judge every requested allergen separately. A restaurant fits only if there is an available menu path addressing all requested allergens; do not let support for one allergen hide missing support for another.",
-              "Return compatible true when the restaurant is known to offer or discuss accommodations for the requested allergens, even if confirmation is still needed.",
-              "Return compatible false only when it is clearly irrelevant, not a real/local restaurant, closed, or clearly conflicts with the allergy request.",
-              "Do not reject a real local restaurant only because evidence is incomplete; use compatible true with confidence low instead.",
-              "If evidence is plausible but incomplete, return compatible true with confidence low.",
-              "List every requested allergen in exactly one of supportedAllergies, unsupportedAllergies, or unknownAllergies.",
+              "Judge if a suggested restaurant is a reasonable allergy-aware lead.",
+              "Use known menu/allergen knowledge; country matters for chains.",
+              "Never call it safe; cross-contact needs staff confirmation.",
+              "GF burger/bread needs GF bun/menu or fully GF venue.",
+              "Approve incomplete-but-plausible evidence as low confidence; reject only fake/closed/irrelevant/conflicting.",
+              "Put each allergy in supportedAllergies, unsupportedAllergies, or unknownAllergies.",
+              "Input keys: r restaurant, loc location, alg allergies.",
               "Return JSON only as {\"compatible\":true,\"confidence\":\"high|medium|low\",\"supportedAllergies\":[\"Gluten\"],\"unsupportedAllergies\":[],\"unknownAllergies\":[],\"reason\":\"short sentence naming the relevant menu option and cross-contact caveat\"}.",
             ].join(" "),
           },
           {
             role: "user",
             content: JSON.stringify({
-              restaurant: name,
-              location,
-              food: food || "any food",
-              allergies,
+              r: name,
+              loc: location,
+              food: food || "any",
+              alg: allergies.slice(0, 10),
             }),
           },
         ],
         response_format: { type: "json_object" },
         temperature: 0,
-        max_tokens: 450,
+        max_tokens: 220,
+        reasoning: { effort: "none", exclude: true },
+        include_reasoning: false,
       }),
-      signal: AbortSignal.timeout(25000),
+      signal: AbortSignal.timeout(15000),
     });
     if (!response.ok) {
       const details = (await response.text().catch(() => "")).replace(/\s+/g, " ").trim().slice(0, 180);
@@ -491,20 +488,10 @@ async function verifySuggestionCompatible(name: string, body: Record<string, unk
         message: `AI is unsure about the complete request. ${evidenceSummary} ${aiCompatibility.reason || "Confirm directly with the restaurant before ordering."}`,
       };
     }
-    const directEvidence = await directPublicEvidence(restaurantName, location, food, allergies);
-    const needsCorroboration = needsOfficialCorroboration(restaurantName, food, allergies);
     const favorable = aiCompatibility.compatible && aiCompatibility.confidence !== "low";
-    if (favorable && needsCorroboration && !directEvidence) {
-      return {
-        ok: true,
-        verified: false,
-        verdict: "caution" as VerificationVerdict,
-        message: `Weak signal: AI gave ${restaurantName} a favorable answer, but Safe Serve could not corroborate location-specific ${allergies.join(", ")} evidence from public sources. It gets only a small boost until confirmed.`,
-      };
-    }
     return {
       ok: true,
-      verified: favorable && (!needsCorroboration || Boolean(directEvidence)),
+      verified: favorable,
       verdict: favorable ? "favorable" as VerificationVerdict : "caution" as VerificationVerdict,
       message: favorable
         ? `Good match signal: ${evidenceSummary} ${aiCompatibility.reason || "It looks like a reasonable allergy-aware lead."} Confirm ingredients and cross-contact with the restaurant.`
@@ -517,32 +504,7 @@ async function verifySuggestionCompatible(name: string, body: Record<string, unk
     return { ok: false, verified: false, verdict: "blocked" as VerificationVerdict, message: aiAttempt.error };
   }
 
-  const directEvidence = await directPublicEvidence(restaurantName, location, food, allergies);
-  if (directEvidence) {
-    return { ok: true, verified: true, verdict: "favorable" as VerificationVerdict, message: `Strong public signal: found allergy/menu evidence for ${restaurantName} and ${allergies.join(", ")}. Confirm ingredients and cross-contact with the restaurant.` };
-  }
-
-  try {
-    const discovery = await discoverFreeRestaurants({
-      location,
-      food,
-      occasion: "",
-      priceRange: "",
-      allergies,
-      suggestedRestaurants: [restaurantName],
-      avoidedRestaurants: [],
-    });
-    const match = discovery.restaurants.find((restaurant) => preferenceNameMatches(restaurant.name, restaurantName));
-    if (!match) {
-      return { ok: true, verified: false, verdict: "caution" as VerificationVerdict, message: `Weak signal: ${restaurantName} was saved, but Safe Serve could not find enough allergy evidence. It gets only a small boost and still needs restaurant confirmation.` };
-    }
-    if (match.evidenceTier === "partial") {
-      return { ok: true, verified: false, verdict: "caution" as VerificationVerdict, message: `Partial signal: ${restaurantName} was saved, but Safe Serve found only partial allergy evidence. It will not beat stronger verified matches.` };
-    }
-    return { ok: true, verified: true, verdict: "favorable" as VerificationVerdict, message: `Strong public signal: verified evidence for ${restaurantName} and ${allergies.join(", ")}.`, evidenceSummary: match.evidenceSummary };
-  } catch {
-    return { ok: true, verified: false, verdict: "caution" as VerificationVerdict, message: `Weak signal: ${restaurantName} was saved because verification is temporarily unavailable. It will not outrank restaurants with stronger evidence.` };
-  }
+  return { ok: false, verified: false, verdict: "blocked" as VerificationVerdict, message: "Restaurant assessment did not return a usable answer. Please try again." };
 }
 
 async function currentSession(request: NextRequest) {
@@ -595,8 +557,11 @@ async function preferencePayload(userId: string | undefined, context: { location
 export async function GET(request: NextRequest) {
   const session = await currentSession(request);
   const context = contextFromRequest(request);
+  const premium = await hasPremiumAccess(session);
+  if (!premium) return NextResponse.json({ authenticated: Boolean(session?.user), premium: false, publicPreferences: [], publicSuggestedRestaurants: [], publicAvoidedRestaurants: [], suggestedRestaurants: [], avoidedRestaurants: [] });
   return NextResponse.json({
     authenticated: Boolean(session?.user),
+    premium: true,
     ...(await preferencePayload(session?.user.id, context)),
   });
 }
@@ -606,8 +571,13 @@ export async function POST(request: NextRequest) {
   if (!session?.user) {
     return NextResponse.json({ error: "Need an account to make suggestions/avoids." }, { status: 401 });
   }
+  if (!(await hasPremiumAccess(session))) {
+    return NextResponse.json({ error: "Premium is required to save suggestions or avoids.", premiumRequired: true }, { status: 402 });
+  }
 
-  const body = await request.json().catch(() => ({}));
+  const raw: unknown = await request.json().catch(() => null);
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  const body = raw as Record<string, unknown>;
   const kind = cleanKind(body.kind);
   const context = mergeContext(contextFromBody(body), contextFromRequest(request));
   if (!context.locationScope || !context.allergyScope) {
@@ -630,20 +600,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Enter at least one restaurant name first." }, { status: 400 });
   }
 
-  const verificationMessages: string[] = [];
-  const unverifiedSuggestions: string[] = [];
-  const verificationVerdicts: VerificationVerdict[] = [];
-  if (kind === "suggest") {
-    for (const name of names) {
-      const verification = await verifySuggestionCompatible(name, body, request, context);
-      if (!verification.ok) {
-        return NextResponse.json({ error: verification.message, feedbackTone: verification.verdict || "blocked", verification }, { status: 422 });
-      }
-      if (!verification.verified) unverifiedSuggestions.push(name);
-      verificationMessages.push(verification.message);
-      verificationVerdicts.push(verification.verdict || "caution");
-    }
-  }
+  // Suggestions and avoids are direct community votes. Allergy assessment is
+  // handled by restaurant search and never runs as part of saving a vote.
 
   const db = getDb();
   const now = new Date();
@@ -727,16 +685,10 @@ export async function POST(request: NextRequest) {
   const alreadyClaimed = hasSuggestionBonus(request, today);
   const freeSearchesLimit = FREE_DAILY_LIMIT + (alreadyClaimed ? FREE_SUGGESTION_BONUS : 0);
   const payload = await preferencePayload(session.user.id, context);
-  const feedbackTone = kind === "avoid"
-    ? "favorable"
-    : verificationVerdicts.includes("blocked")
-      ? "blocked"
-      : verificationVerdicts.includes("caution") || unverifiedSuggestions.length
-        ? "caution"
-        : "favorable";
+  const feedbackTone = "favorable";
   const savedMessage = kind === "avoid"
     ? `${names[0]} avoided. Safe Serve will push it down for this location/allergy/search context.`
-    : verificationMessages[0] || "Suggestion saved.";
+    : `${names[0]} suggested. Safe Serve will give it a moderate boost for this location/allergy/search context.`;
 
   if (alreadyClaimed) {
     return NextResponse.json({
@@ -744,7 +696,7 @@ export async function POST(request: NextRequest) {
       bonusGranted: false,
       message: `${savedMessage} Today's extra search was already claimed.`,
       feedbackTone,
-      unverifiedSuggestions,
+      unverifiedSuggestions: [],
       freeSearchesRemaining: Math.max(0, freeSearchesLimit - searchCount),
       freeSearchesLimit,
     });
@@ -756,7 +708,7 @@ export async function POST(request: NextRequest) {
     bonusGranted: true,
     message: `${savedMessage} You got 1 extra Free search today.`,
     feedbackTone,
-    unverifiedSuggestions,
+    unverifiedSuggestions: [],
     freeSearchesRemaining: Math.max(0, nextLimit - searchCount),
     freeSearchesLimit: nextLimit,
   });
@@ -776,8 +728,13 @@ export async function DELETE(request: NextRequest) {
   if (!session?.user) {
     return NextResponse.json({ error: "Need an account to make suggestions/avoids." }, { status: 401 });
   }
+  if (!(await hasPremiumAccess(session))) {
+    return NextResponse.json({ error: "Premium is required to edit suggestions or avoids.", premiumRequired: true }, { status: 402 });
+  }
 
-  const body = await request.json().catch(() => ({}));
+  const raw: unknown = await request.json().catch(() => null);
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  const body = raw as Record<string, unknown>;
   const kind = cleanKind(body.kind);
   const context = mergeContext(contextFromBody(body), contextFromRequest(request));
   const name = cleanName(body.name);

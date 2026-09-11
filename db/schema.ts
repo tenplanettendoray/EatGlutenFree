@@ -8,6 +8,10 @@ export const user = sqliteTable("user", {
   image: text("image"),
   username: text("username").unique(),
   displayUsername: text("display_username"),
+  role: text("role", { enum: ["user", "admin"] }).notNull().default("user"),
+  premiumPlan: text("premium_plan", { enum: ["monthly", "annual"] }),
+  premiumActivatedAt: integer("premium_activated_at", { mode: "timestamp" }),
+  premiumUpdatedAt: integer("premium_updated_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
@@ -83,3 +87,21 @@ export const restaurantSignal = sqliteTable("restaurant_signal", {
   index("restaurant_signal_scope_idx").on(table.locationScope, table.allergyScope, table.foodScope),
   index("restaurant_signal_weight_idx").on(table.suggestionWeight, table.avoidWeight, table.clickWeight, table.searchWeight),
 ]);
+
+export const restaurantSearchCache = sqliteTable("restaurant_search_cache", {
+  cacheKey: text("cache_key").primaryKey(),
+  mode: text("mode", { enum: ["free", "premium"] }).notNull(),
+  payload: text("payload").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+});
+
+export const userSearch = sqliteTable("user_search", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  mode: text("mode", { enum: ["free", "premium"] }).notNull(),
+  location: text("location").notNull(),
+  food: text("food").notNull().default(""),
+  allergies: text("allergies").notNull().default(""),
+  resultCount: integer("result_count").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+}, (table) => [index("user_search_user_created_idx").on(table.userId, table.createdAt)]);
