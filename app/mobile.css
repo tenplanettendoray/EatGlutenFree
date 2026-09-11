@@ -1,0 +1,112 @@
+/* Shared input and account primitives. Phone overrides live together so the
+   older desktop composition cannot reintroduce fixed widths or empty rows. */
+.account-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.city-autocomplete{position:relative;flex:1;min-width:0;width:100%}
+.city-autocomplete input{display:block;min-height:40px;width:100%;min-width:0;font:inherit}
+.city-suggestions{position:absolute;z-index:10;top:calc(100% + 10px);left:0;right:0;max-height:min(240px,32dvh);overflow-y:auto;overscroll-behavior:contain;padding:4px;border:1px solid #c6d2c7;border-radius:12px;background:#faf6ec;color:#173e32;box-shadow:0 12px 28px #020d0e33;text-shadow:none}
+.city-suggestions button{display:block;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:8px;background:none;color:inherit;text-align:left;font-size:14px;line-height:1.4;cursor:pointer;overflow-wrap:anywhere}
+.city-suggestions button:hover,.city-suggestions [aria-selected=true]{background:#e3ebdf}
+.globe-touch-hint{display:none!important}
+.interactive-globe-canvas{touch-action:none;user-select:none;-webkit-user-select:none}
+@media(pointer:coarse){
+  .globe-desktop-hint{display:none!important}
+  .globe-touch-hint{display:block!important}
+}
+
+@media(max-width:760px){
+  .account-button,.premium-nav .account-button{width:44px;height:44px;min-width:44px;padding:0;gap:0;justify-content:center;flex:0 0 44px}
+  .account-button .account-button-label{display:none}
+  .account-button>span.account-icon{width:28px;height:28px;background:transparent;color:inherit}
+  .ss-nav{height:64px;min-height:64px;padding:0 max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left));gap:8px}
+  .ss-brand{gap:6px}.ss-brand>span{font-size:18px}.ss-brand>svg{width:26px;height:32px}.ss-brand small{font-size:9px;letter-spacing:1px;margin-top:3px}
+  .ss-nav .ss-steps{display:flex;gap:0;margin-left:auto}
+  .ss-steps button{width:36px;min-height:44px;justify-content:center;padding:0}
+  .ss-steps b{width:24px;height:24px}.ss-steps span,.ss-steps i{display:none}
+  .ss-experience{min-height:100dvh}
+  .ss-table-scene{display:block;min-height:0}
+  .ss-sidebar{display:block;padding:18px 20px 16px;border-right:0}
+  .ss-sidebar h1{max-width:none;margin:0 0 8px;font-size:32px;line-height:1.1;letter-spacing:-.045em}
+  .ss-sidebar>p{max-width:none;margin:0;font-size:14px;line-height:1.5}
+  .ss-safety-note,.ss-sidebar-status{display:none}
+  .ss-table{padding:18px 12px max(16px,env(safe-area-inset-bottom));justify-content:flex-start}
+  .ss-plate-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto auto auto;gap:12px 8px;align-items:center}
+  .ss-ingredient:nth-child(n){grid-column:auto;grid-row:auto;padding-bottom:0}
+  .ss-food-plate{width:100%;max-width:125px}
+  .ss-name-tag{font-size:13px;padding:7px 8px;max-width:100%;white-space:normal}
+  .ss-drop-plate{grid-column:1;grid-row:3;max-width:150px;width:100%;margin:0;align-self:center}
+  .ss-drop-content{width:80%;max-height:68%}.ss-drop-content>span{display:none}
+  .ss-selected-tags p{font-size:12px;line-height:1.35}
+  .ss-selected-tags button{font-size:12px;min-height:32px}
+  .ss-custom-plate{grid-column:2 / 4;grid-row:3;width:100%;max-width:none;display:block;padding:12px;text-align:left;border-radius:12px}
+  .ss-custom-focus{display:none}
+  .ss-custom-plate .ss-name-tag{display:block;width:auto;padding:0;margin:0;background:none;box-shadow:none;color:#fff3dc;text-align:left;font-size:14px}
+  .ss-custom-input{margin-top:8px;padding:2px 4px 2px 10px;border-radius:10px}
+  .ss-custom-input input{font-size:16px;padding:6px 0;min-height:44px}
+  .ss-custom-input button{flex-basis:44px;height:44px;font-size:22px}
+  .ss-table-actions{margin:16px 0 0;gap:10px;padding:10px 12px;width:100%}
+  .ss-table-actions>span{font-size:13px}.ss-table-actions small{display:none}
+  .ss-table-actions .ss-primary{min-height:46px;gap:12px;padding-inline:16px}
+
+  /* A single viewport, with the globe filling the space beneath the search. */
+  body:has(.ss-step-2){overflow:hidden}
+  .ss-step-2{height:var(--phone-viewport-height,100dvh);min-height:0;overflow:hidden;display:flex;flex-direction:column}
+  .ss-step-2 .ss-nav{flex-shrink:0}
+  .ss-destination.ss-journey-scene{position:relative;height:calc(var(--phone-viewport-height,100dvh) - 64px);min-height:0;padding:0;overflow:hidden;width:100%}
+  .ss-destination .ss-destination-copy{position:absolute;inset:0 0 auto;max-width:none;width:100%;padding:14px 20px 0;margin:0;transform:none;translate:none;scale:1;opacity:1;pointer-events:auto;text-shadow:none}
+  .ss-destination h1{font-size:32px;line-height:1.05;margin:0 0 6px;letter-spacing:-.04em}
+  .ss-destination-copy>p{font-size:14px;line-height:1.4;margin:0 0 10px;max-width:none}
+  .ss-destination label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0}
+  .ss-location-field{min-height:48px;padding:2px 8px 2px 12px;border-radius:10px}
+  .ss-location-field input,.location-picker-input input{font-size:16px;min-height:44px}
+  .ss-destination .ss-back{min-height:36px;margin:3px 0 0;padding:8px 0;font-size:13px}
+  .ss-destination .ss-destination-summary{display:none}
+  .ss-destination .ss-earth-stage{position:absolute;inset:170px 0 0;width:100%;height:auto;min-height:0;margin:0;transform:none}
+  .ss-earth-stage .interactive-globe-wrap,.ss-earth-stage .interactive-globe-canvas{inset:0;width:100%;height:100%;min-height:0;min-width:0;margin:0;aspect-ratio:auto;transform:none}
+  .ss-earth-stage .interactive-globe-canvas:before{left:50%;top:50%;width:min(90vw,85%);transform:translate(-50%,-50%)}
+  .ss-earth-stage .globe-interaction-hint{bottom:max(26px,env(safe-area-inset-bottom));left:50%;padding:8px 12px;pointer-events:none;max-width:calc(100% - 24px)}
+  .ss-earth-stage .globe-interaction-hint strong{display:none}
+  .ss-earth-stage .globe-interaction-hint span{font-size:12px;line-height:1.5}
+  .ss-earth-stage .globe-image-credit{bottom:6px;font-size:9px;max-width:90%}
+  .ss-meal-stage{min-height:0;height:100%;padding:16px 0 max(24px,env(safe-area-inset-bottom));overflow-y:auto;justify-content:flex-start;--meal-width:clamp(140px,42vw,180px)}
+  .ss-meal-stage .ss-meal-intro h1{font-size:28px;margin-top:8px}
+  .ss-meal-tabs{margin-top:12px}.ss-meal-rail{padding-top:28px;padding-bottom:28px}
+  .ss-meal-finish{margin-top:16px;gap:12px}.ss-meal-finish input{font-size:16px}
+
+  .search-page .search-workspace-hero{padding:16px 12px}
+  .search-page .search-card{padding:16px}
+  .search-page>.results-section{padding:20px 12px 80px;min-height:0}
+  .search-page .results-heading{margin-bottom:18px}
+  .search-page .results-heading h2{font-size:30px;line-height:1.12}
+  .search-page .restaurant-grid,.restaurant-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+  .restaurant-grid .restaurant-card{min-width:0;border-radius:14px;display:flex;flex-direction:column;backdrop-filter:none}
+  .restaurant-grid .restaurant-visual{width:100%;height:auto;aspect-ratio:4/3;flex:none}
+  .restaurant-grid .restaurant-body{padding:12px;display:flex;flex:1;flex-direction:column;min-width:0;width:100%}
+  .restaurant-grid .restaurant-title-row{gap:6px}.restaurant-grid .restaurant-title-row>div{min-width:0}
+  .restaurant-grid .restaurant-title-row h3{font-size:17px;line-height:1.25;overflow-wrap:anywhere}
+  .restaurant-grid .word-groups,.restaurant-grid .word-group{white-space:normal;overflow-wrap:anywhere}
+  .restaurant-grid .restaurant-title-row p{font-size:12px;line-height:1.4}
+  .restaurant-grid .ranking-reason{font-size:13px;line-height:1.5;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+  .restaurant-grid .branch-preview{display:none}
+  .restaurant-grid .more-locations{font-size:12px}
+  .restaurant-grid .details-button{margin-top:auto;padding-top:12px;min-height:44px;font-size:12px;gap:4px}
+  .restaurant-grid .site-preview-pill{display:none}
+  .restaurant-grid .distance-pill{font-size:10px;bottom:8px;right:8px;padding:5px 7px}
+  .restaurant-grid .locked-result-overlay{padding:12px}
+  .search-page input{font-size:16px}
+  .location-picker-backdrop{padding:12px}
+  .location-picker-dialog{width:100%;max-height:calc(100dvh - 24px);overflow:auto;padding:20px;grid-template-columns:minmax(0,1fr);gap:12px}
+  .location-picker-copy{position:relative;z-index:3;min-width:0}
+  .location-picker-copy h2{font-size:32px}.location-picker-copy>p{font-size:14px}
+  .location-picker-globe{min-width:0;transform:none}
+  .location-picker-globe .interactive-globe-wrap{min-width:0;width:100%;height:280px;min-height:0}
+}
+@media(max-width:760px) and (max-height:520px){
+  .ss-destination .ss-destination-copy{width:42%;padding:16px}
+  .ss-destination .ss-earth-stage{inset:0 0 0 42%;width:58%}
+  .ss-destination h1{font-size:28px}
+  .ss-earth-stage .globe-interaction-hint{bottom:24px;padding:4px 6px}
+}
+@media(max-width:360px){
+  .ss-nav{gap:4px;padding-inline:8px}.ss-steps button{width:32px}.ss-brand>span{font-size:16px}
+  .restaurant-grid{gap:8px}.restaurant-grid .restaurant-body{padding:10px}
+}

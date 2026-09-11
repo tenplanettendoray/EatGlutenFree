@@ -1,5 +1,7 @@
 "use client";
 
+import { globeViewport } from "./lib/globe-viewport";
+
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { feature } from "topojson-client";
@@ -411,11 +413,6 @@ const CITY_MARKERS: CityMarker[] = [
   { name: "North Nicosia", country: "N. Cyprus", longitude: 33.3667, latitude: 35.1833 },
 ];
 
-function locationRotation(value: string) {
-  const hash = [...value.toLowerCase()].reduce((total, character) => ((total * 31) + character.charCodeAt(0)) >>> 0, 0);
-  return { x: ((hash % 38) - 19) * (Math.PI / 180), y: (((hash >> 7) % 280) - 140) * (Math.PI / 180) };
-}
-
 function normalizedPlaceName(value: string) {
   return value
     .toLowerCase()
@@ -635,6 +632,8 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
   const lastHoverSampleRef = useRef(0);
   const skipLocationRotationRef = useRef(false);
   const draggingRef = useRef({ active: false, x: 0, y: 0, startX: 0, startY: 0, moved: false, touch: false });
+  const touchesRef = useRef(new Map<number, { x: number; y: number }>());
+  const pinchDistanceRef = useRef(0);
   // Render only while interaction/asset loading needs it. Keeping this short
   // prevents a pointer move from waking a long tail of expensive WebGL frames.
   const renderFramesRef = useRef(36);
@@ -660,9 +659,9 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
     const mount = mountRef.current;
     if (!mount) return;
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(34, 1, .1, 20000);
-    const overviewDiameter = Math.min(mount.clientHeight * 1.08, mount.clientWidth * (mount.clientWidth > 600 ? .62 : .92));
-    const overviewDistance = 1.45 / Math.sin(Math.atan((overviewDiameter / Math.max(1, mount.clientHeight)) * Math.tan(THREE.MathUtils.degToRad(17))));
+    const compactViewport = window.matchMedia("(max-width: 760px)");
+    const { fov, overviewDistance } = globeViewport(mount.clientWidth, mount.clientHeight, compactViewport.matches);
+    const camera = new THREE.PerspectiveCamera(fov, 1, .1, 20000);
     zoomTargetRef.current = THREE.MathUtils.clamp(overviewDistance, MIN_ZOOM, MAX_ZOOM);
     camera.position.set(0, 0, zoomTargetRef.current);
     cameraRef.current = camera;
@@ -688,6 +687,8 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
     mount.addEventListener("wheel", handleNativeWheel, { passive: false });
     const stopDrag = () => {
       draggingRef.current.active = false;
+      touchesRef.current.clear();
+      pinchDistanceRef.current = 0;
     };
     window.addEventListener("blur", stopDrag);
 
@@ -703,7 +704,7 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
     let disposed = false;
     const sunlightDirection = new THREE.Vector3(1, 1, -1).normalize();
     // Natural colour and relief maps retain the reference Earth detail.
-    textureLoader.load("/earth-day-5400.jpg", (texture) => {
+    textureLoader.load(compactViewport.matches ? "/earth-atmos-2048.jpg" : "/earth-day-5400.jpg", (texture) => {
       if (disposed) {
         texture.dispose();
         return;
@@ -947,7 +948,7 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
     const syncPanels = () => {
       if (presentationRef.current === "meal") return;
       const editing = panels.some(panel => panel.contains(document.activeElement)) && document.activeElement?.matches("input,textarea");
-      const target = performance.now() < revealUntil || editing ? 0 : THREE.MathUtils.smoothstep((4.9 - camera.position.z) / 1.7, 0, 1);
+      const target = compactViewport.matches || performance.now() < revealUntil || editing ? 0 : THREE.MathUtils.smoothstep((4.9 - camera.position.z) / 1.7, 0, 1);
       if (Math.abs(target - panelProgress) > .001) renderFramesRef.current = Math.max(renderFramesRef.current, 2);
       panelProgress += (target - panelProgress) * (reducedMotion ? 1 : .18);
       destinationScene?.style.setProperty("--panel-progress", panelProgress.toFixed(4));
@@ -1120,7 +1121,15 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
         const rect = element.getBoundingClientRect();
         return { left: rect.left - bounds.left, right: rect.right - bounds.left, top: rect.top - bounds.top, bottom: rect.bottom - bounds.top };
       });
-      const width = mount.clientWidth, height = mount.clientHeight; if (!width || !height) return; renderer.setSize(width, height); camera.aspect = width / height; camera.setViewOffset(width, height, width > 600 ? -width * .04 : 0, -height * .09, width, height); camera.updateProjectionMatrix(); renderFramesRef.current = 18; };
+      const width = mount.clientWidth, height = mount.clientHeight;
+      if (!width || !height) return;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.fov = globeViewport(width, height, compactViewport.matches).fov;
+      camera.setViewOffset(width, height, compactViewport.matches ? 0 : width > 600 ? -width * .04 : 0, compactViewport.matches ? 0 : -height * .09, width, height);
+      camera.updateProjectionMatrix();
+      renderFramesRef.current = 18;
+    };
     const observer = new ResizeObserver(resize);
     resize();
     observer.observe(mount);
@@ -1217,13 +1226,16 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
       skipLocationRotationRef.current = false;
       return;
     }
-    const resolvedLocation = resolveLocationTarget(location, countriesRef.current, countryCentersRef.current);
-    const destination = resolvedLocation
-      ? locationRotationFromCoordinates(resolvedLocation.longitude, resolvedLocation.latitude)
-      : locationRotation(location);
-    rotationTargetRef.current.x = destination.x;
-    rotationTargetRef.current.y = destination.y;
-    renderFramesRef.current = 30;
+    // Typing a partial place name must not spin the scene to a random target.
+    const timer = setTimeout(() => {
+      const resolvedLocation = resolveLocationTarget(location, countriesRef.current, countryCentersRef.current);
+      if (!resolvedLocation) return;
+      const destination = locationRotationFromCoordinates(resolvedLocation.longitude, resolvedLocation.latitude);
+      rotationTargetRef.current.x = destination.x;
+      rotationTargetRef.current.y = group.rotation.y + THREE.MathUtils.euclideanModulo(destination.y - group.rotation.y + Math.PI, Math.PI * 2) - Math.PI;
+      renderFramesRef.current = 30;
+    }, 300);
+    return () => clearTimeout(timer);
   }, [location]);
 
   function selectPoint(event: React.PointerEvent<HTMLDivElement>) {
@@ -1334,6 +1346,15 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
     if (event.button === 0 && event.pointerType !== "touch") { selectPoint(event); return; }
     if (event.button !== 2 && event.pointerType !== "touch") return;
     event.currentTarget.setPointerCapture(event.pointerId);
+    if (event.pointerType === "touch") {
+      touchesRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (touchesRef.current.size > 1) {
+        const [a, b] = [...touchesRef.current.values()];
+        pinchDistanceRef.current = Math.hypot(a.x - b.x, a.y - b.y);
+        draggingRef.current.moved = true;
+        return;
+      }
+    }
     const drag = draggingRef.current;
     drag.active = true; drag.x = event.clientX; drag.y = event.clientY;
     drag.startX = event.clientX; drag.startY = event.clientY; drag.moved = false; drag.touch = event.pointerType === "touch";
@@ -1341,6 +1362,22 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
   function moveDrag(event: React.PointerEvent<HTMLDivElement>) {
     const drag = draggingRef.current;
     const group = globeGroupRef.current;
+    if (event.pointerType === "touch") {
+      if (!touchesRef.current.has(event.pointerId)) return;
+      touchesRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (touchesRef.current.size > 1) {
+        const [a, b] = [...touchesRef.current.values()];
+        const distance = Math.hypot(a.x - b.x, a.y - b.y);
+        if (distance > 0 && pinchDistanceRef.current > 0) {
+          cameraTransitionRef.current = null;
+          zoomTargetRef.current = THREE.MathUtils.clamp(zoomTargetRef.current * pinchDistanceRef.current / distance, MIN_ZOOM, MAX_ZOOM);
+          renderFramesRef.current = 30;
+        }
+        pinchDistanceRef.current = distance;
+        drag.moved = true;
+        return;
+      }
+    }
     if (!drag.active || !group) {
       const now = event.timeStamp;
       if (now - lastHoverSampleRef.current < 50) return;
@@ -1368,12 +1405,25 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
     rotationTargetRef.current.y += dx * radiansPerPixel;
     rotationTargetRef.current.x = Math.max(-1.25, Math.min(1.25, rotationTargetRef.current.x + dy * radiansPerPixel));
   }
-  function endDrag(event: React.PointerEvent<HTMLDivElement>) { const drag = draggingRef.current; if (!drag.active) return; if (drag.touch && !drag.moved && event.type !== "pointercancel") selectPoint(event); drag.active = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); }
+  function endDrag(event: React.PointerEvent<HTMLDivElement>) {
+    const drag = draggingRef.current;
+    touchesRef.current.delete(event.pointerId);
+    pinchDistanceRef.current = 0;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    const remaining = touchesRef.current.values().next().value;
+    if (remaining) {
+      // Resume a one-finger drag without jumping or treating a pinch as a tap.
+      drag.x = remaining.x; drag.y = remaining.y; drag.moved = true;
+      return;
+    }
+    if (drag.active && drag.touch && !drag.moved && event.type === "pointerup") selectPoint(event);
+    drag.active = false;
+  }
 
   return <div className={`interactive-globe-wrap ${textureReady ? "is-texture-ready" : "is-texture-loading"}`}>
-    <div ref={mountRef} className="interactive-globe-canvas" onContextMenu={(event) => event.preventDefault()} onPointerDown={beginDrag} onPointerMove={moveDrag} onPointerLeave={() => { hoveredCountryRef.current = null; hoveredPointLocalRef.current = null; renderFramesRef.current = 18; }} onPointerUp={endDrag} onPointerCancel={endDrag} role="img" aria-label={presentation === "meal" ? "Slowly rotating Earth behind the meal carousel" : "Interactive 3D Earth. Scroll to zoom. Hold the right mouse button and drag to rotate. Release to stop dragging. Left-click to select. On touchscreens, drag to rotate and tap to select."} />
+    <div ref={mountRef} className="interactive-globe-canvas" onContextMenu={(event) => event.preventDefault()} onPointerDown={beginDrag} onPointerMove={moveDrag} onPointerLeave={() => { hoveredCountryRef.current = null; hoveredPointLocalRef.current = null; renderFramesRef.current = 18; }} onPointerUp={endDrag} onPointerCancel={endDrag} onLostPointerCapture={endDrag} role="img" aria-label={presentation === "meal" ? "Slowly rotating Earth behind the meal carousel" : "Interactive 3D Earth. Scroll to zoom. Hold the right mouse button and drag to rotate. Left-click to select. On touchscreens, pinch to zoom, drag to rotate and tap to select."} />
     {location.trim() && <div className="globe-location-readout"><span>Destination</span><strong>{location}</strong></div>}
-    <div className="globe-interaction-hint">{selected ? <><strong>{selected}</strong><span>Selected · scroll to zoom</span></> : <><strong>Explore the globe</strong><span>Left-click to select · right-drag to rotate · scroll to zoom</span></>}</div>
+    <div className="globe-interaction-hint"><strong>{selected || "Explore the globe"}</strong><span className="globe-desktop-hint">Click to select · right-drag to rotate · scroll to zoom</span><span className="globe-touch-hint">Tap to select · drag to rotate · pinch to zoom</span></div>
     <a className="globe-image-credit" href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noreferrer">Earth: NASA · Clouds: Solar System Scope / CC BY 4.0</a>
   </div>;
 }

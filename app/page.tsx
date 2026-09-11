@@ -8,6 +8,7 @@ import { readJson } from "./lib/http-json";
 import { coordinatesFromSearch } from "./lib/search-location";
 import { useRouter } from "next/navigation";
 import { AccountControls } from "./auth-ui";
+import { CityInput } from "./city-input";
 import { AllergyQuest } from "./allergy-quest";
 import { InteractiveGlobe } from "./interactive-globe";
 import { SearchFoodPicker } from "./meal-selector";
@@ -339,18 +340,19 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   const [aiError, setAiError] = useState("");
   const shouldReduceMotion = useReducedMotion();
   const initialSearchStarted = useRef(false);
+  const indexedCities = useMemo(() => cityCatalog.map(city => ({ city, normalized: normalizeCitySearch(city) })), [cityCatalog]);
   const cityOptions = useMemo(() => {
     const query = normalizeCitySearch(location.trim());
-    if (query.length < 2) return cityCatalog;
+    if (query.length < 2) return [];
     const startsWith: string[] = [];
     const includes: string[] = [];
-    cityCatalog.forEach((city) => {
-      const normalized = normalizeCitySearch(city);
+    for (const { city, normalized } of indexedCities) {
       if (normalized.startsWith(query)) startsWith.push(city);
-      else if (normalized.includes(query)) includes.push(city);
-    });
-    return [...startsWith, ...includes];
-  }, [cityCatalog, location]);
+      else if (includes.length < 8 && normalized.includes(query)) includes.push(city);
+      if (startsWith.length === 8) break;
+    }
+    return [...startsWith, ...includes].slice(0, 8);
+  }, [indexedCities, location]);
 
   useEffect(() => {
     let active = true;
@@ -954,8 +956,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
             <h2 id="location-picker-title">Choose your <em>destination.</em></h2>
             <p>Enter a city, country, neighbourhood, or ZIP. Or pick a place on the globe.</p>
             <label htmlFor="location-picker-input">Location</label>
-            <div className="location-picker-input"><span aria-hidden="true">⌖</span><input id="location-picker-input" value={location} onChange={(event) => updateLocation(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && location.trim()) { event.preventDefault(); setLocationPickerOpen(false); } }} placeholder="Paris, France" autoComplete="address-level2" list="location-picker-city-options" /></div>
-            <datalist id="location-picker-city-options">{cityOptions.map((city) => <option value={city} key={city} />)}</datalist>
+            <div className="location-picker-input"><span aria-hidden="true">⌖</span><CityInput id="location-picker-input" value={location} options={cityOptions} onChange={updateLocation} onChoose={city => { updateLocation(city); setLocationPickerOpen(false); }} /></div>
           </div>
           <div className="location-picker-globe"><InteractiveGlobe location={location} reducedMotion={shouldReduceMotion} onSelectCountry={selectGlobeLocation} /></div>
         </motion.section>

@@ -8,6 +8,7 @@ import { AccountControls } from "./auth-ui";
 import { SafeServeMark } from "./safe-serve-logo";
 import { InteractiveGlobe } from "./interactive-globe";
 import { MealSelector } from "./meal-selector";
+import { CityInput } from "./city-input";
 
 type Props = {
   allergies: string[]; customAllergy: string; location: string; food: string;
@@ -67,6 +68,20 @@ export function AllergyQuest(props: Props) {
   }
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [step]);
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const updateHeight = () => {
+      // Do not interfere with the browser's own accessibility page zoom.
+      if (viewport && viewport.scale === 1) document.documentElement.style.setProperty("--phone-viewport-height", `${viewport.height}px`);
+    };
+    updateHeight();
+    viewport?.addEventListener("resize", updateHeight);
+    return () => {
+      viewport?.removeEventListener("resize", updateHeight);
+      document.documentElement.style.removeProperty("--phone-viewport-height");
+    };
+  }, []);
 
   useEffect(() => {
     const continueOnEnter = (event: KeyboardEvent) => {
@@ -137,7 +152,7 @@ export function AllergyQuest(props: Props) {
       {step === 1 ? <motion.section className="ss-table-scene" key="table" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
         <aside className="ss-sidebar">
           <h1>Your allergy profile</h1>
-          <p>Select the ingredients you avoid. You can also drag them onto the center plate.</p>
+          <p>Tap the ingredients you avoid.</p>
           <div className="ss-safety-note"><SafeServeMark /><span>We’ll use these filters in every search. Always confirm with restaurant staff.</span></div>
           <div className="ss-sidebar-status" aria-live="polite"><span className="ss-selection-count">{allergies.length.toString().padStart(2, "0")}</span><span>{selectionLabel}</span></div>
         </aside>
@@ -157,13 +172,12 @@ export function AllergyQuest(props: Props) {
           <div className="ss-table-actions"><span>{selectionLabel}<small>Tap a plate to select it, too.</small></span><button type="button" className="ss-primary" onClick={() => goToStep(2)}>Continue <span>→</span></button></div>
         </div>
       </motion.section> : <motion.section className={`ss-destination ss-journey-scene ${step === 3 ? "is-meal-scene" : ""}`} key="destination" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
-        <div className="ss-destination-copy" hidden={step === 3}><h1>Where are you going?</h1><p>Search a city, neighborhood, or ZIP code. You can also choose a place on the globe.</p>
-          <label htmlFor="quest-location">Location</label><div className="ss-location-field"><input id="quest-location" value={location} onChange={e => onLocationChange(e.target.value)} placeholder="Paris, France" autoComplete="address-level2" list="city-catalog-options" /><span aria-hidden="true">⌖</span></div>
-          <datalist id="city-catalog-options">{cityOptions.map(city => <option value={city} key={city} />)}</datalist>
+        <div className="ss-destination-copy" hidden={step === 3}><h1>Where to?</h1><p>Search a city or tap the globe.</p>
+          <label htmlFor="quest-location">Location</label><div className="ss-location-field"><CityInput id="quest-location" value={location} options={cityOptions} onChange={onLocationChange} onChoose={city => { onLocationChange(city); goToStep(3); }} /><span aria-hidden="true">⌖</span></div>
           <button className="ss-back" type="button" onClick={() => goToStep(1)}>← Allergy profile</button>
         </div>
         <div className="ss-earth-stage"><InteractiveGlobe location={location} reducedMotion={reducedMotion} presentation={step === 3 ? "meal" : "destination"} onSelectCountry={selection => { onGlobeLocationSelect(selection); goToStep(3); }} /></div>
-        <aside className="ss-destination-summary" hidden={step === 3}><div className="ss-destination-card"><span>Current location</span><strong>{location || "Choose a destination"}</strong><span>Your avoid list</span><p>{allergies.length ? allergies.join(", ") : "No allergies selected"}</p></div><button type="button" className="ss-primary" disabled={!location.trim()} onClick={() => goToStep(3)}>What to eat <span>→</span></button></aside>
+        <aside className="ss-destination-summary" hidden={step === 3}><div className="ss-destination-card"><span>Current location</span><strong>{location || "Choose a destination"}</strong><span>Your avoid list</span><p>{allergies.length ? allergies.join(", ") : "No allergies selected"}</p></div></aside>
         {step === 3 && <MealSelector food={food} location={location} allergies={allergies} reducedMotion={reducedMotion} onChange={onFoodChange} onBack={() => goToStep(2)} onStart={onStart} />}
       </motion.section>}
     </AnimatePresence>

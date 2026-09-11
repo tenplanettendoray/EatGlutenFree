@@ -40,8 +40,8 @@ function EyeIcon({ hidden }: { hidden: boolean }) {
 export function AccountControls() {
   const { data: session, isPending } = authClient.useSession();
   return (
-    <Link className="account-button" href={session ? "/account" : "/sign-up"} aria-busy={isPending}>
-      <span aria-hidden="true"><SafeServeMark /></span><span>{session ? "Account" : "Make an account"}</span>
+    <Link className="account-button" href={session ? "/account" : "/sign-up"} aria-label={session ? "Account" : "Make an account"} aria-busy={isPending}>
+      <span className="account-icon" aria-hidden="true"><UserIcon /></span><span className="account-button-label">{session ? "Account" : "Make an account"}</span>
     </Link>
   );
 }
