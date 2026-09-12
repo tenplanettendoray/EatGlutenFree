@@ -637,6 +637,7 @@ function applyWebsitePreferenceRanking(input: SearchInput, payload: PublicDiscov
       originalIndex,
       communityScore,
       missingAllergyCount: restaurant.missingAllergies?.length || 0,
+      isCommunitySuggestion: restaurant.id.startsWith("community-"),
     };
   });
 
