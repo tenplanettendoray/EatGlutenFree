@@ -1,6 +1,6 @@
 import type { AiDiscoveredRestaurant } from "@/app/lib/ai-discovery";
 import { isPlausibleRestaurantName } from "@/app/lib/restaurant-result-validation";
-import { findMappedRestaurants, type MappedRestaurant } from "@/app/lib/mapped-restaurants";
+import { fetchPublicPage, officialUrl, websiteIdentity } from "@/app/lib/public-web";
 
 type DiscoveryInput = {
   location: string;
@@ -42,31 +42,6 @@ function normalizedBrandName(value: string) {
     .replace(/\b(paris|marais|oberkampf|pigalle|sentier|faubourg|saint|germain|republique|montmartre|bastille|chatelet|opera|halles|local branch)\b/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-}
-
-function mappedNameMatch(proposed: string, candidate: string) {
-  const a = normalizedBrandName(proposed);
-  const b = normalizedBrandName(candidate);
-  return Boolean(a && b && (a === b || a.includes(b) || b.includes(a)));
-}
-
-function mappedFallback(mapped: MappedRestaurant[], input: DiscoveryInput): AiDiscoveredRestaurant[] {
-  return mapped.slice(0, 5).map(place => ({
-    name: place.name,
-    cuisine: place.cuisine,
-    website: place.website || place.sourceUrl,
-    menuSourceUrl: place.website || place.sourceUrl,
-    qualitySourceUrl: place.sourceUrl,
-    evidenceSummary: "Verified mapped restaurant. Allergy handling has not been confirmed; ask the restaurant directly.",
-    popularitySummary: "Listed as a restaurant in current OpenStreetMap data.",
-    rankingReason: "Shown from verified map data because AI ranking was unavailable.",
-    supportedAllergies: [],
-    missingAllergies: [...input.allergies],
-    locations: [{ label: place.label, address: place.address, website: place.website || place.sourceUrl, sourceUrl: place.sourceUrl }],
-    popularityTier: 3,
-    allergyConfidenceTier: 3,
-    foodRelevanceTier: 3,
-  }));
 }
 
 function contentText(content: ChatMessageContent) {
@@ -122,7 +97,7 @@ function plausibleRestaurantUrl(value: unknown, restaurantName: string) {
   }
 }
 
-function parseRestaurants(parsed: { l?: unknown; locationLabel?: unknown; p?: unknown; places?: unknown; restaurants?: unknown; results?: unknown }, input: DiscoveryInput, mappedRestaurants: MappedRestaurant[]) {
+function parseRestaurants(parsed: { l?: unknown; locationLabel?: unknown; p?: unknown; places?: unknown; restaurants?: unknown; results?: unknown }, input: DiscoveryInput) {
   const grouped = new Map<string, AiDiscoveredRestaurant>();
   const places = Array.isArray(parsed.p)
     ? parsed.p
@@ -137,13 +112,10 @@ function parseRestaurants(parsed: { l?: unknown; locationLabel?: unknown; p?: un
     if (!rawPlace) continue;
     const place = typeof rawPlace === "string" ? { n: rawPlace } : typeof rawPlace === "object" ? rawPlace as Record<string, unknown> : null;
     if (!place) continue;
-    const proposedName = cleanText(field(place, "n", "name", "restaurantName"), 160);
-    if (!isPlausibleRestaurantName(proposedName, input.food, input.allergies)) continue;
-    const mapped = mappedRestaurants.find(candidate => mappedNameMatch(proposedName, candidate.name));
-    if (!mapped) continue;
-    const name = mapped.name;
-    const label = mapped.label || "Local branch";
-    const address = mapped.address;
+    const name = cleanText(field(place, "n", "name", "restaurantName"), 160);
+    const label = cleanText(field(place, "b", "branch", "branchLabel"), 120) || "Local branch";
+    const address = cleanText(field(place, "a", "address"), 300) || `${input.location} · confirm exact branch`;
+    if (!isPlausibleRestaurantName(name, input.food, input.allergies)) continue;
     const evidenceSummary = cleanText(field(place, "e", "evidenceSummary"), 360)
       || `Selected by the restaurant search model for ${input.food || "food"} with the requested allergy filters; confirm ingredients and cross-contact directly.`;
     const popularitySummary = cleanText(field(place, "q", "popularitySummary"), 180)
@@ -167,11 +139,12 @@ function parseRestaurants(parsed: { l?: unknown; locationLabel?: unknown; p?: un
     const cuisine = Array.isArray(cuisineInput)
       ? cuisineInput.slice(0, 6).map((item) => cleanText(item, 80)).filter(Boolean)
       : [];
-    const website = mapped.website || mapped.sourceUrl;
-    const menuSourceUrl = website;
+    const mapFallback = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} ${address}`)}`;
+    const website = plausibleRestaurantUrl(field(place, "w", "website"), name) || mapFallback;
+    const menuSourceUrl = plausibleRestaurantUrl(field(place, "m", "menuSourceUrl"), name) || website;
     const key = normalizedBrandName(name);
     if (!key) continue;
-    const location = { label, address, website, sourceUrl: mapped.sourceUrl };
+    const location = { label, address, website, sourceUrl: mapFallback };
     const existing = grouped.get(key);
     if (existing) {
       if (!existing.locations.some((item) => normalizedName(item.address) === normalizedName(address))) existing.locations.push(location);
@@ -204,6 +177,17 @@ function parseRestaurants(parsed: { l?: unknown; locationLabel?: unknown; p?: un
     || (b.foodRelevanceTier || 0) - (a.foodRelevanceTier || 0));
 }
 
+async function verifyOfficialRestaurants(restaurants: AiDiscoveredRestaurant[], input: DiscoveryInput) {
+  const checked = await Promise.all(restaurants.map(async restaurant => {
+    const website = officialUrl(restaurant.website);
+    if (!website) return null;
+    const page = await fetchPublicPage(website);
+    if (!page || !websiteIdentity(page.html, [restaurant.name], input.location)) return null;
+    return { ...restaurant, website: page.url, qualitySourceUrl: page.url };
+  }));
+  return checked.filter((restaurant): restaurant is AiDiscoveredRestaurant => Boolean(restaurant));
+}
+
 export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
   const openRouterKey = (process.env.OPENROUTER_API_KEY || "").trim();
   const configuredNvidiaKey = (process.env.NVIDIA_API_KEY || "").trim();
@@ -222,7 +206,7 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
         endpoint: "https://openrouter.ai/api/v1/chat/completions",
         model: openRouterModel,
         openRouter: true,
-      timeoutMs: 8000,
+      timeoutMs: 12000,
       },
       ...(openRouterModel === "openrouter/free" ? [] : [{
         name: "OpenRouter fallback",
@@ -239,18 +223,15 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
       endpoint: "https://integrate.api.nvidia.com/v1/chat/completions",
       model: process.env.NVIDIA_DISCOVERY_MODEL?.trim() || "nvidia/nemotron-3.5-lightning-30b-a3b",
       openRouter: false,
-      timeoutMs: 8000,
+      timeoutMs: 12000,
     }] : []),
   ];
   if (!providers.length) return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "skipped" as const };
 
-  const mappedRestaurants = await findMappedRestaurants(input.location, input.food);
-  if (!mappedRestaurants.length) return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "unavailable" as const, failureReason: `No mapped restaurants were found for ${input.location}. Try a nearby city or a broader food.` };
-
   const messages = [
     {
       role: "system",
-      content: "Choose up to 5 restaurants ONLY from mapped; copy n exactly. Never invent or rename one. Rank popularity>food>allergy. Every requested allergen in sa or ma; unsure=ma. JSON only: l=location,p=array. Each p: n=mapped business name,b=branch,a=address,c=cuisines,w=site,e=allergy evidence,q=popularity evidence,r=rank reason,sa=supported allergens,ma=missing/uncertain,pt/at/ft=3-5. Keep e/q/r under 80 characters.",
+      content: "Exactly 5 real, currently open restaurants in the requested location; rank popularity>food>allergy. n must be the proper business name and w its real official website. Never return an allergen, cuisine, dish, category, directory, map, social profile, or generic phrase as n or w. Results whose official site cannot identify the business and requested city are discarded. GF burger needs GF bun/burger or GF venue, not bunless. Every requested allergen in sa or ma; unsure=ma. JSON only: l=location,p=array. Each p: n,b,a,c,w,e,q,r,sa,ma,pt,at,ft. Keep e/q/r under 80 characters.",
     },
     {
       role: "user",
@@ -258,7 +239,6 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
         loc: cleanText(input.location, 240),
         food: cleanText(input.food, 100) || "any",
         alg: input.allergies.slice(0, 10),
-        mapped: mappedRestaurants.map(({ name, address }) => ({ n: name, a: address })),
       }),
     },
   ];
@@ -267,14 +247,14 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
     type: "function",
     function: {
       name: "submit_restaurants",
-      description: "Return up to five mapped restaurants for the requested search.",
+      description: "Return exactly five real, open, ranked restaurants for the requested search.",
       parameters: {
         type: "object",
         properties: {
           l: { type: "string", description: "Resolved city/location label." },
           p: {
             type: "array",
-            minItems: 1,
+            minItems: 5,
             maxItems: 5,
             items: {
               type: "object",
@@ -341,18 +321,18 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
       const toolArguments = responseMessage?.tool_calls?.find((call) => call.function?.name === "submit_restaurants")?.function?.arguments;
       const responseContent = cleanText(toolArguments, 100000) || contentText(responseMessage?.content);
       const parsed = parseJsonObject(responseContent);
-      const restaurants = parseRestaurants(parsed, input, mappedRestaurants);
+      const restaurants = await verifyOfficialRestaurants(parseRestaurants(parsed, input), input);
       for (const restaurant of restaurants) {
         const key = normalizedBrandName(restaurant.name);
         if (key && !collected.has(key)) collected.set(key, restaurant);
       }
-      if (collected.size) {
-        return { locationLabel: cleanText(parsed.l ?? parsed.locationLabel, 240) || input.location || "your location", restaurants: [...collected.values()].slice(0, 5), status: "used" as const, provider: `${provider.name.replace(/\s+fallback$/i, "")} + OpenStreetMap` };
+      if (collected.size >= 3) {
+        return { locationLabel: cleanText(parsed.l ?? parsed.locationLabel, 240) || input.location || "your location", restaurants: [...collected.values()].slice(0, 5), status: "used" as const, provider: provider.name.replace(/\s+fallback$/i, "") };
       }
       console.error(`${provider.name} restaurant discovery returned no readable restaurants with ${provider.model}`);
     } catch (error) {
       console.error(`${provider.name} restaurant discovery failed with ${provider.model}`, error);
     }
   }
-  return { locationLabel: input.location || "your location", restaurants: mappedFallback(mappedRestaurants, input), status: "used" as const, provider: "OpenStreetMap" };
+  return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: lastStatus === 429 ? "quota" as const : "unavailable" as const };
 }
