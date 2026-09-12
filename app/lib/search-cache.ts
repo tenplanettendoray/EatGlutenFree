@@ -15,7 +15,7 @@ export async function restaurantSearchCacheKey(input: {
   longitude?: number;
   food: string;
   allergies: string[];
-}, version = 24) {
+}, version = 25) {
   const normalizedLocation = normalized(input.location);
   const source = JSON.stringify({
     version,

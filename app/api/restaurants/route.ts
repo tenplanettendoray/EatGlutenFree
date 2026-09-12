@@ -3,6 +3,7 @@ import { discoverRestaurants, type AiDiscoveredRestaurant } from "@/app/lib/ai-d
 import { discoverRestaurantsWithOpenRouter } from "@/app/lib/openrouter-discovery";
 import { getAccountAccess } from "@/app/lib/premium";
 import { rankWithCommunityPopularity } from "@/app/lib/community-ranking";
+import { isPlausibleRestaurantName } from "@/app/lib/restaurant-result-validation";
 import { readRestaurantSearchCache, restaurantSearchCacheKey, writeRestaurantSearchCache } from "@/app/lib/search-cache";
 import { recordUserSearch } from "@/app/lib/user-searches";
 import { getDb } from "../../../db";
@@ -468,7 +469,9 @@ function isIneligibleGenericChain(input: SearchInput, restaurant: { name: string
 }
 
 function filterAllergyEligibleRestaurants(input: SearchInput, restaurants: AiDiscoveredRestaurant[]) {
-  const withoutGenericChains = restaurants.filter((restaurant) => !isIneligibleGenericChain(input, restaurant));
+  const withoutGenericChains = restaurants.filter((restaurant) =>
+    isPlausibleRestaurantName(restaurant.name, input.food, input.allergies)
+    && !isIneligibleGenericChain(input, restaurant));
   if (!input.allergies.length) return withoutGenericChains;
   const fullySupported = withoutGenericChains.filter((restaurant) => restaurant.missingAllergies.length === 0);
   if (fullySupported.length >= 5) return fullySupported;

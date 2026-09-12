@@ -1,4 +1,5 @@
 import type { AiDiscoveredRestaurant } from "@/app/lib/ai-discovery";
+import { isPlausibleRestaurantName } from "@/app/lib/restaurant-result-validation";
 
 type DiscoveryInput = {
   location: string;
@@ -113,7 +114,7 @@ function parseRestaurants(parsed: { l?: unknown; locationLabel?: unknown; p?: un
     const name = cleanText(field(place, "n", "name", "restaurantName"), 160);
     const label = cleanText(field(place, "b", "branch", "branchLabel"), 120) || "Local branch";
     const address = cleanText(field(place, "a", "address"), 300) || `${input.location} · confirm exact branch`;
-    if (!name) continue;
+    if (!isPlausibleRestaurantName(name, input.food, input.allergies)) continue;
     const evidenceSummary = cleanText(field(place, "e", "evidenceSummary"), 360)
       || `Selected by the restaurant search model for ${input.food || "food"} with the requested allergy filters; confirm ingredients and cross-contact directly.`;
     const popularitySummary = cleanText(field(place, "q", "popularitySummary"), 180)
@@ -181,19 +182,11 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
   const nvidiaKey = configuredNvidiaKey.startsWith("sk-or-v1-") ? "" : configuredNvidiaKey;
   const openRouterModel = process.env.OPENROUTER_DISCOVERY_MODEL?.trim()
     || process.env.OPENROUTER_MODEL?.trim()
-    || "nvidia/nemotron-3.5-lightning:free";
+    || "openrouter/free";
   if (!openRouterKey && configuredNvidiaKey.startsWith("sk-or-v1-")) {
     console.error("Free search configuration: the OpenRouter-formatted key is stored as NVIDIA_API_KEY. Move it to OPENROUTER_API_KEY.");
   }
   const providers = [
-    ...(nvidiaKey ? [{
-      name: "NVIDIA",
-      apiKey: nvidiaKey,
-      endpoint: "https://integrate.api.nvidia.com/v1/chat/completions",
-      model: process.env.NVIDIA_DISCOVERY_MODEL?.trim() || "nvidia/nemotron-3.5-lightning-30b-a3b",
-      openRouter: false,
-      timeoutMs: 60000,
-    }] : []),
     ...(openRouterKey.startsWith("sk-or-v1-") ? [
       {
         name: "OpenRouter",
@@ -212,13 +205,21 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
         timeoutMs: 12000,
       }]),
     ] : []),
+    ...(nvidiaKey ? [{
+      name: "NVIDIA",
+      apiKey: nvidiaKey,
+      endpoint: "https://integrate.api.nvidia.com/v1/chat/completions",
+      model: process.env.NVIDIA_DISCOVERY_MODEL?.trim() || "nvidia/nemotron-3.5-lightning-30b-a3b",
+      openRouter: false,
+      timeoutMs: 60000,
+    }] : []),
   ];
   if (!providers.length) return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "skipped" as const };
 
   const messages = [
     {
       role: "system",
-      content: "Exactly 5 real open restaurants; rank popularity>food>allergy. No markets/fake URL/rating. GF burger needs GF bun/burger or GF venue, not bunless. Every requested allergen in sa or ma; unsure=ma. JSON object only: l=location,p=array. Each p item: n=name,b=branch,a=full address,c=cuisines,w=official site,e=allergy evidence,q=popularity evidence,r=rank reason,sa=supported requested allergens,ma=missing/uncertain,pt/at/ft=3-5 popularity/allergy/food. Keep e/q/r under 80 characters.",
+      content: "Exactly 5 real, currently open restaurants in the requested location; rank popularity>food>allergy. n must be the proper business name: never return an allergen, cuisine, dish, category, location, or generic phrase as n. No markets/fake URL/rating. GF burger needs GF bun/burger or GF venue, not bunless. Every requested allergen in sa or ma; unsure=ma. JSON object only: l=location,p=array. Each p: n=business name,b=branch,a=full address,c=cuisines,w=official site,e=allergy evidence,q=popularity evidence,r=rank reason,sa=supported requested allergens,ma=missing/uncertain,pt/at/ft=3-5. Keep e/q/r under 80 characters.",
     },
     {
       role: "user",
@@ -313,7 +314,7 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
         const key = normalizedBrandName(restaurant.name);
         if (key && !collected.has(key)) collected.set(key, restaurant);
       }
-      if (collected.size) {
+      if (collected.size >= 3) {
         return { locationLabel: cleanText(parsed.l ?? parsed.locationLabel, 240) || input.location || "your location", restaurants: [...collected.values()].slice(0, 5), status: "used" as const, provider: provider.name.replace(/\s+fallback$/i, "") };
       }
       console.error(`${provider.name} restaurant discovery returned no readable restaurants with ${provider.model}`);
