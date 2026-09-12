@@ -1,14 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import { Fraunces, Manrope, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 import "./experience.css";
 import "./mobile.css";
 import "./typography.css";
-
-const headingFont = Fraunces({ variable: "--font-fraunces", subsets: ["latin"], display: "swap" });
-const interfaceFont = Manrope({ variable: "--font-manrope", subsets: ["latin"], display: "swap" });
-const logoFont = Pinyon_Script({ variable: "--font-pinyon", subsets: ["latin"], weight: "400", display: "swap" });
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
@@ -33,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${headingFont.variable} ${interfaceFont.variable} ${logoFont.variable}`}>
+      <body>
         {children}
       </body>
     </html>

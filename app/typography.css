@@ -1,8 +1,37 @@
-/* Script is reserved for the wordmark; functional text stays in Manrope. */
+/* Supplied, self-hosted fonts. Script is reserved for the wordmark. */
+@font-face{
+  font-family:"Fraunces";
+  src:url("/fonts/Fraunces-variable.ttf") format("truetype");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"Manrope";
+  src:url("/fonts/Manrope-variable.ttf") format("truetype");
+  font-weight:200 800;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"Pinyon Script";
+  src:url("/fonts/Pinyon-Script-Regular.ttf") format("truetype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"Inter";
+  src:url("/fonts/Inter-variable.ttf") format("truetype");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
 body{
-  --font-logo:var(--font-pinyon),"Pinyon Script",cursive;
-  --font-heading:var(--font-fraunces),Fraunces,Georgia,serif;
-  --font-interface:var(--font-manrope),Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-logo:"Pinyon Script",cursive;
+  --font-heading:"Fraunces",Georgia,serif;
+  --font-interface:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-legacy:"Inter",system-ui,sans-serif;
   font-family:var(--font-interface);
   font-size:16px;
   line-height:1.55;
