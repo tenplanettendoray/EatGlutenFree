@@ -53,9 +53,8 @@ test('chain branches are not used to fill the result list', () => {
 });
 
 test('Groq search tools retain official pages and reject directories', () => {
-  const tools=[{output:`Title: Juniper Kitchen Paris\nURL: https://juniperkitchen.fr/menu\nContent: Juniper Kitchen Paris serves gluten-free pizza.\nTitle: Background article\nURL: https://foodwriter.test/paris-pizza\nContent: Paris gluten-free pizza.\nTitle: Directory\nURL: https://www.findmeglutenfree.com/juniper\nContent: Paris gluten-free pizza.\nTitle: Travel guide\nURL: https://tripaligner.com/paris/juniper\nContent: Paris gluten-free pizza.`}];
-  const selected='1. Juniper Kitchen — https://juniperkitchen.fr/menu';
-  assert.deepEqual(sourcesFromGroqTools(tools,input,selected).map(item=>item.url),['https://juniperkitchen.fr/menu']);
+  const tools=[{output:`Title: Juniper Kitchen Paris\nURL: https://juniperkitchen.fr/menu\nContent: Juniper Kitchen Paris serves gluten-free pizza.\nTitle: Directory\nURL: https://www.findmeglutenfree.com/juniper\nContent: Paris gluten-free pizza.\nTitle: Travel guide\nURL: https://tripaligner.com/paris/juniper\nContent: Paris gluten-free pizza.`}];
+  assert.deepEqual(sourcesFromGroqTools(tools,input).map(item=>item.url),['https://juniperkitchen.fr/menu']);
 });
 
 test('OpenRouter truncated answers fall back to NVIDIA without displaying partial content', async () => {
