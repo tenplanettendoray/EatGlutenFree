@@ -984,7 +984,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       </section>
 
       <section className="results-section" aria-live="polite" aria-busy={loading}>
-        {error && <div className="message-banner"><span>!</span><div><p>{error}</p>{freeSearchesRemaining === 0 && !premiumAccess && <button type="button" onClick={() => openPremium("limit")}>View Premium plans <b aria-hidden="true">→</b></button>}</div></div>}
+        {error && <div className="message-banner" role="alert" aria-live="assertive"><span>!</span><div><p>{error}</p>{freeSearchesRemaining === 0 && !premiumAccess && <button type="button" onClick={() => openPremium("limit")}>View Premium plans <b aria-hidden="true">→</b></button>}</div></div>}
         {loading ? <motion.div className="search-loading-screen" initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
           <div className="search-loading-orbit" aria-hidden="true"><span /><i /><b /></div>
           <h2><WordGroups text="Finding matches" /></h2>

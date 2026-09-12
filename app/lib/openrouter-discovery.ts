@@ -50,6 +50,25 @@ function mappedNameMatch(proposed: string, candidate: string) {
   return Boolean(a && b && (a === b || a.includes(b) || b.includes(a)));
 }
 
+function mappedFallback(mapped: MappedRestaurant[], input: DiscoveryInput): AiDiscoveredRestaurant[] {
+  return mapped.slice(0, 5).map(place => ({
+    name: place.name,
+    cuisine: place.cuisine,
+    website: place.website || place.sourceUrl,
+    menuSourceUrl: place.website || place.sourceUrl,
+    qualitySourceUrl: place.sourceUrl,
+    evidenceSummary: "Verified mapped restaurant. Allergy handling has not been confirmed; ask the restaurant directly.",
+    popularitySummary: "Listed as a restaurant in current OpenStreetMap data.",
+    rankingReason: "Shown from verified map data because AI ranking was unavailable.",
+    supportedAllergies: [],
+    missingAllergies: [...input.allergies],
+    locations: [{ label: place.label, address: place.address, website: place.website || place.sourceUrl, sourceUrl: place.sourceUrl }],
+    popularityTier: 3,
+    allergyConfidenceTier: 3,
+    foodRelevanceTier: 3,
+  }));
+}
+
 function contentText(content: ChatMessageContent) {
   if (typeof content === "string") return content;
   if (!Array.isArray(content)) return "";
@@ -203,7 +222,7 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
         endpoint: "https://openrouter.ai/api/v1/chat/completions",
         model: openRouterModel,
         openRouter: true,
-        timeoutMs: 24000,
+      timeoutMs: 8000,
       },
       ...(openRouterModel === "openrouter/free" ? [] : [{
         name: "OpenRouter fallback",
@@ -211,7 +230,7 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
         endpoint: "https://openrouter.ai/api/v1/chat/completions",
         model: "openrouter/free",
         openRouter: true,
-        timeoutMs: 12000,
+        timeoutMs: 8000,
       }]),
     ] : []),
     ...(nvidiaKey ? [{
@@ -220,13 +239,13 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
       endpoint: "https://integrate.api.nvidia.com/v1/chat/completions",
       model: process.env.NVIDIA_DISCOVERY_MODEL?.trim() || "nvidia/nemotron-3.5-lightning-30b-a3b",
       openRouter: false,
-      timeoutMs: 60000,
+      timeoutMs: 8000,
     }] : []),
   ];
   if (!providers.length) return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "skipped" as const };
 
   const mappedRestaurants = await findMappedRestaurants(input.location, input.food);
-  if (!mappedRestaurants.length) return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "unavailable" as const };
+  if (!mappedRestaurants.length) return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "unavailable" as const, failureReason: `No mapped restaurants were found for ${input.location}. Try a nearby city or a broader food.` };
 
   const messages = [
     {
@@ -248,14 +267,14 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
     type: "function",
     function: {
       name: "submit_restaurants",
-      description: "Return exactly five real, open, ranked restaurants for the requested search.",
+      description: "Return up to five mapped restaurants for the requested search.",
       parameters: {
         type: "object",
         properties: {
           l: { type: "string", description: "Resolved city/location label." },
           p: {
             type: "array",
-            minItems: 5,
+            minItems: 1,
             maxItems: 5,
             items: {
               type: "object",
@@ -335,5 +354,5 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
       console.error(`${provider.name} restaurant discovery failed with ${provider.model}`, error);
     }
   }
-  return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: lastStatus === 429 ? "quota" as const : "unavailable" as const };
+  return { locationLabel: input.location || "your location", restaurants: mappedFallback(mappedRestaurants, input), status: "used" as const, provider: "OpenStreetMap" };
 }

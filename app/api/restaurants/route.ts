@@ -550,8 +550,10 @@ async function runAiDiscovery(input: SearchInput, requestedMode: "free" | "premi
       };
     }
     const label = requestedMode === "free" ? "Free restaurant search" : "Premium restaurant search";
-    const reason = discovery.status === "quota" ? "has reached its current API limit" : discovery.status === "skipped" ? "is not configured" : "is temporarily unavailable";
-    throw new Error(`${label} ${reason}.`);
+    const reason = "failureReason" in discovery && typeof discovery.failureReason === "string"
+      ? discovery.failureReason
+      : discovery.status === "skipped" ? `${label} is not configured.` : `${label} is temporarily unavailable.`;
+    throw new Error(reason);
   }
   const aiRestaurants = filterAllergyEligibleRestaurants(input, discovery.restaurants);
   const restaurants = aiRestaurants.length >= 5
