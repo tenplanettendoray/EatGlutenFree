@@ -234,7 +234,7 @@ export async function discoverRestaurants(input: DiscoveryInput) {
       || (b.allergyConfidenceTier || 0) - (a.allergyConfidenceTier || 0)
       || (b.foodRelevanceTier || 0) - (a.foodRelevanceTier || 0));
     const locationLabel = cleanText(parsed.l ?? parsed.locationLabel, 240) || input.location || "your location";
-    return { locationLabel, restaurants, status: restaurants.length ? "used" as const : "empty" as const };
+    return { locationLabel, restaurants, status: restaurants.length ? "used" as const : "empty" as const, provider: restaurants.length ? "OpenAI" : undefined };
   } catch (error) {
     console.error("OpenAI restaurant discovery error", error);
     return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "unavailable" as const };

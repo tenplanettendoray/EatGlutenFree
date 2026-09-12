@@ -335,6 +335,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   const [error, setError] = useState("");
   const [searchedLocation, setSearchedLocation] = useState("");
   const [agentQuery, setAgentQuery] = useState("");
+  const [aiProvider, setAiProvider] = useState("");
   const [aiResearch, setAiResearch] = useState<Record<string, AiResearch>>({});
   const [aiLoadingId, setAiLoadingId] = useState("");
   const [aiError, setAiError] = useState("");
@@ -476,10 +477,10 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     if (activeAllergies.length) params.set("allergies", activeAllergies.join("|"));
     if (activeSuggestions.length) params.set("suggestedRestaurants", activeSuggestions.join("|"));
     if (activeAvoids.length) params.set("avoidedRestaurants", activeAvoids.join("|"));
-    setLoading(true); setLoadingStage(0); setError(""); setSelected(null); setLockedResultCount(0); setCacheStatus("");
+    setLoading(true); setLoadingStage(0); setError(""); setSelected(null); setLockedResultCount(0); setCacheStatus(""); setAiProvider("");
     try {
       const response = await fetch(`/api/restaurants?${params.toString()}`, { signal: controller.signal });
-      const data = await readJson<{ freeSearchesRemaining?: number | null; freeSearchesLimit?: number; premiumAccess?: boolean; premiumRequired?: boolean; error?: string; restaurants: Restaurant[]; lockedResultCount?: number; cacheStatus?: string; location?: string; agentQuery?: string }>(response);
+      const data = await readJson<{ freeSearchesRemaining?: number | null; freeSearchesLimit?: number; premiumAccess?: boolean; premiumRequired?: boolean; error?: string; restaurants: Restaurant[]; lockedResultCount?: number; cacheStatus?: string; location?: string; agentQuery?: string; aiProvider?: string }>(response);
       if (controller.signal.aborted) return;
       if (typeof data.freeSearchesRemaining === "number" || data.freeSearchesRemaining === null) setFreeSearchesRemaining(data.freeSearchesRemaining);
       if (typeof data.freeSearchesLimit === "number") setFreeSearchesLimit(data.freeSearchesLimit);
@@ -499,11 +500,13 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       setCacheStatus(data.cacheStatus === "hit" ? "hit" : data.cacheStatus === "miss" ? "miss" : "");
       setSearchedLocation(data.location || label);
       setAgentQuery(data.agentQuery || "");
+      setAiProvider(data.aiProvider || "");
       if (!data.restaurants.length) setError(activeMode === "free" ? "No nearby food-relevant restaurants could be researched right now. Try the city name, a broader food, or search again in a moment." : "Not enough restaurants could be researched for this search. Try a broader food or location.");
     } catch (searchError) {
       if (controller.signal.aborted) return;
       setRestaurants([]);
       setLockedResultCount(0);
+      setAiProvider("");
       setError(searchError instanceof Error ? searchError.message : "Restaurant search failed.");
     } finally {
       if (!controller.signal.aborted) setLoading(false);
@@ -991,7 +994,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
             <div className="search-progress-steps">{loadingSteps.map((step, index) => <div key={step} className={index < loadingStage ? "done" : index === loadingStage ? "active" : ""}><i>{index + 1}</i><span>{step}</span></div>)}</div>
           </div>
         </motion.div> : restaurants.length > 0 ? <>
-          <motion.div className="results-heading" initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .3 }} transition={{ duration: .25, ease: "easeOut" }}><div><motion.span className="section-kicker" initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .7 }} transition={{ duration: .2 }}><WordGroups text={agentQuery || [food, occasion].filter(Boolean).join(" · ") || "Restaurant research"} /></motion.span><motion.h2 className="living-heading" initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .55 }} transition={{ duration: .22 }}><WordGroups text={`Best matches around ${searchedLocation}`} /></motion.h2></div></motion.div>
+          <motion.div className="results-heading" initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .3 }} transition={{ duration: .25, ease: "easeOut" }}><div><motion.span className="section-kicker" initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .7 }} transition={{ duration: .2 }}><WordGroups text={agentQuery || [food, occasion].filter(Boolean).join(" · ") || "Restaurant research"} /></motion.span><motion.h2 className="living-heading" initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .55 }} transition={{ duration: .22 }}><WordGroups text={`Best matches around ${searchedLocation}`} /></motion.h2></div>{aiProvider && <motion.span className="ai-provider-pill" initial={shouldReduceMotion ? false : { opacity: 0, scale: .94, y: -4 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: .18, ease: "easeOut" }}><WordGroups text={`AI: ${aiProvider}`} /></motion.span>}</motion.div>
           <div className="restaurant-grid">{restaurants.map((restaurant, index) => <motion.button type="button" className="restaurant-card" key={restaurant.id} onClick={() => setSelected(restaurant)} aria-label={`Review ${restaurant.name} details`} aria-haspopup="dialog" aria-expanded={selected?.id === restaurant.id} initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .18 }} transition={{ duration: .25, delay: shouldReduceMotion ? 0 : (index % 3) * .025, ease: "easeOut" }} whileTap={shouldReduceMotion ? undefined : { scale: .99 }}>
             <WebsitePreview restaurant={restaurant} />
             <div className="restaurant-body">

@@ -556,6 +556,7 @@ async function runAiDiscovery(input: SearchInput, requestedMode: "free" | "premi
         restaurants: resultPayload(restoredCandidates, resultSource),
         mode: requestedMode,
         agentQuery: [input.location, input.food, ...input.allergies].filter(Boolean).join(" · "),
+        aiProvider: "Cached result",
         premiumFallback,
       };
     }
@@ -572,6 +573,7 @@ async function runAiDiscovery(input: SearchInput, requestedMode: "free" | "premi
     restaurants: resultPayload(restaurants, resultSource),
     mode: requestedMode,
     agentQuery: [input.location, input.food, ...input.allergies].filter(Boolean).join(" · "),
+    aiProvider: discovery.provider,
     premiumFallback,
   };
 }
@@ -656,6 +658,7 @@ function sanitizeCachedPayload(input: SearchInput, mode: "free" | "premium", pay
   return {
     ...payload,
     mode,
+    aiProvider: payload.aiProvider || "Cached result",
     restaurants: payload.restaurants
       .filter((restaurant) => !isIneligibleGenericChain(input, restaurant))
       .map((restaurant) => ({ ...restaurant, source: mode === "free" ? "free" as const : "ai" as const })),

@@ -7,8 +7,8 @@ export async function compactCompletion(options: Options): Promise<{ text: strin
   const openaiKey = process.env.OPENAI_API_KEY?.trim(), routerKey = process.env.OPENROUTER_API_KEY?.trim(), nvidiaKey = process.env.NVIDIA_API_KEY?.trim();
   const providers = [
     ...(options.mode !== "free" && openaiKey ? [{ name: "openai", key: openaiKey, url: "https://api.openai.com/v1/responses", model: (options.mode === "support" ? process.env.OPENAI_SUPPORT_MODEL : process.env.OPENAI_DISCOVERY_MODEL)?.trim() || "gpt-4o-mini" }] : []),
-    ...(routerKey ? [{ name: "openrouter", key: routerKey, url: "https://openrouter.ai/api/v1/chat/completions", model: (options.mode === "support" ? process.env.OPENROUTER_SUPPORT_MODEL : process.env.OPENROUTER_DISCOVERY_MODEL)?.trim() || process.env.OPENROUTER_MODEL?.trim() || "nvidia/nemotron-3.5-lightning:free" }] : []),
     ...(nvidiaKey && !nvidiaKey.startsWith("sk-or-") ? [{ name: "nvidia", key: nvidiaKey, url: "https://integrate.api.nvidia.com/v1/chat/completions", model: process.env.NVIDIA_DISCOVERY_MODEL?.trim() || "nvidia/nemotron-3.5-lightning-30b-a3b" }] : []),
+    ...(routerKey ? [{ name: "openrouter", key: routerKey, url: "https://openrouter.ai/api/v1/chat/completions", model: (options.mode === "support" ? process.env.OPENROUTER_SUPPORT_MODEL : process.env.OPENROUTER_DISCOVERY_MODEL)?.trim() || process.env.OPENROUTER_MODEL?.trim() || "nvidia/nemotron-3.5-lightning:free" }] : []),
   ].slice(0, 2);
   for (const provider of providers) {
     if (options.signal?.aborted) return null;

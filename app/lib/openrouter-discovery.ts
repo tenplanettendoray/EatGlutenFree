@@ -186,6 +186,14 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
     console.error("Free search configuration: the OpenRouter-formatted key is stored as NVIDIA_API_KEY. Move it to OPENROUTER_API_KEY.");
   }
   const providers = [
+    ...(nvidiaKey ? [{
+      name: "NVIDIA",
+      apiKey: nvidiaKey,
+      endpoint: "https://integrate.api.nvidia.com/v1/chat/completions",
+      model: process.env.NVIDIA_DISCOVERY_MODEL?.trim() || "nvidia/nemotron-3.5-lightning-30b-a3b",
+      openRouter: false,
+      timeoutMs: 60000,
+    }] : []),
     ...(openRouterKey.startsWith("sk-or-v1-") ? [
       {
         name: "OpenRouter",
@@ -204,14 +212,6 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
         timeoutMs: 12000,
       }]),
     ] : []),
-    ...(nvidiaKey ? [{
-      name: "NVIDIA",
-      apiKey: nvidiaKey,
-      endpoint: "https://integrate.api.nvidia.com/v1/chat/completions",
-      model: process.env.NVIDIA_DISCOVERY_MODEL?.trim() || "nvidia/nemotron-3.5-lightning-30b-a3b",
-      openRouter: false,
-      timeoutMs: 60000,
-    }] : []),
   ];
   if (!providers.length) return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "skipped" as const };
 
@@ -314,7 +314,7 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
         if (key && !collected.has(key)) collected.set(key, restaurant);
       }
       if (collected.size) {
-        return { locationLabel: cleanText(parsed.l ?? parsed.locationLabel, 240) || input.location || "your location", restaurants: [...collected.values()].slice(0, 5), status: "used" as const };
+        return { locationLabel: cleanText(parsed.l ?? parsed.locationLabel, 240) || input.location || "your location", restaurants: [...collected.values()].slice(0, 5), status: "used" as const, provider: provider.name.replace(/\s+fallback$/i, "") };
       }
       console.error(`${provider.name} restaurant discovery returned no readable restaurants with ${provider.model}`);
     } catch (error) {

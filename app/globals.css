@@ -260,6 +260,7 @@ main:not(.search-page) .search-card,main:not(.search-page) .safety-strip{backdro
 .search-page .preference-list{max-height:150px;overflow:auto;scrollbar-gutter:stable}
 .search-credit-row{display:grid;justify-items:center;gap:7px;margin-top:13px}
 .search-credit-pill{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 13px;border:1px solid rgba(35,90,74,.18);border-radius:999px;background:#fff;color:var(--green);box-shadow:0 8px 20px rgba(23,63,53,.08);font-size:12px;font-weight:830}
+.ai-provider-pill{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 13px;border:1px solid rgba(35,90,74,.16);border-radius:999px;background:rgba(255,255,255,.62);color:#1d5a48;box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 8px 22px rgba(23,63,53,.08);backdrop-filter:blur(14px);font-size:12px;font-weight:800;white-space:nowrap}
 .search-credit-row .form-note{margin:0;color:#616c66;font-size:10px;line-height:1.35}
 .search-page .suggestion-menu{margin-top:12px}
 .search-page .suggestion-trigger{min-height:42px;grid-template-columns:28px minmax(0,1fr)}
