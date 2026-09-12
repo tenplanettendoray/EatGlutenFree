@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { discoverRestaurants, type AiDiscoveredRestaurant } from "@/app/lib/ai-discovery";
+import type { AiDiscoveredRestaurant } from "@/app/lib/ai-discovery";
 import { discoverRestaurantsWithOpenRouter } from "@/app/lib/openrouter-discovery";
 import { getAccountAccess } from "@/app/lib/premium";
 import { rankWithCommunityPopularity } from "@/app/lib/community-ranking";
@@ -535,23 +535,9 @@ async function runAiDiscovery(input: SearchInput, requestedMode: "free" | "premi
     priceRange: input.priceRange,
     allergies: input.allergies,
   };
-  let discovery = requestedMode === "free"
-    ? await discoverRestaurantsWithOpenRouter(discoveryInput)
-    : await discoverRestaurants(discoveryInput);
-  let resultSource: "free" | "ai" = requestedMode === "free" ? "free" : "ai";
-  let premiumFallback = false;
-  let usedBackupSearch = false;
-  if (requestedMode === "premium" && discovery.status !== "used") {
-    const fallbackDiscovery = await discoverRestaurantsWithOpenRouter(discoveryInput);
-    usedBackupSearch = true;
-    if (fallbackDiscovery.status === "used") {
-      discovery = fallbackDiscovery;
-      resultSource = "ai";
-      premiumFallback = true;
-    } else {
-      discovery = fallbackDiscovery;
-    }
-  }
+  const discovery = await discoverRestaurantsWithOpenRouter(discoveryInput);
+  const resultSource: "free" | "ai" = requestedMode === "free" ? "free" : "ai";
+  const premiumFallback = false;
   if (discovery.status !== "used") {
     if (restoredCandidates.length) {
       return {
@@ -563,7 +549,7 @@ async function runAiDiscovery(input: SearchInput, requestedMode: "free" | "premi
         premiumFallback,
       };
     }
-    const label = usedBackupSearch ? "Backup restaurant search" : requestedMode === "free" ? "Free restaurant search" : "Premium restaurant search";
+    const label = requestedMode === "free" ? "Free restaurant search" : "Premium restaurant search";
     const reason = discovery.status === "quota" ? "has reached its current API limit" : discovery.status === "skipped" ? "is not configured" : "is temporarily unavailable";
     throw new Error(`${label} ${reason}.`);
   }
