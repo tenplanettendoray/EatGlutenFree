@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { readJson } from "./lib/http-json";
+import { useDialogFocus } from "./lib/use-dialog-focus";
 import { coordinatesFromSearch } from "./lib/search-location";
 import { useRouter } from "next/navigation";
 import { AccountControls } from "./auth-ui";
@@ -340,6 +341,31 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   const [aiError, setAiError] = useState("");
   const shouldReduceMotion = useReducedMotion();
   const initialSearchStarted = useRef(false);
+  const searchRequest = useRef<AbortController | null>(null);
+  const [draftReady, setDraftReady] = useState(false);
+  useEffect(() => () => searchRequest.current?.abort(), []);
+  useEffect(() => {
+    if (searchPage) return;
+    const draft = window.history.state?.safeServeDraft;
+    if (draft && typeof draft === "object") {
+      if (typeof draft.location === "string") setLocation(draft.location.slice(0, 160));
+      if (typeof draft.food === "string") setFood(draft.food.slice(0, 160));
+      if (Array.isArray(draft.allergies)) setAllergies(draft.allergies.filter((name: unknown): name is string => typeof name === "string" && Boolean(name.trim())).slice(0, 100));
+      const coordinates = draft.coordinates;
+      if (coordinates && Number.isFinite(coordinates.latitude) && Math.abs(coordinates.latitude) <= 90 && Number.isFinite(coordinates.longitude) && Math.abs(coordinates.longitude) <= 180) setSelectedCoordinates(coordinates);
+    }
+    setDraftReady(true);
+  }, [searchPage]);
+  useEffect(() => {
+    if (searchPage || !draftReady) return;
+    window.history.replaceState({ ...window.history.state, safeServeDraft: { location, food, allergies, coordinates: selectedCoordinates } }, "");
+  }, [searchPage, draftReady, location, food, allergies, selectedCoordinates]);
+  useDialogFocus(locationPickerOpen || foodPickerOpen || suggestionMenuOpen || Boolean(selected), () => {
+    setLocationPickerOpen(false);
+    setFoodPickerOpen(false);
+    setSuggestionMenuOpen(false);
+    setSelected(null);
+  });
   const indexedCities = useMemo(() => cityCatalog.map(city => ({ city, normalized: normalizeCitySearch(city) })), [cityCatalog]);
   const cityOptions = useMemo(() => {
     const query = normalizeCitySearch(location.trim());
@@ -406,6 +432,9 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   }
 
   async function runSearch(params: URLSearchParams, label: string, overrides?: { mode: SearchMode; food: string; occasion: string; allergies: string[]; suggestedRestaurants: string[]; avoidedRestaurants: string[] }) {
+    searchRequest.current?.abort();
+    const controller = new AbortController();
+    searchRequest.current = controller;
     const activeMode = overrides?.mode ?? searchMode;
     const activeFood = overrides?.food ?? food;
     const activeOccasion = overrides?.occasion ?? occasion;
@@ -421,8 +450,9 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     if (activeAvoids.length) params.set("avoidedRestaurants", activeAvoids.join("|"));
     setLoading(true); setLoadingStage(0); setError(""); setSelected(null); setLockedResultCount(0); setCacheStatus("");
     try {
-      const response = await fetch(`/api/restaurants?${params.toString()}`);
+      const response = await fetch(`/api/restaurants?${params.toString()}`, { signal: controller.signal });
       const data = await readJson<{ freeSearchesRemaining?: number | null; freeSearchesLimit?: number; premiumAccess?: boolean; premiumRequired?: boolean; error?: string; restaurants: Restaurant[]; lockedResultCount?: number; cacheStatus?: string; location?: string; agentQuery?: string }>(response);
+      if (controller.signal.aborted) return;
       if (typeof data.freeSearchesRemaining === "number" || data.freeSearchesRemaining === null) setFreeSearchesRemaining(data.freeSearchesRemaining);
       if (typeof data.freeSearchesLimit === "number") setFreeSearchesLimit(data.freeSearchesLimit);
       if (data.premiumAccess === true) setPremiumAccess(true);
@@ -443,11 +473,12 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       setAgentQuery(data.agentQuery || "");
       if (!data.restaurants.length) setError(activeMode === "free" ? "No nearby food-relevant restaurants could be researched right now. Try the city name, a broader food, or search again in a moment." : "Not enough restaurants could be researched for this search. Try a broader food or location.");
     } catch (searchError) {
+      if (controller.signal.aborted) return;
       setRestaurants([]);
       setLockedResultCount(0);
       setError(searchError instanceof Error ? searchError.message : "Restaurant search failed.");
     } finally {
-      setLoading(false);
+      if (!controller.signal.aborted) setLoading(false);
     }
   }
   function submitSearch(event: FormEvent) {

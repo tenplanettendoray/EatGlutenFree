@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useId, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
 import Link from "next/link";
@@ -28,6 +28,11 @@ const foodAtlas = ["peanuts", "tree nuts", "milk", "eggs", "wheat", "soy", "fish
 const foodIndex = (name: string) => foodAtlas.indexOf(name.trim().toLowerCase());
 
 export function AllergyQuest(props: Props) {
+  const customPlateCurveId = useId();
+  const [editingCustom, setEditingCustom] = useState(false);
+  const customInputRef = useRef<HTMLInputElement>(null);
+  const customTriggerRef = useRef<HTMLButtonElement>(null);
+  const wasEditingCustom = useRef(false);
   const { allergies, allergyOptions, customAllergy, location, food, cityOptions, reducedMotion,
     onToggleAllergy, onCustomAllergyChange, onLocationChange, onFoodChange, onGlobeLocationSelect, onStart } = props;
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -35,11 +40,18 @@ export function AllergyQuest(props: Props) {
   const [drag, setDrag] = useState<{ name: string; index: number; width: number; height: number } | null>(null);
   const [overTarget, setOverTarget] = useState(false);
   const targetRef = useRef<HTMLDivElement>(null);
+  const journeyRef = useRef<HTMLElement>(null);
   const pointer = useRef({ x: 0, y: 0, startX: 0, startY: 0, offsetX: 0, offsetY: 0, moved: false });
   const dragX = useMotionValue(0), dragY = useMotionValue(0), tilt = useMotionValue(0);
   const rotation = useSpring(tilt, { stiffness: 430, damping: 24, mass: .5 });
   const transition = { duration: reducedMotion ? 0 : .36, ease: [.22, 1, .36, 1] as [number, number, number, number] };
   const selectionLabel = allergies.length ? `${allergies.length} ${allergies.length === 1 ? "allergy" : "allergies"} selected` : "No allergies selected yet";
+
+  useEffect(() => {
+    if (editingCustom) customInputRef.current?.focus();
+    else if (wasEditingCustom.current) customTriggerRef.current?.focus();
+    wasEditingCustom.current = editingCustom;
+  }, [editingCustom]);
 
   useEffect(() => {
     const restoreStep = () => {
@@ -72,6 +84,9 @@ export function AllergyQuest(props: Props) {
   }
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [step]);
+  useLayoutEffect(() => {
+    if (journeyRef.current) journeyRef.current.scrollTop = 0;
+  }, [step]);
 
   useEffect(() => {
     const viewport = window.visualViewport;
@@ -100,10 +115,13 @@ export function AllergyQuest(props: Props) {
   }, [step, location, allergies.length]);
 
   function addCustom() {
-    const value = customAllergy.trim();
-    if (!value) return;
+    const entered = customAllergy.trim();
+    if (!entered) return;
+    const value = allergyOptions.find(name => name.toLowerCase() === entered.toLowerCase()) ?? entered;
     if (!allergies.some(item => item.toLowerCase() === value.toLowerCase())) onToggleAllergy(value);
     onCustomAllergyChange("");
+    setEditingCustom(false);
+    customTriggerRef.current?.focus();
   }
   function resetHover(element: HTMLButtonElement) {
     element.style.setProperty("--pick-x", "0px");
@@ -149,19 +167,22 @@ export function AllergyQuest(props: Props) {
   return <main className={`ss-experience ss-step-${step}`}>
     <header className="ss-nav">
       <Link href="/" className="ss-brand" aria-label="Safe Serve home"><SafeServeMark /><span>Safe Serve<small>CanIEatIt?</small></span></Link>
-      <nav className="ss-steps" aria-label="Search steps"><button type="button" aria-current={step === 1 ? "step" : undefined} onClick={() => goToStep(1)}><b>1</b><span>Allergy profile</span></button><i /><button type="button" aria-current={step === 2 ? "step" : undefined} onClick={() => goToStep(2)}><b>2</b><span>Destination</span></button><i /><button type="button" disabled={!location.trim()} aria-current={step === 3 ? "step" : undefined} onClick={() => goToStep(3)}><b>3</b><span>What to eat</span></button></nav>
+      <nav className="ss-steps" aria-label="Search steps"><button type="button" aria-label="1. Allergy profile" aria-current={step === 1 ? "step" : undefined} onClick={() => goToStep(1)}><b>1</b><span>Allergy profile</span></button><i /><button type="button" aria-label="2. Destination" aria-current={step === 2 ? "step" : undefined} onClick={() => goToStep(2)}><b>2</b><span>Destination</span></button><i /><button type="button" disabled={!location.trim()} aria-label="3. What to eat" aria-current={step === 3 ? "step" : undefined} onClick={() => goToStep(3)}><b>3</b><span>What to eat</span></button></nav>
       <AccountControls />
     </header>
     <AnimatePresence mode="wait">
       {step === 1 ? <motion.section className="ss-table-scene" key="table" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
         <aside className="ss-sidebar">
           <h1>Your allergy profile</h1>
+          <p>Tap the ingredients you avoid.</p>
+          <div className="ss-safety-note"><SafeServeMark /><span>We’ll use these filters in every search. Always confirm with restaurant staff.</span></div>
+          <div className="ss-sidebar-status" aria-live="polite"><span className="ss-selection-count">{allergies.length.toString().padStart(2, "0")}</span><span>{selectionLabel}</span></div>
         </aside>
         <div className="ss-table">
           <div className="ss-plate-grid" aria-label="Choose allergies to avoid">
             {allergyOptions.map((name, index) => <button key={name} type="button" className={`ss-ingredient ${allergies.includes(name) ? "is-chosen" : ""} ${drag?.name === name ? "is-held" : ""}`} style={{ ...foodStyle(foodIndex(name)), "--entry": index } as CSSProperties}
               aria-pressed={allergies.includes(name)} aria-label={`${name}: ${allergies.includes(name) ? "remove from" : "add to"} avoid list`}
-              onPointerDown={e => begin(e, name, foodIndex(name))} onPointerMove={move} onPointerUp={e => finish(e)} onPointerCancel={e => finish(e, true)} onPointerLeave={e => resetHover(e.currentTarget)}
+              onPointerDown={e => begin(e, name, foodIndex(name))} onPointerMove={move} onPointerUp={e => finish(e)} onPointerCancel={e => finish(e, true)} onLostPointerCapture={e => finish(e, true)} onPointerLeave={e => resetHover(e.currentTarget)}
               onClick={e => { if (e.detail === 0) onToggleAllergy(name); }}>
               <span className="ss-food-plate"><span className="ss-food" /></span><strong className="ss-name-tag">{name}</strong><span className="ss-check" aria-hidden="true">✓</span>
             </button>)}
@@ -176,19 +197,26 @@ export function AllergyQuest(props: Props) {
                   ><span className="ss-food-plate" aria-hidden="true">{foodIndex(name) >= 0 && <span className="ss-food" />}</span></motion.button>)}</AnimatePresence>
                 </div>
               </div>
-            </div>
-            <div className="ss-custom-plate">
-              <label htmlFor="quest-custom-allergy" className="ss-custom-label">Add an allergy</label>
-              <div className="ss-custom-input">
-                <input id="quest-custom-allergy" value={customAllergy} onChange={e => onCustomAllergyChange(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) { e.preventDefault(); addCustom(); } }} placeholder="e.g. Sesame" autoComplete="off" maxLength={60} />
-                <button type="button" onClick={addCustom} disabled={!customAllergy.trim()} aria-label="Add custom allergy"><span aria-hidden="true">+</span> Add</button>
-              </div>
-              {allergies.some(name => foodIndex(name) < 0) && <div className="ss-custom-selections">{allergies.filter(name => foodIndex(name) < 0).map(name => <button type="button" key={name} onClick={() => onToggleAllergy(name)} aria-label={`Remove custom allergy ${name}`}>{name}<span aria-hidden="true">×</span></button>)}</div>}
+              <button ref={customTriggerRef} type="button" className="ss-plate-rim" aria-label="Add allergy" aria-expanded={editingCustom} aria-controls={editingCustom ? "quest-custom-allergy" : undefined} onClick={() => setEditingCustom(true)}>
+                <svg viewBox="0 0 320 96" aria-hidden="true">
+                  <defs><path id={customPlateCurveId} d="M 36 12 Q 160 114 284 12" /></defs>
+                  <text><textPath href={`#${customPlateCurveId}`} startOffset="50%" textAnchor="middle">Add allergy</textPath></text>
+                </svg>
+              </button>
+              {editingCustom && <form className="ss-custom-input ss-rim-editor" onSubmit={event => { event.preventDefault(); addCustom(); }}>
+                <input ref={customInputRef} id="quest-custom-allergy" aria-label="Custom allergy" value={customAllergy} onChange={e => onCustomAllergyChange(e.target.value)} onKeyDown={e => {
+                  if (e.nativeEvent.isComposing) { if (e.key === "Enter") e.preventDefault(); return; }
+                  if (e.key === "Escape") { e.preventDefault(); setEditingCustom(false); onCustomAllergyChange(""); customTriggerRef.current?.focus(); }
+                }} placeholder="Allergy name" autoComplete="off" enterKeyHint="done" maxLength={60} />
+                <button type="submit" disabled={!customAllergy.trim()} aria-label="Add custom allergy">✓</button>
+                <button type="button" className="ss-custom-cancel" aria-label="Cancel custom allergy" onClick={() => { setEditingCustom(false); onCustomAllergyChange(""); customTriggerRef.current?.focus(); }}>×</button>
+              </form>}
             </div>
           </div>
-          <div className="ss-table-actions"><span aria-live="polite">{selectionLabel}</span><button type="button" className="ss-primary" onClick={() => goToStep(2)}>Continue <span>→</span></button></div>
+          {allergies.some(name => foodIndex(name) < 0) && <div className="ss-custom-selections" aria-label="Custom allergies">{allergies.filter(name => foodIndex(name) < 0).map(name => <button type="button" key={name} onClick={() => onToggleAllergy(name)} aria-label={`Remove custom allergy ${name}`}>{name}<span aria-hidden="true">×</span></button>)}</div>}
+          <div className="ss-table-actions"><button type="button" className="ss-primary" onClick={() => goToStep(2)}>Continue <span>→</span></button></div>
         </div>
-      </motion.section> : <motion.section className={`ss-destination ss-journey-scene ${step === 3 ? "is-meal-scene" : ""}`} key="destination" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
+      </motion.section> : <motion.section ref={journeyRef} className={`ss-destination ss-journey-scene ${step === 3 ? "is-meal-scene" : ""}`} key="destination" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
         <div className="ss-destination-copy" hidden={step === 3}><h1>Where to?</h1>
           <label htmlFor="quest-location">Location</label><div className="ss-location-field"><CityInput id="quest-location" value={location} options={cityOptions} onChange={onLocationChange} onChoose={city => { onLocationChange(city); goToStep(3); }} /><span aria-hidden="true">⌖</span></div>
           <button className="ss-back" type="button" onClick={() => goToStep(1)}>← Allergy profile</button>

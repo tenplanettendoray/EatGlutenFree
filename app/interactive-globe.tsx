@@ -660,7 +660,7 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
     const mount = mountRef.current;
     if (!mount) return;
     const scene = new THREE.Scene();
-    const compactViewport = window.matchMedia("(max-width: 760px)");
+    const compactViewport = window.matchMedia("(max-width: 760px), (max-width: 960px) and (max-height: 520px)");
     const { fov, overviewDistance } = globeViewport(mount.clientWidth, mount.clientHeight, compactViewport.matches);
     const camera = new THREE.PerspectiveCamera(fov, 1, .1, 20000);
     zoomTargetRef.current = THREE.MathUtils.clamp(overviewDistance, MIN_ZOOM, MAX_ZOOM);
