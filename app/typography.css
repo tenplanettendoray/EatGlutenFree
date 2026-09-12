@@ -56,6 +56,13 @@ h1 em,h2 em,h3 em{font-family:inherit;font-weight:inherit!important;font-style:n
 .ss-plate-rim svg{font-family:var(--font-interface);font-weight:600;font-size:20px;letter-spacing:.2px}
 .ss-pillar-label strong{font-family:var(--font-interface);font-weight:600}
 .ss-name-tag{font-family:var(--font-interface);font-weight:600}
+.restaurant-title-row h3,.detail-title-row h2{
+  font-family:var(--font-interface)!important;
+  font-weight:800!important;
+  font-style:normal;
+  letter-spacing:-.025em!important;
+  line-height:1.2!important;
+}
 .brand .brand-lockup,.ss-brand .brand-lockup{display:grid;gap:2px;line-height:1;letter-spacing:0}
 .brand .brand-name,.ss-brand .brand-name{
   display:block;

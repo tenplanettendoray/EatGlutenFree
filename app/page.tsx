@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { readJson } from "./lib/http-json";
 import { useDialogFocus } from "./lib/use-dialog-focus";
-import { coordinatesFromSearch } from "./lib/search-location";
 import { useRouter } from "next/navigation";
 import { AccountControls } from "./auth-ui";
 import { CityInput } from "./city-input";
@@ -406,20 +405,50 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     setSelectedCoordinates(null);
   }
   function selectGlobeLocation(selection: GlobeSelection) {
-    setLocation(cityOnlySearchLocation(selection.label));
+    const label = cityOnlySearchLocation(selection.label);
+    setLocation(label);
     setSelectedCoordinates({ latitude: selection.latitude, longitude: selection.longitude });
     setLocationPickerOpen(false);
+    if (searchPage) applySearchFilters({ location: label });
   }
 
   function selectFood(value: string) {
     setFood(value);
     setFoodPickerOpen(false);
+    if (searchPage) applySearchFilters({ food: value });
+  }
+
+  function publicSearchParams(values: { location?: string; food?: string; mode?: SearchMode } = {}) {
+    const nextLocation = cityOnlySearchLocation(values.location ?? location);
+    const nextFood = (values.food ?? food).trim();
+    const params = new URLSearchParams();
+    if (nextLocation) params.set("location", nextLocation);
+    if (nextFood) params.set("food", nextFood);
+    if (occasion) params.set("occasion", occasion);
+    if (allergies.length) params.set("allergies", allergies.join("|"));
+    if (suggestedRestaurants.length) params.set("suggestedRestaurants", suggestedRestaurants.join("|"));
+    if (avoidedRestaurants.length) params.set("avoidedRestaurants", avoidedRestaurants.join("|"));
+    params.set("mode", values.mode ?? searchMode);
+    return params;
+  }
+
+  function applySearchFilters(values: { location?: string; food?: string }) {
+    const nextLocation = cityOnlySearchLocation(values.location ?? location);
+    const nextFood = (values.food ?? food).trim();
+    if (values.location !== undefined) {
+      setLocation(nextLocation);
+      setSelectedCoordinates(null);
+    }
+    if (values.food !== undefined) setFood(nextFood);
+    if (!searchPage || !nextLocation) return;
+    const params = publicSearchParams({ location: nextLocation, food: nextFood });
+    window.history.pushState({ ...window.history.state }, "", `/search?${params.toString()}`);
+    void runSearch(params, nextLocation, { mode: searchMode, food: nextFood, occasion, allergies, suggestedRestaurants, avoidedRestaurants });
   }
 
   function premiumReturnPath() {
     const params = new URLSearchParams();
     if (location.trim()) params.set("location", cityOnlySearchLocation(location));
-    if (selectedCoordinates) { params.set("lat", String(selectedCoordinates.latitude)); params.set("lon", String(selectedCoordinates.longitude)); }
     params.set("mode", "premium");
     if (food.trim()) params.set("food", food.trim());
     if (allergies.length) params.set("allergies", allergies.join("|"));
@@ -442,7 +471,6 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     const activeSuggestions = overrides?.suggestedRestaurants ?? suggestedRestaurants;
     const activeAvoids = overrides?.avoidedRestaurants ?? avoidedRestaurants;
     params.set("mode", activeMode);
-    if (!params.has("lat") && selectedCoordinates && params.get("location") === location.trim()) { params.set("lat", String(selectedCoordinates.latitude)); params.set("lon", String(selectedCoordinates.longitude)); }
     if (activeFood.trim()) params.set("food", activeFood.trim());
     if (activeOccasion) params.set("occasion", activeOccasion.toLowerCase());
     if (activeAllergies.length) params.set("allergies", activeAllergies.join("|"));
@@ -488,7 +516,6 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     if (searchLocation !== location) setLocation(searchLocation);
     if (!searchPage) {
       const query = new URLSearchParams({ location: searchLocation, mode: searchMode });
-      if (selectedCoordinates) { query.set("lat", String(selectedCoordinates.latitude)); query.set("lon", String(selectedCoordinates.longitude)); }
       if (food.trim()) query.set("food", food.trim());
       if (occasion) query.set("occasion", occasion);
       if (allergies.length) query.set("allergies", allergies.join("|"));
@@ -497,8 +524,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       window.location.assign(`/search?${query.toString()}`);
       return;
     }
-    const params = new URLSearchParams({ location: searchLocation });
-    runSearch(params, searchLocation);
+    applySearchFilters({ location: searchLocation, food });
   }
 
   function upgradeAndSearch() {
@@ -771,8 +797,17 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     const initialMode: SearchMode = premiumAccess ? "premium" : "free";
     const usableSuggestions = premiumAccess ? initialSuggestions : [];
     const usableAvoids = premiumAccess ? initialAvoids : [];
+    let cleanedLegacyCoordinates = false;
+    if (query.has("lat") || query.has("lon")) {
+      query.delete("lat");
+      query.delete("lon");
+      cleanedLegacyCoordinates = true;
+    }
     if (!premiumAccess && query.get("mode") === "premium") {
       query.set("mode", "free");
+      cleanedLegacyCoordinates = true;
+    }
+    if (cleanedLegacyCoordinates) {
       window.history.replaceState(null, "", `/search?${query.toString()}`);
     }
     queueMicrotask(() => {
@@ -783,15 +818,13 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       setSuggestedRestaurants(usableSuggestions);
       setAvoidedRestaurants(usableAvoids);
       setSearchMode(initialMode);
-      setSelectedCoordinates(coordinatesFromSearch(query));
+      setSelectedCoordinates(null);
       if (!initialLocation) {
         setLoading(false);
         setError("Enter a city, neighborhood, or ZIP code to begin searching.");
         return;
       }
       const initialParams = new URLSearchParams({ location: initialLocation });
-      const initialCoordinates = coordinatesFromSearch(query);
-      if (initialCoordinates) { initialParams.set("lat", String(initialCoordinates.latitude)); initialParams.set("lon", String(initialCoordinates.longitude)); }
       void runSearch(initialParams, initialLocation, { mode: initialMode, food: initialFood, occasion: initialOccasion, allergies: initialAllergies, suggestedRestaurants: usableSuggestions, avoidedRestaurants: usableAvoids });
     });
     // This initialization intentionally runs only once for the URL that opened the search page.
@@ -818,7 +851,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
           if (!resolvedLocation) throw new Error("No city found.");
           setLocation(resolvedLocation);
           setSelectedCoordinates({ latitude: coords.latitude, longitude: coords.longitude });
-          runSearch(new URLSearchParams({ location: resolvedLocation, lat: String(coords.latitude), lon: String(coords.longitude) }), resolvedLocation);
+          applySearchFilters({ location: resolvedLocation });
         } catch {
           setLoading(false);
           setError("We found your position, but not a city name. Enter a city or ZIP code instead.");
@@ -865,11 +898,11 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       onLocationChange={updateLocation}
       onGlobeLocationSelect={selectGlobeLocation}
       onFoodChange={setFood}
-      onStart={() => {
+      onStart={(foodOverride) => {
         if (!location.trim()) return;
+        const selectedFood = foodOverride ?? food;
         const query = new URLSearchParams({ location: location.trim(), mode: searchMode });
-        if (selectedCoordinates) { query.set("lat", String(selectedCoordinates.latitude)); query.set("lon", String(selectedCoordinates.longitude)); }
-        if (food.trim()) query.set("food", food.trim());
+        if (selectedFood.trim()) query.set("food", selectedFood.trim());
         if (allergies.length) query.set("allergies", allergies.join("|"));
         window.location.assign(`/search?${query.toString()}`);
       }}
@@ -986,7 +1019,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
             <span className="section-kicker">Destination</span>
             <h2 id="location-picker-title">Choose your <em>destination.</em></h2>
             <label htmlFor="location-picker-input">Location</label>
-            <div className="location-picker-input"><span aria-hidden="true">⌖</span><CityInput id="location-picker-input" value={location} options={cityOptions} onChange={updateLocation} onChoose={city => { updateLocation(city); setLocationPickerOpen(false); }} /></div>
+            <div className="location-picker-input"><span aria-hidden="true">⌖</span><CityInput id="location-picker-input" value={location} options={cityOptions} onChange={updateLocation} onChoose={city => { applySearchFilters({ location: city }); setLocationPickerOpen(false); }} /></div>
           </div>
           <div className="location-picker-globe"><InteractiveGlobe location={location} reducedMotion={shouldReduceMotion} onSelectCountry={selectGlobeLocation} /></div>
         </motion.section>

@@ -48,6 +48,7 @@
   .ss-drop-plate{grid-column:1 / -1;grid-row:3;max-width:280px;width:78%;margin:0;align-self:center;justify-self:center}
   .ss-drop-content{width:72%;max-height:72%}
   .ss-plate-rim svg{font-size:24px}
+  .ss-rim-editor input{font-size:18px}
   .ss-custom-plate{grid-column:1 / -1;grid-row:4;width:100%;max-width:300px;justify-self:center;display:block;padding:0;text-align:left}
   .ss-custom-label{width:180px}
   .ss-custom-input input{font-size:16px;min-height:44px}

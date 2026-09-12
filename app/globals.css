@@ -3404,6 +3404,15 @@ main:not(.search-page) .search-card,main:not(.search-page) .safety-strip{backdro
 .search-page .card-heading h2{min-width:0;margin:0;white-space:nowrap;font-size:18px;line-height:1.15;letter-spacing:-.02em}
 .search-page .card-heading h2 .word-groups,.search-page .card-heading h2 .word-group{white-space:nowrap;letter-spacing:inherit!important}
 
+/* Keep the account action in the same top-right position on every journey step. */
+.site-header{display:grid;grid-template-columns:minmax(0,1fr) auto;justify-content:normal}
+.site-header .account-controls{justify-self:end}
+.search-page>.site-header{grid-template-columns:minmax(0,1fr) auto;justify-content:normal}
+.ss-nav{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);justify-content:normal}
+.ss-nav>.account-controls{justify-self:end}
+.ss-meal-intro{padding-top:16px;overflow:visible}
+.ss-meal-stage .ss-meal-intro h1{padding-top:.14em;overflow:visible}
+
 @media(max-width:560px){
   .premium-nav-actions>a:first-child{display:none}
   .auth-brand{padding-inline:16px}

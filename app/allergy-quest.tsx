@@ -16,7 +16,7 @@ type Props = {
   onToggleAllergy: (name: string) => void; onCustomAllergyChange: (value: string) => void;
   onLocationChange: (value: string) => void; onFoodChange: (value: string) => void;
   onGlobeLocationSelect: (selection: { label: string; latitude: number; longitude: number }) => void;
-  onStart: () => void;
+  onStart: (foodOverride?: string) => void;
 };
 
 const foodStyle = (index: number): CSSProperties => ({
@@ -56,12 +56,13 @@ export function AllergyQuest(props: Props) {
   useEffect(() => {
     const restoreStep = () => {
       const saved = window.history.state?.safeServeQuestStep;
-      const restored = saved === 2 || saved === 3 ? saved : 1;
+      const fromUrl = new URLSearchParams(window.location.search).get("step");
+      const restored = saved === 2 || saved === 3 ? saved : fromUrl === "destination" ? 2 : fromUrl === "meal" ? 3 : 1;
       stepRef.current = restored;
       setStep(restored);
     };
-    if (!window.history.state?.safeServeQuestStep) {
-      window.history.replaceState({ ...window.history.state, safeServeQuestStep: 1 }, "");
+    if (!window.history.state?.safeServeQuestStep && !new URLSearchParams(window.location.search).has("step")) {
+      window.history.replaceState({ ...window.history.state, safeServeQuestStep: 1 }, "", "/?step=allergies");
     }
     restoreStep();
     window.addEventListener("popstate", restoreStep);
@@ -74,7 +75,8 @@ export function AllergyQuest(props: Props) {
       window.history.back();
       return;
     }
-    window.history.pushState({ ...window.history.state, safeServeQuestStep: next, safeServeQuestPreviousStep: stepRef.current }, "");
+    const stepName = next === 1 ? "allergies" : next === 2 ? "destination" : "meal";
+    window.history.pushState({ ...window.history.state, safeServeQuestStep: next, safeServeQuestPreviousStep: stepRef.current }, "", `/?step=${stepName}`);
     stepRef.current = next;
     setStep(next);
   }
@@ -203,13 +205,11 @@ export function AllergyQuest(props: Props) {
                   <text><textPath href={`#${customPlateCurveId}`} startOffset="50%" textAnchor="middle">Add allergy</textPath></text>
                 </svg>
               </button>
-              {editingCustom && <form className="ss-custom-input ss-rim-editor" onSubmit={event => { event.preventDefault(); addCustom(); }}>
+              {editingCustom && <form className="ss-rim-editor" onSubmit={event => { event.preventDefault(); addCustom(); }}>
                 <input ref={customInputRef} id="quest-custom-allergy" aria-label="Custom allergy" value={customAllergy} onChange={e => onCustomAllergyChange(e.target.value)} onKeyDown={e => {
                   if (e.nativeEvent.isComposing) { if (e.key === "Enter") e.preventDefault(); return; }
                   if (e.key === "Escape") { e.preventDefault(); setEditingCustom(false); onCustomAllergyChange(""); customTriggerRef.current?.focus(); }
-                }} placeholder="Allergy name" autoComplete="off" enterKeyHint="done" maxLength={60} />
-                <button type="submit" disabled={!customAllergy.trim()} aria-label="Add custom allergy">✓</button>
-                <button type="button" className="ss-custom-cancel" aria-label="Cancel custom allergy" onClick={() => { setEditingCustom(false); onCustomAllergyChange(""); customTriggerRef.current?.focus(); }}>×</button>
+                }} placeholder="Add allergy" autoComplete="off" enterKeyHint="done" maxLength={60} />
               </form>}
             </div>
           </div>

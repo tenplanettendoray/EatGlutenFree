@@ -96,7 +96,7 @@ export function SearchFoodPicker({ food, onChoose, onClose }: {
 
 export function MealSelector({ food, location, reducedMotion, onChange, onBack, onStart }: {
   food: string; location: string; allergies: string[]; reducedMotion: boolean | null;
-  onChange: (value: string) => void; onBack: () => void; onStart: () => void;
+  onChange: (value: string) => void; onBack: () => void; onStart: (foodOverride?: string) => void;
 }) {
   const [category, setCategory] = useState<"meals" | "cuisines">("meals");
   const list = category === "meals" ? meals : cuisines;
@@ -277,7 +277,7 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
         onPointerUp={event => { touching.current = false; const d = drag.current; const wasDragging = d.active; d.active = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); if (wasDragging && d.moved) releaseWithMomentum(); else scheduleSnap(); }}
         onPointerCancel={() => { touching.current = false; drag.current.active = false; scheduleSnap(); }}
         onLostPointerCapture={() => { touching.current = false; drag.current.active = false; scheduleSnap(); }}>
-        {list.map((meal, index) => <button type="button" key={meal.name} className={`ss-meal-pillar ${active === index ? "is-centered" : ""}`} aria-pressed={food === (meal.query ?? meal.name)} aria-label={`Choose ${meal.name}`} onClick={() => { if (!drag.current.moved) { go(index); select(index); } drag.current.moved = false; }}>
+        {list.map((meal, index) => <button type="button" key={meal.name} className={`ss-meal-pillar ${active === index ? "is-centered" : ""}`} aria-pressed={food === (meal.query ?? meal.name)} aria-label={`Choose ${meal.name}`} onClick={() => { if (!drag.current.moved) { go(index); onStart(meal.query ?? meal.name); } drag.current.moved = false; }}>
           <span className="ss-meal-halo" aria-hidden="true" />
           <MealPhoto meal={meal} />
           <span className="ss-pillar-wood" aria-hidden="true" />
@@ -287,7 +287,7 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
       <div className="ss-meal-navigation"><button type="button" onClick={() => go((requestedIndex.current ?? activeRef.current) - 1)} disabled={active === 0} aria-label="Previous option"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m14 5-7 7 7 7" /></svg></button><span aria-live="polite">{list[active]?.name}<small>{active + 1} / {list.length}</small></span><button type="button" onClick={() => go((requestedIndex.current ?? activeRef.current) + 1)} disabled={active === list.length - 1} aria-label="Next option"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m10 5 7 7-7 7" /></svg></button></div>
       <div className="ss-meal-dots" aria-hidden="true">{list.map((meal, index) => <i key={meal.name} className={index === active ? "is-active" : ""} />)}</div>
     </div>
-    <div className="ss-meal-finish"><div><label htmlFor="quest-food">Meal or cuisine <span>(optional)</span></label><input id="quest-food" value={food} onChange={event => { setAnythingSelected(false); onChange(event.target.value); }} placeholder="Anything" /><p>{location}</p></div><button type="button" className="ss-primary" onClick={onStart} disabled={!location.trim()}>Find places to eat <span>→</span></button></div>
+    <div className="ss-meal-finish"><div><label htmlFor="quest-food">Meal or cuisine <span>(optional)</span></label><input id="quest-food" value={food} onChange={event => { setAnythingSelected(false); onChange(event.target.value); }} placeholder="Anything" /><p>{location}</p></div><button type="button" className="ss-primary" onClick={() => onStart()} disabled={!location.trim()}>Find places to eat <span>→</span></button></div>
     <button type="button" className="ss-meal-back" onClick={onBack}>← Change destination</button>
   </div>;
 }
