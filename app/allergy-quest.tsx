@@ -46,6 +46,7 @@ export function AllergyQuest(props: Props) {
   const rotation = useSpring(tilt, { stiffness: 430, damping: 24, mass: .5 });
   const transition = { duration: reducedMotion ? 0 : .36, ease: [.22, 1, .36, 1] as [number, number, number, number] };
   const selectionLabel = allergies.length ? `${allergies.length} ${allergies.length === 1 ? "allergy" : "allergies"} selected` : "No allergies selected yet";
+  const customRimText = editingCustom ? customAllergy || "Add allergy" : "Add allergy";
 
   useEffect(() => {
     if (editingCustom) customInputRef.current?.focus();
@@ -202,7 +203,7 @@ export function AllergyQuest(props: Props) {
               <button ref={customTriggerRef} type="button" className="ss-plate-rim" aria-label="Add allergy" aria-expanded={editingCustom} aria-controls={editingCustom ? "quest-custom-allergy" : undefined} onClick={() => setEditingCustom(true)}>
                 <svg viewBox="0 0 320 96" aria-hidden="true">
                   <defs><path id={customPlateCurveId} d="M 36 12 Q 160 114 284 12" /></defs>
-                  <text><textPath href={`#${customPlateCurveId}`} startOffset="50%" textAnchor="middle">Add allergy</textPath></text>
+                  <text><textPath href={`#${customPlateCurveId}`} startOffset="50%" textAnchor="middle">{customRimText}</textPath></text>
                 </svg>
               </button>
               {editingCustom && <form className="ss-rim-editor" onSubmit={event => { event.preventDefault(); addCustom(); }}>
