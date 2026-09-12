@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { AccountControls } from "../auth-ui";
 import { useEffect, useState } from "react";
-import { SafeServeMark } from "../safe-serve-logo";
+import { BrandWordmark, SafeServeMark } from "../safe-serve-logo";
 import { readJson } from "../lib/http-json";
 
 type Plan = "monthly" | "annual";
@@ -71,13 +71,13 @@ export default function PremiumPage() {
   return (
     <main className="premium-page">
       <header className="premium-nav">
-        <Link className="brand" href="/" aria-label="Return to the Safe Serve start page"><span className="brand-symbol"><SafeServeMark /></span><span className="brand-lockup">Safe Serve<small>CanIEatIt?</small></span></Link>
+        <Link className="brand" href="/" aria-label="Return to the Gluten FreEat start page"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
         <div className="premium-nav-actions"><Link href={returnTo}>Back to search</Link><AccountControls /></div>
       </header>
 
       <section className="premium-stage">
         <div className="premium-story">
-          <span className="premium-kicker">Safe Serve Premium</span>
+          <span className="premium-kicker">Gluten FreEat Premium</span>
           <h1>More strong matches.<br /><em>Fewer dead ends.</em></h1>
           <div className="premium-limit-visual" aria-label="Upgrade from three daily searches to unlimited searches">
             <div><small>Daily limit</small><strong>3</strong></div>
@@ -99,7 +99,7 @@ export default function PremiumPage() {
           <button type="button" className="premium-subscribe-button" onClick={choosePlan} disabled={status === "loading" || status === "active"}>{status === "loading" ? "Activating Premium..." : status === "active" ? "Premium active" : authenticated === false ? "Sign in to continue" : `Choose ${plan}`}</button>
           {message && <p className={`premium-checkout-message ${status}`}>{message}</p>}
           <p className="premium-preview-note">Paid checkout coming soon. No payment is collected.</p>
-          <p className="premium-safety-note">Safe Serve provides research, not medical certification. Always confirm ingredients and cross-contact with restaurant staff.</p>
+          <p className="premium-safety-note">Gluten FreEat provides research, not medical certification. Always confirm ingredients and cross-contact with restaurant staff.</p>
         </aside>
       </section>
     </main>

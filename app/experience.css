@@ -10,12 +10,12 @@
 .ss-table-scene{display:grid;grid-template-columns:clamp(230px,20vw,310px) minmax(0,1fr);min-height:calc(100dvh - 76px)}
 .ss-sidebar{display:flex;flex-direction:column;align-items:flex-start;padding:clamp(32px,5vh,62px) clamp(24px,3vw,46px);background:radial-gradient(ellipse at top left,#fff9e9,transparent 85%),#eee1c9;border-right:1px solid #bdab8e45}
 .ss-step-label{display:inline-block;border-radius:20px;padding:7px 12px;background:#fff9ed;color:#a45131;font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;box-shadow:0 2px 12px #fff6df40}
-.ss-sidebar h1,.ss-destination h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(44px,4.3vw,65px);letter-spacing:-.065em;line-height:1.02;margin:30px 0 24px}
+.ss-sidebar h1,.ss-destination h1{font-family:var(--font-heading);font-weight:400;font-size:clamp(44px,4.3vw,65px);letter-spacing:-.065em;line-height:1.02;margin:30px 0 24px}
 .ss-sidebar h1 em,.ss-destination h1 em{display:block;font-weight:400;color:#43846b;line-height:1.13;padding-bottom:.07em}
 .ss-sidebar>p{font-size:14px;line-height:1.8;color:#424d40;margin:0;max-width:25ch}
 .ss-safety-note{display:flex;gap:12px;align-items:flex-start;padding:18px 14px;margin-top:28px;border:1px solid #fff7e758;border-radius:12px;background:#fff9e745;color:#516052;font-size:12px;line-height:1.7}
 .ss-safety-note svg{width:21px;height:25px;flex-shrink:0;opacity:.7;margin-top:2px}
-.ss-sidebar-status{margin-top:auto;padding-top:36px;display:flex;gap:12px;align-items:center;font-size:12px;color:#52604f}.ss-selection-count{font-family:Georgia,serif;font-size:32px;line-height:1;color:#285d47}
+.ss-sidebar-status{margin-top:auto;padding-top:36px;display:flex;gap:12px;align-items:center;font-size:12px;color:#52604f}.ss-selection-count{font-family:var(--font-heading);font-size:32px;line-height:1;color:#285d47}
 .ss-table{position:relative;display:flex;flex-direction:column;justify-content:center;min-width:0;padding:34px clamp(20px,3vw,50px) 28px;background:#684222 url('/tabletop-sunlight.png') center/cover;overflow:hidden;isolation:isolate}
 .ss-table:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#21130918,transparent 30%);pointer-events:none}
 .ss-table-instruction{display:flex;align-items:center;gap:12px;align-self:center;margin:0 0 34px;padding:12px 20px;border:1px solid #e2edcb30;border-radius:12px;background:#193f30db;box-shadow:0 8px 20px #20180b1a;color:#e7efd8;font-size:12px;line-height:1.6}
@@ -267,7 +267,7 @@
 .ss-meal-stage:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#03101399,transparent 32%,#03101344 64%,#031013e8),linear-gradient(90deg,#020b1099,transparent 34% 70%,#020b1055);pointer-events:none}
 .ss-meal-intro{text-align:center;padding:0 22px;text-shadow:0 2px 25px #000a}
 .ss-meal-eyebrow{color:#e7d8b5;font-size:11px;text-transform:uppercase;letter-spacing:.23em}
-.ss-meal-stage .ss-meal-intro h1{font-family:Georgia,serif;font-size:clamp(28px,2.6vw,40px);font-weight:400;letter-spacing:-.04em;line-height:1.15;margin:12px 0 0}
+.ss-meal-stage .ss-meal-intro h1{font-family:var(--font-heading);font-size:clamp(28px,2.6vw,40px);font-weight:400;letter-spacing:-.04em;line-height:1.15;margin:12px 0 0}
 .ss-meal-stage .ss-meal-intro h1 em{color:#e4ce99;font-weight:400}
 .ss-meal-tabs{display:flex;justify-content:center;gap:4px;margin:20px auto 0;padding:4px;border:1px solid #e9d9ae26;border-radius:30px;background:#0e1c1dc4}
 .ss-meal-tabs button{border:0;border-radius:24px;padding:10px 20px;min-height:44px;background:transparent;color:#d2d4c8;cursor:pointer;font-size:13px;transition:background .2s,color .2s}
@@ -286,7 +286,7 @@
 .ss-pillar-wood{position:relative;display:block;height:calc(var(--meal-width)*.39);width:108%;margin:0 -4%;border-radius:50%;background:linear-gradient(0deg,#1a1109cc,#9d794e33),url('/tabletop-sunlight.png') center/cover;box-shadow:inset 0 -14px 8px #140d0999,inset 0 2px 1px #d4b78d99,0 17px 17px -8px #020809b0}
 .ss-pillar-wood:before{content:"";position:absolute;inset:0 0 16%;border-radius:50%;background:linear-gradient(135deg,#e3bc7a22,#2a1a1344),url('/tabletop-sunlight.png') center/cover;box-shadow:inset 0 1px 1px #ead3a66b}
 .ss-pillar-label{position:relative;z-index:3;display:block;width:max-content;min-width:70%;max-width:110%;margin:-4px auto 0;padding:12px 22px;border:1px solid #c9c29a44;border-radius:40px;background:linear-gradient(135deg,#323b2dee,#17231fee);box-shadow:inset 0 1px #f6e2b00a,0 7px 20px #0002;text-align:center}
-.ss-pillar-label strong{font-family:Georgia,serif;font-size:clamp(18px,1.65vw,26px);font-weight:400;line-height:1.2;color:#f3e5c7;white-space:nowrap}
+.ss-pillar-label strong{font-family:var(--font-heading);font-size:clamp(18px,1.65vw,26px);font-weight:400;line-height:1.2;color:#f3e5c7;white-space:nowrap}
 .ss-meal-navigation{display:flex;gap:25px;align-items:center;justify-content:center;margin-top:-16px}
 .ss-meal-navigation button{position:absolute;top:45%;z-index:5;width:56px;height:56px;border-radius:50%;border:1px solid #e8ddae66;background:linear-gradient(135deg,#39432ee8,#15221fe8);color:#fff7e5;box-shadow:0 5px 22px #0004;cursor:pointer;transition:background .2s,transform .2s}
 .ss-meal-navigation button:first-child{right:calc(50% + var(--meal-width)*.68)}

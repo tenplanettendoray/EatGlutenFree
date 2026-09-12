@@ -13,7 +13,7 @@ import { CityInput } from "./city-input";
 import { AllergyQuest } from "./allergy-quest";
 import { InteractiveGlobe } from "./interactive-globe";
 import { SearchFoodPicker } from "./meal-selector";
-import { SafeServeMark } from "./safe-serve-logo";
+import { BrandWordmark, SafeServeMark } from "./safe-serve-logo";
 
 type RestaurantLocation = {
   label: string;
@@ -879,7 +879,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   return (
     <main className={searchPage ? "search-page" : undefined}>
       <motion.header className="site-header" initial={shouldReduceMotion ? false : { opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .3, ease: [.22, 1, .36, 1] }}>
-        <Link className="brand" href="/" aria-label="Return to the Safe Serve start page"><span className="brand-symbol"><SafeServeMark /></span><span className="brand-lockup"><WordGroups text="Safe Serve" /><small>CanIEatIt?</small></span></Link>
+        <Link className="brand" href="/" aria-label="Return to the Gluten FreEat start page"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
         <AccountControls />
       </motion.header>
 
@@ -888,7 +888,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       <section className={searchPage ? "hero search-workspace-hero" : "hero"} id="top">
         {!searchPage && <>
         <motion.div className="hero-copy" initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .35 }} transition={{ duration: .28, ease: "easeOut" }}>
-          <motion.p className="brand-catchphrase" initial={shouldReduceMotion ? false : { opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: .7 }} transition={{ duration: .22 }}><WordGroups text="CanIEatIt?" /></motion.p>
+          <motion.p className="brand-catchphrase" initial={shouldReduceMotion ? false : { opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: .7 }} transition={{ duration: .22 }}><WordGroups text="Can I Eat It?" /></motion.p>
           <h1 className="animated-headline" aria-label="Find a table that fits you."><span className="headline-line" aria-hidden="true">{["Find", "a", "table", "that"].map((word, index) => <HeadlineWord key={word} index={index} reducedMotion={shouldReduceMotion}>{word}</HeadlineWord>)}</span><br /><motion.em className="word-group fits-you" aria-hidden="true" initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} whileHover={shouldReduceMotion ? undefined : { y: -2, fontWeight: 500 }} viewport={{ once: true, amount: .65 }} transition={{ duration: shouldReduceMotion ? 0 : .25, delay: shouldReduceMotion ? 0 : .1, ease: "easeOut" }}>fits you.</motion.em></h1>
         </motion.div>
 
@@ -976,7 +976,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
 
       {!searchPage && <motion.section className="safety-strip" id="safety" initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .25 }} transition={{ duration: .25, ease: "easeOut" }}>{safetyItems.map((item, index) => <motion.div key={item.title} initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .65 }} transition={{ duration: .22, delay: shouldReduceMotion ? 0 : index * .025, ease: "easeOut" }}><span aria-hidden="true">{item.icon}</span><strong><WordGroups text={item.title} /></strong><p><WordGroups text={item.copy} /></p></motion.div>)}</motion.section>}
 
-      {!searchPage && <motion.footer initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .55 }} transition={{ duration: .22 }}><div className="brand"><span className="brand-symbol"><SafeServeMark /></span><span className="brand-lockup"><WordGroups text="Safe Serve" /><small>CanIEatIt?</small></span></div><p><WordGroups text="Locations © OpenStreetMap contributors." /></p><p><WordGroups text="Research only—confirm with staff." /></p></motion.footer>}
+      {!searchPage && <motion.footer initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .55 }} transition={{ duration: .22 }}><div className="brand"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></div><p><WordGroups text="Locations © OpenStreetMap contributors." /></p><p><WordGroups text="Research only—confirm with staff." /></p></motion.footer>}
 
       <AnimatePresence>
       {locationPickerOpen && <motion.div className="location-picker-backdrop" role="presentation" onMouseDown={() => setLocationPickerOpen(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: shouldReduceMotion ? 0 : .18 }}>

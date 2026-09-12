@@ -18,7 +18,7 @@ const socialProviders = {
 
 function createAuth() {
   return betterAuth({
-  appName: "Safe Serve",
+  appName: "Gluten FreEat",
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(getDb(), { provider: "sqlite", schema }),

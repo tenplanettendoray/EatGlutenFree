@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-import { SafeServeMark } from "../safe-serve-logo";
+import { BrandWordmark, SafeServeMark } from "../safe-serve-logo";
 
 type AdminUser = {
   id: string;
@@ -56,7 +56,7 @@ export default function AdminPage() {
   return (
     <main className="admin-page">
       <header className="admin-header">
-        <Link className="brand" href="/" aria-label="Return to Safe Serve"><span className="brand-symbol"><SafeServeMark /></span><span className="brand-lockup">Safe Serve<small>CanIEatIt?</small></span></Link>
+        <Link className="brand" href="/" aria-label="Return to Gluten FreEat"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
         <div><span>Private workspace</span><strong>Admin console</strong></div>
         <Link className="admin-back-link" href="/account">Account</Link>
       </header>

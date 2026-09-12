@@ -280,7 +280,7 @@ export async function discoverRestaurantsWithOpenRouter(input: DiscoveryInput) {
           "Content-Type": "application/json",
           ...(provider.openRouter ? {
             "HTTP-Referer": process.env.BETTER_AUTH_URL?.trim() || "http://localhost:3000",
-            "X-Title": "Safe Serve",
+            "X-Title": "Gluten FreEat",
           } : {}),
         },
         body: JSON.stringify({

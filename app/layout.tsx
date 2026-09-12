@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Fraunces, Manrope, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 import "./experience.css";
 import "./mobile.css";
+import "./typography.css";
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const headingFont = Fraunces({ variable: "--font-fraunces", subsets: ["latin"], display: "swap" });
+const interfaceFont = Manrope({ variable: "--font-manrope", subsets: ["latin"], display: "swap" });
+const logoFont = Pinyon_Script({ variable: "--font-pinyon", subsets: ["latin"], weight: "400", display: "swap" });
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
@@ -16,22 +18,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = requestHeaders.get("x-forwarded-proto") || (host.startsWith("localhost") ? "http" : "https");
   const imageUrl = `${protocol}://${host}/og-canieatit.png`;
   return {
-    title: "Safe Serve — CanIEatIt?",
+    title: "Gluten FreEat — Can I Eat It?",
     description: "Discover nearby restaurants and review available dietary details before you dine.",
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
     openGraph: {
-      title: "Safe Serve — CanIEatIt?",
+      title: "Gluten FreEat — Can I Eat It?",
       description: "Research nearby restaurants around your food allergies.",
-      images: [{ url: imageUrl, width: 1536, height: 1024, alt: "Safe Serve — CanIEatIt?" }],
+      images: [{ url: imageUrl, width: 1536, height: 1024, alt: "Gluten FreEat — Can I Eat It?" }],
     },
-    twitter: { card: "summary_large_image", title: "Safe Serve", description: "CanIEatIt? Find a table that fits you.", images: [imageUrl] },
+    twitter: { card: "summary_large_image", title: "Gluten FreEat", description: "Can I Eat It? Find a table that fits you.", images: [imageUrl] },
   };
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${geistMono.variable}`}>
+      <body className={`${headingFont.variable} ${interfaceFont.variable} ${logoFont.variable}`}>
         {children}
       </body>
     </html>

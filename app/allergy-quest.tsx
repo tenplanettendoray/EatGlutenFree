@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
 import Link from "next/link";
 import { AccountControls } from "./auth-ui";
-import { SafeServeMark } from "./safe-serve-logo";
+import { BrandWordmark, SafeServeMark } from "./safe-serve-logo";
 import { InteractiveGlobe } from "./interactive-globe";
 import { MealSelector } from "./meal-selector";
 import { CityInput } from "./city-input";
@@ -166,7 +166,7 @@ export function AllergyQuest(props: Props) {
 
   return <main className={`ss-experience ss-step-${step}`}>
     <header className="ss-nav">
-      <Link href="/" className="ss-brand" aria-label="Safe Serve home"><SafeServeMark /><span>Safe Serve<small>CanIEatIt?</small></span></Link>
+      <Link href="/" className="ss-brand" aria-label="Gluten FreEat home"><SafeServeMark /><BrandWordmark /></Link>
       <nav className="ss-steps" aria-label="Search steps"><button type="button" aria-label="1. Allergy profile" aria-current={step === 1 ? "step" : undefined} onClick={() => goToStep(1)}><b>1</b><span>Allergy profile</span></button><i /><button type="button" aria-label="2. Destination" aria-current={step === 2 ? "step" : undefined} onClick={() => goToStep(2)}><b>2</b><span>Destination</span></button><i /><button type="button" disabled={!location.trim()} aria-label="3. What to eat" aria-current={step === 3 ? "step" : undefined} onClick={() => goToStep(3)}><b>3</b><span>What to eat</span></button></nav>
       <AccountControls />
     </header>

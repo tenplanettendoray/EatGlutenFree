@@ -1,3 +1,7 @@
+export function BrandWordmark() {
+  return <span className="brand-lockup"><span className="brand-name">Gluten FreEat</span><small>Can I Eat It?</small></span>;
+}
+
 export function SafeServeMark({ className = "safe-serve-mark" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

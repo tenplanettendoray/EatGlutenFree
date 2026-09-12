@@ -2,14 +2,14 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("builds the Safe Serve homepage and catchphrase", async () => {
+test("builds the Gluten FreEat homepage and catchphrase", async () => {
   const [layout, homepage] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
   ]);
-  assert.match(layout, /Safe Serve — CanIEatIt\?/i);
-  assert.match(homepage, /aria-label="Return to the Safe Serve start page"/i);
-  assert.match(homepage, /CanIEatIt\?/i);
+  assert.match(layout, /Gluten FreEat — Can I Eat It\?/i);
+  assert.match(homepage, /aria-label="Return to the Gluten FreEat start page"/i);
+  assert.match(homepage, /Can I Eat It\?/i);
   assert.match(homepage, /AccountControls/i);
   assert.doesNotMatch(homepage, /ClearPlate/i);
 });
@@ -22,7 +22,7 @@ test("keeps the Better Auth account experience wired to public routes", async ()
     readFile(new URL("../app/api/auth/[...all]/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
-  assert.match(accountPage, /Safe Serve/i);
+  assert.match(accountPage, /Gluten FreEat/i);
   assert.match(authUi, /authClient\.signUp\.email/);
   assert.match(authUi, /authClient\.signIn\.email/);
   assert.match(authUi, /provider: "google"/);

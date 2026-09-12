@@ -231,7 +231,7 @@ function compatibilityFromText(content: string): AiCompatibility | null {
   if (/\b(compatible|reasonable|plausible|may fit|can accommodate|offers|has gluten[- ]free|has gluten free|allergen information|allergy-aware)\b/.test(lower)) {
     return { compatible: true, confidence: /\b(strong|known|offers|has gluten[- ]free|has gluten free|confirmed)\b/.test(lower) ? "medium" : "low", reason: text.slice(0, 240) };
   }
-  return { compatible: true, confidence: "low", reason: `AI response was not structured, so Safe Serve saved this only as a low-confidence lead: ${text.slice(0, 180)}` };
+  return { compatible: true, confidence: "low", reason: `AI response was not structured, so Gluten FreEat saved this only as a low-confidence lead: ${text.slice(0, 180)}` };
 }
 
 async function askAiCompatibility(name: string, location: string, food: string, allergies: string[]): Promise<AiCompatibilityAttempt> {
@@ -248,7 +248,7 @@ async function askAiCompatibility(name: string, location: string, food: string, 
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": process.env.BETTER_AUTH_URL?.trim() || "http://localhost:3000",
-        "X-Title": "Safe Serve",
+        "X-Title": "Gluten FreEat",
       },
       body: JSON.stringify({
         model,
@@ -687,8 +687,8 @@ export async function POST(request: NextRequest) {
   const payload = await preferencePayload(session.user.id, context);
   const feedbackTone = "favorable";
   const savedMessage = kind === "avoid"
-    ? `${names[0]} avoided. Safe Serve will push it down for this location/allergy/search context.`
-    : `${names[0]} suggested. Safe Serve will give it a moderate boost for this location/allergy/search context.`;
+    ? `${names[0]} avoided. Gluten FreEat will push it down for this location/allergy/search context.`
+    : `${names[0]} suggested. Gluten FreEat will give it a moderate boost for this location/allergy/search context.`;
 
   if (alreadyClaimed) {
     return NextResponse.json({

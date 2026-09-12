@@ -124,7 +124,7 @@ function CustomSignIn() {
   return (
     <div className="safe-auth-panel">
       <div className="auth-card-logo"><SafeServeMark /></div>
-      <span className="section-kicker">Safe Serve</span>
+      <span className="section-kicker">Gluten FreEat</span>
       <h1>Welcome back</h1>
       <SocialButtons mode="sign-in" />
       <form className="safe-auth-form" onSubmit={submit}>
@@ -171,7 +171,7 @@ function CustomSignUp() {
   return (
     <div className="safe-auth-panel">
       <div className="auth-card-logo"><SafeServeMark /></div>
-      <span className="section-kicker">Safe Serve</span>
+      <span className="section-kicker">Gluten FreEat</span>
       <h1>Create your account</h1>
       <SocialButtons mode="sign-up" />
       <form className="safe-auth-form" onSubmit={register}>
