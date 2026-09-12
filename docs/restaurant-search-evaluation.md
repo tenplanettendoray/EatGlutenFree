@@ -57,7 +57,7 @@ still confirm ingredients and cross-contact with restaurant staff.
 - TypeScript type checking passed.
 - The benchmark requires at least one independently referenced official-domain hit
   for positive cases; a merely non-empty list does not pass.
-- Search cache version 25 accepts only current grounded payloads for 24 hours and
+- Search cache version 26 accepts only current grounded payloads for 24 hours and
   shares concurrent identical discovery work within a worker.
 
 Run `node --env-file=.env.local scripts/evaluate-restaurant-search.mjs` to isolate

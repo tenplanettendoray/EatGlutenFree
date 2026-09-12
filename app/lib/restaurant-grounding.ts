@@ -61,8 +61,9 @@ export function sourcesFromAnnotations(annotations: unknown, input: RestaurantQu
   return sources.slice(0, 10);
 }
 
-export function sourcesFromGroqTools(tools: unknown, input: RestaurantQuery) {
+export function sourcesFromGroqTools(tools: unknown, input: RestaurantQuery, selectedContent = "") {
   if (!Array.isArray(tools)) return [];
+  const selectedUrls = new Set([...selectedContent.matchAll(/https?:\/\/[^\s)\]]+/g)].map(match => officialUrl(match[0].replace(/[.,;]+$/, ""))).filter(Boolean).map(url => url.replace(/\/$/, "")));
   const candidates: Array<{ url: string; title: string; text: string }> = [];
   const seen = new Set<string>();
   for (const tool of tools) {
@@ -71,8 +72,9 @@ export function sourcesFromGroqTools(tools: unknown, input: RestaurantQuery) {
     for (const match of entries) {
       const url = officialUrl(match[2]);
       if (!url || seen.has(url)) continue;
+      if (selectedUrls.size && !selectedUrls.has(url.replace(/\/$/, ""))) continue;
       const host = new URL(url).hostname;
-      if (/findmeglutenfree|glutenlibre|wanderlust|reddit|tripadvisor|happycow|yelp|restaurantguru|gluten\.guide|lacarte\.menu|menuweb|restaurantji|foursquare|opentable|trip\.com|eater\.(?:com|space)|mapstr|menu-world|res-menu|timeout|wheree|ineews|visitcity|atly|glutoapp|gf-explorer|thatsup|spokin|allergycompanion|webzine|foodcompass|vegewel|japan-glutenfree|gluten-free-japan|abroad|tripaligner|travelpal/i.test(host)) continue;
+      if (/findmeglutenfree|glutenlibre|wanderlust|reddit|tripadvisor|happycow|yelp|restaurantguru|gluten\.guide|lacarte\.menu|menuweb|restaurantji|foursquare|opentable|trip\.com|eater\.(?:com|space)|mapstr|menu-world|res-menu|timeout|wheree|ineews|visitcity|atly|glutoapp|gf-explorer|thatsup|spokin|allergycompanion|webzine|foodcompass|vegewel|japan-glutenfree|gluten-free-japan|glutenfreealchemist|abroad|tripaligner|travelpal/i.test(host)) continue;
       const title = htmlText(match[1]);
       const text = htmlText(`${match[1]} ${match[3]}`);
       if (!mentionsCity(text, input.location) || !mentionsDish(text, input.food)) continue;
@@ -115,7 +117,8 @@ async function publicSearchSources(input: RestaurantQuery): Promise<RestaurantSo
     });
     if (!response.ok) { console.warn("Restaurant web research failed", response.status); await response.body?.cancel(); return []; }
     const data = JSON.parse(await boundedText(response, 500000));
-    candidates = sourcesFromGroqTools(data.choices?.[0]?.message?.executed_tools, input);
+    const message = data.choices?.[0]?.message;
+    candidates = sourcesFromGroqTools(message?.executed_tools, input, typeof message?.content === "string" ? message.content : "");
   } catch { return []; }
   const checked = await Promise.all(candidates.slice(0, 14).map(async source => {
     const page = await fetchPublicPage(source.url);
