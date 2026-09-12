@@ -27,7 +27,7 @@ export function officialUrl(value: unknown) {
   const url = publicUrl(value);
   if (!url) return "";
   const host = new URL(url).hostname;
-  return /(^|\.)(google|bing|yelp|tripadvisor|thefork|facebook|instagram|tiktok|wikipedia|ubereats|deliveroo|doordash|openstreetmap)\./i.test(host) ? "" : url;
+  return /(^|\.)(google|bing|yelp|tripadvisor|thefork|facebook|instagram|tiktok|wikipedia|ubereats|deliveroo|doordash|openstreetmap|seamless|grubhub|justeat|just-eat)\./i.test(host) ? "" : url;
 }
 
 /** Bound bytes while reading, rather than allocating an arbitrary response first. */
@@ -79,11 +79,13 @@ export async function fetchPublicPage(value: string): Promise<{ url: string; htm
 export function htmlText(html: string) {
   return html.replace(/<(script|style|noscript|svg)\b[^>]*>[\s\S]*?<\/\1>/gi, " ").replace(/<[^>]+>/g, " ")
     .replace(/&amp;/gi, "&").replace(/&quot;/gi, '"').replace(/&#0?39;|&apos;/gi, "'").replace(/&nbsp;/gi, " ")
+    .replace(/&#x([\da-f]+);/gi, (_, n) => parseInt(n, 16) <= 0x10ffff ? String.fromCodePoint(parseInt(n, 16)) : " ")
+    .replace(/&(eacute|egrave|agrave|ugrave|euml|ouml|uuml|auml|ccedil);/gi, (_, name: string) => ({eacute:"é",egrave:"è",agrave:"à",ugrave:"ù",euml:"ë",ouml:"ö",uuml:"ü",auml:"ä",ccedil:"ç"})[name.toLowerCase()] || " ")
     .replace(/&#(\d+);/g, (_, n) => Number(n) <= 0x10ffff ? String.fromCodePoint(Number(n)) : " ").replace(/\s+/g, " ").trim();
 }
 
 export function normalize(value: string) {
-  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").normalize("NFC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 }
 
 export function websiteIdentity(html: string, names: string[], city: string) {

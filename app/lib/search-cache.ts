@@ -15,7 +15,7 @@ export async function restaurantSearchCacheKey(input: {
   longitude?: number;
   food: string;
   allergies: string[];
-}, version = 24) {
+}, version = 25) {
   const normalizedLocation = normalized(input.location);
   const source = JSON.stringify({
     version,
@@ -38,7 +38,7 @@ export async function restaurantSearchCacheKey(input: {
 
 export async function readRestaurantSearchCache<T>(cacheKey: string): Promise<T | null> {
   const row = await getDb().select().from(restaurantSearchCache).where(eq(restaurantSearchCache.cacheKey, cacheKey)).limit(1).then((rows) => rows[0]);
-  if (!row) return null;
+  if (!row || Date.now() - new Date(row.createdAt).getTime() > 24 * 60 * 60 * 1000) return null;
   try {
     return JSON.parse(row.payload) as T;
   } catch {
