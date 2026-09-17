@@ -71,7 +71,7 @@ export default function PremiumPage() {
   return (
     <main className="premium-page">
       <header className="premium-nav">
-        <Link className="brand" href="/" aria-label="Return to the Gluten FreEat start page"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
+        <Link className="brand" href="/?step=allergies" aria-label="Return to the Gluten FreEat allergy selection"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
         <div className="premium-nav-actions"><Link href={returnTo}>Back to search</Link><AccountControls /></div>
       </header>
 

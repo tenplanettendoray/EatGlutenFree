@@ -30,7 +30,7 @@
   .account-button .account-button-label{display:none}
   .account-button>span.account-icon{width:28px;height:28px;background:transparent;color:inherit}
   .ss-nav{height:64px;min-height:64px;padding:0 max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left));gap:8px}
-  .ss-brand{gap:6px}.ss-brand>span{font-size:18px}.ss-brand>svg{width:26px;height:32px}.ss-brand small{font-size:9px;letter-spacing:1px;margin-top:3px}
+  .ss-brand{gap:6px}.ss-brand>span{font-size:18px}.ss-brand>svg,.ss-brand>img{width:26px;height:32px}.ss-brand small{font-size:9px;letter-spacing:1px;margin-top:3px}
   .ss-nav .ss-steps{display:none}
   .ss-steps button{width:36px;min-height:44px;justify-content:center;padding:0}
   .ss-steps b{width:24px;height:24px}.ss-steps span,.ss-steps i{display:none}

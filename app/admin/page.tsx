@@ -56,7 +56,7 @@ export default function AdminPage() {
   return (
     <main className="admin-page">
       <header className="admin-header">
-        <Link className="brand" href="/" aria-label="Return to Gluten FreEat"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
+        <Link className="brand" href="/?step=allergies" aria-label="Return to Gluten FreEat allergy selection"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
         <div><span>Private workspace</span><strong>Admin console</strong></div>
         <Link className="admin-back-link" href="/account">Account</Link>
       </header>

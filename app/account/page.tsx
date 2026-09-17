@@ -8,7 +8,7 @@ export default function AccountPage() {
   return (
     <main className="account-page">
       <header className="account-header">
-        <Link className="brand" href="/" aria-label="Return to Gluten FreEat"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
+        <Link className="brand" href="/?step=allergies" aria-label="Return to Gluten FreEat allergy selection"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
         <AccountControls />
       </header>
       <section className="account-shell">

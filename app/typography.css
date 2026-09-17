@@ -28,7 +28,7 @@
   font-display:swap;
 }
 body{
-  --font-logo:"Pinyon Script",cursive;
+  --font-logo:"Fraunces",Georgia,serif;
   --font-heading:"Fraunces",Georgia,serif;
   --font-interface:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-legacy:"Inter",system-ui,sans-serif;
@@ -67,12 +67,12 @@ h1 em,h2 em,h3 em{font-family:inherit;font-weight:inherit!important;font-style:n
 .brand .brand-name,.ss-brand .brand-name{
   display:block;
   font-family:var(--font-logo);
-  font-size:40px;
-  font-weight:400;
+  font-size:32px;
+  font-weight:650;
   font-style:normal;
   font-synthesis:none;
   letter-spacing:0;
-  line-height:1.12;
+  line-height:1.04;
   white-space:nowrap;
 }
 .brand .brand-lockup small,.ss-brand .brand-lockup small{
@@ -88,13 +88,184 @@ h1 em,h2 em,h3 em{font-family:inherit;font-weight:inherit!important;font-style:n
   .ss-sidebar h1{font-size:32px}
   .ss-destination h1{font-size:32px}
   .ss-meal-stage .ss-meal-intro h1{font-size:30px}
-  .brand .brand-name,.ss-brand .brand-name{font-size:28px}
+  .brand .brand-name,.ss-brand .brand-name{font-size:24px}
   .brand .brand-lockup small,.ss-brand .brand-lockup small{font-size:9px;letter-spacing:.035em}
   .ss-brand{gap:5px;min-width:0}
   .ss-nav .ss-steps button{width:30px;min-width:30px}
 }
 @media(max-width:360px){
-  .ss-brand>svg{width:22px}
-  .ss-brand .brand-name{font-size:25px}
+  .ss-brand .brand-name{font-size:22px}
   .ss-nav .ss-steps button{width:26px;min-width:26px}
+}
+
+/* Final journey-layer overrides. This file loads last, so these win over the
+   older destination/mobile rules that also position the same elements. */
+.ss-journey-scene.is-meal-scene .ss-meal-stage{
+  --meal-width:clamp(160px,13vw,210px);
+  justify-content:flex-start;
+  padding-top:clamp(66px,7.4vh,88px);
+  overflow:hidden;
+}
+.ss-journey-scene.is-meal-scene .ss-meal-intro{
+  padding-top:0;
+}
+.ss-journey-scene.is-meal-scene .ss-meal-tabs{
+  margin-top:8px;
+}
+.ss-journey-scene.is-meal-scene .ss-meal-rail{
+  padding-top:18px;
+  padding-bottom:14px;
+}
+.ss-journey-scene.is-meal-scene .ss-meal-dots{
+  margin-top:8px;
+}
+.ss-journey-scene.is-meal-scene .ss-meal-finish{
+  margin-top:8px;
+}
+.ss-earth-stage .globe-interaction-hint{
+  top:max(22px,env(safe-area-inset-top));
+  bottom:auto;
+  left:50%;
+  z-index:8;
+  display:grid;
+  gap:3px;
+  min-width:min(270px,calc(100% - 32px));
+  max-width:calc(100% - 32px);
+  padding:11px 18px;
+  border:1px solid rgba(255,255,255,.46);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,255,255,.26),rgba(216,242,222,.13));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.62),0 14px 38px rgba(0,0,0,.22);
+  color:#f8f5e7;
+  text-align:center;
+  transform:translateX(-50%);
+  backdrop-filter:blur(6px) saturate(165%) contrast(112%);
+  -webkit-backdrop-filter:blur(6px) saturate(165%) contrast(112%);
+  animation:globe-select-glass-in .58s cubic-bezier(.16,1,.3,1) both;
+  pointer-events:none;
+}
+.ss-earth-stage .globe-interaction-hint span{
+  color:rgba(255,252,228,.92);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  text-shadow:0 1px 10px rgba(255,255,255,.26);
+}
+.ss-earth-stage .globe-interaction-hint strong{
+  color:#fffdf0;
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:0;
+  line-height:1.2;
+  text-transform:none;
+  text-shadow:0 2px 14px rgba(255,238,177,.3);
+}
+.ss-name-tag,
+.ss-custom-selections button,
+.ss-table-actions .ss-primary,
+.ss-destination-card,
+.search-card,
+.search-page .search-allergy-add.custom-allergy-row,
+.hero:not(.search-workspace-hero) .custom-allergy-row,
+.ai-provider-pill,
+.safe-auth-panel,
+.simple-profile,
+.quest-header{
+  border-color:rgba(255,255,255,.56);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72),0 12px 34px rgba(5,24,22,.12);
+  backdrop-filter:blur(6px) saturate(155%) contrast(112%);
+  -webkit-backdrop-filter:blur(6px) saturate(155%) contrast(112%);
+}
+.ss-primary.ss-check-next{
+  flex:0 0 auto;
+  width:74px;
+  height:74px;
+  min-width:74px;
+  min-height:74px;
+  padding:0;
+  border-radius:50%;
+  border:1px solid rgba(223,255,225,.48);
+  background:
+    radial-gradient(circle at 34% 22%,rgba(255,255,255,.72),rgba(255,255,255,.20) 18%,transparent 36%),
+    linear-gradient(145deg,rgba(97,204,134,.42),rgba(19,117,77,.30) 58%,rgba(6,62,46,.46));
+  color:#f7ffe7;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.74),inset 0 -10px 22px rgba(0,64,38,.18),0 16px 34px rgba(3,32,24,.20),0 0 28px rgba(99,221,132,.16);
+  text-shadow:0 2px 10px rgba(0,42,24,.45);
+  backdrop-filter:blur(7px) saturate(185%) contrast(118%);
+  -webkit-backdrop-filter:blur(7px) saturate(185%) contrast(118%);
+}
+.ss-primary.ss-check-next span{
+  display:block;
+  font-size:39px;
+  font-weight:850;
+  line-height:1;
+  transform:none;
+}
+.ss-primary.ss-check-next:hover:not(:disabled){
+  transform:translateY(-3px) scale(1.035);
+  background:
+    radial-gradient(circle at 34% 22%,rgba(255,255,255,.82),rgba(255,255,255,.25) 18%,transparent 36%),
+    linear-gradient(145deg,rgba(106,221,145,.50),rgba(24,135,87,.36) 58%,rgba(6,62,46,.52));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.82),inset 0 -10px 22px rgba(0,64,38,.18),0 20px 42px rgba(3,32,24,.28),0 0 40px rgba(116,241,145,.24);
+}
+.ss-primary.ss-check-next:hover span{
+  transform:none;
+}
+.ss-primary.ss-check-next:active:not(:disabled){
+  transform:translateY(0) scale(.985);
+}
+.ss-table-actions .ss-primary.ss-check-next{
+  min-width:78px;
+  width:78px;
+  min-height:78px;
+  height:78px;
+  border-radius:50%;
+  color:#f7ffe7;
+  background:
+    radial-gradient(circle at 34% 22%,rgba(255,255,255,.72),rgba(255,255,255,.20) 18%,transparent 36%),
+    linear-gradient(145deg,rgba(97,204,134,.42),rgba(19,117,77,.30) 58%,rgba(6,62,46,.46));
+}
+.ss-meal-finish .ss-primary.ss-check-next{
+  align-self:flex-start;
+  margin-top:20px;
+  margin-bottom:0;
+}
+@keyframes globe-select-glass-in{
+  from{opacity:0;transform:translate(-50%,-18px) scale(.94);filter:blur(4px)}
+  60%{opacity:1;transform:translate(-50%,3px) scale(1.015);filter:blur(0)}
+  to{opacity:1;transform:translate(-50%,0) scale(1);filter:blur(0)}
+}
+@media(max-width:560px){
+  .ss-journey-scene.is-meal-scene .ss-meal-stage{
+    --meal-width:clamp(132px,36vw,160px);
+    padding-top:60px;
+    overflow:hidden;
+  }
+  .ss-journey-scene.is-meal-scene .ss-meal-rail{
+    padding-top:12px;
+    padding-bottom:12px;
+  }
+  .ss-journey-scene.is-meal-scene .ss-meal-finish{
+    margin-top:10px;
+  }
+  .ss-earth-stage .globe-interaction-hint{
+    top:max(14px,env(safe-area-inset-top));
+    padding:9px 12px;
+    min-width:0;
+  }
+  .ss-primary.ss-check-next,
+  .ss-table-actions .ss-primary.ss-check-next{
+    width:64px;
+    height:64px;
+    min-width:64px;
+    min-height:64px;
+  }
+  .ss-primary.ss-check-next span{
+    font-size:34px;
+  }
+  .ss-meal-finish .ss-primary.ss-check-next{
+    align-self:center;
+    margin-bottom:0;
+  }
 }

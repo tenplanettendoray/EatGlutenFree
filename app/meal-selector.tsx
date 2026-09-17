@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const readClock = () => performance.now();
+
 type Meal = { name: string; detail: string; image: number; query?: string; bowl?: number };
 const meals: Meal[] = [
   { name: "Anything", detail: "Keep your options open", image: 11, query: "" },
@@ -102,6 +104,9 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
   const list = category === "meals" ? meals : cuisines;
   const rail = useRef<HTMLDivElement>(null);
   const frame = useRef(0);
+  const scrollUpdateFrame = useRef(0);
+  const wheelFrame = useRef(0);
+  const wheelTarget = useRef<number | null>(null);
   const scrollTarget = useRef(0);
   const activeRef = useRef(0);
   const requestedIndex = useRef<number | null>(null);
@@ -115,7 +120,12 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
     if (settleTimer.current) clearTimeout(settleTimer.current);
     settleTimer.current = null;
     cancelAnimationFrame(frame.current);
+    cancelAnimationFrame(scrollUpdateFrame.current);
+    cancelAnimationFrame(wheelFrame.current);
     frame.current = 0;
+    scrollUpdateFrame.current = 0;
+    wheelFrame.current = 0;
+    wheelTarget.current = null;
     requestedIndex.current = null;
   };
   const animateTo = (left: number) => {
@@ -124,7 +134,7 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
     scrollTarget.current = Math.max(0, Math.min(element.scrollWidth - element.clientWidth, left));
     if (reducedMotion) { element.scrollLeft = scrollTarget.current; requestedIndex.current = null; return; }
     if (frame.current) return;
-    let previous = performance.now();
+    let previous = readClock();
     const tick = (now: number) => {
       const dt = Math.min(now - previous, 40);
       previous = now;
@@ -170,14 +180,23 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
       if (!node) return;
       const left = node.offsetLeft + node.offsetWidth / 2 - element.clientWidth / 2;
       if (Math.abs(element.scrollLeft - left) > 1) go(index);
-    }, 140);
+    }, 180);
+  }
+  function queueScrollUpdate() {
+    if (scrollUpdateFrame.current) return;
+    scrollUpdateFrame.current = requestAnimationFrame(() => {
+      scrollUpdateFrame.current = 0;
+      const nearest = updateEmphasis();
+      if (requestedIndex.current === null && nearest !== activeRef.current) select(nearest);
+    });
+    scheduleSnap();
   }
   function releaseWithMomentum() {
     const element = rail.current;
     if (!element) return;
-    let velocity = performance.now() - drag.current.lastTime > 100 ? 0 : drag.current.velocity;
+    let velocity = readClock() - drag.current.lastTime > 100 ? 0 : drag.current.velocity;
     if (reducedMotion || Math.abs(velocity) <= .12) { go(updateEmphasis()); return; }
-    let previous = performance.now();
+    let previous = readClock();
     const coast = (now: number) => {
       const dt = Math.min(now - previous, 40);
       previous = now;
@@ -215,10 +234,18 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
       const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? element.clientWidth : 1);
       if (!delta) return;
       event.preventDefault();
-      const target = requestedIndex.current === null && frame.current ? scrollTarget.current : element.scrollLeft;
-      cancelScroll();
+      const target = wheelTarget.current ?? (requestedIndex.current === null && frame.current ? scrollTarget.current : element.scrollLeft);
+      cancelAnimationFrame(frame.current);
+      frame.current = 0;
       requestedIndex.current = null;
-      animateTo(target + delta * .85);
+      wheelTarget.current = Math.max(0, Math.min(element.scrollWidth - element.clientWidth, target + delta * .78));
+      if (!wheelFrame.current) wheelFrame.current = requestAnimationFrame(() => {
+        wheelFrame.current = 0;
+        if (wheelTarget.current === null) return;
+        element.scrollLeft = wheelTarget.current;
+        scrollTarget.current = wheelTarget.current;
+        wheelTarget.current = null;
+      });
       scheduleSnap();
     };
     const resize = new ResizeObserver(() => {
@@ -233,6 +260,7 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
   }, [category, reducedMotion]);
   const select = (index: number) => {
     const item = list[index];
+    if (activeRef.current === index) return;
     setActive(index);
     activeRef.current = index;
     setAnythingSelected(item.query === "");
@@ -266,14 +294,9 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
     <div className="ss-meal-gallery">
       <div key={category} ref={rail} className="ss-meal-rail" role="region" aria-roledescription="carousel" aria-label="Choose a meal or cuisine" tabIndex={0}
         onKeyDown={event => { if (event.key === "ArrowRight" || event.key === "ArrowLeft") { event.preventDefault(); go((requestedIndex.current ?? activeRef.current) + (event.key === "ArrowRight" ? 1 : -1)); } }}
-        onScroll={() => {
-          const nearest = updateEmphasis();
-          scheduleSnap();
-          if (requestedIndex.current !== null) return;
-          if (nearest !== activeRef.current) select(nearest);
-        }}
-        onPointerDown={event => { cancelScroll(); drag.current.moved = false; if (event.pointerType !== "mouse") { touching.current = true; return; } if (event.button !== 0) return; drag.current = { active: true, x: event.clientX, scroll: event.currentTarget.scrollLeft, moved: false, lastX: event.clientX, lastTime: performance.now(), velocity: 0 }; }}
-        onPointerMove={event => { const d = drag.current; if (!d.active) return; const dx = event.clientX - d.x; const now = performance.now(); const dt = now - d.lastTime; if (dt > 0) d.velocity = d.velocity * .25 + (d.lastX - event.clientX) / dt * .75; d.lastX = event.clientX; d.lastTime = now; if (Math.abs(dx) > 5) { d.moved = true; event.currentTarget.setPointerCapture(event.pointerId); } if (d.moved) event.currentTarget.scrollLeft = d.scroll - dx; }}
+        onScroll={queueScrollUpdate}
+        onPointerDown={event => { cancelScroll(); drag.current.moved = false; if (event.pointerType !== "mouse") { touching.current = true; return; } if (event.button !== 0) return; drag.current = { active: true, x: event.clientX, scroll: event.currentTarget.scrollLeft, moved: false, lastX: event.clientX, lastTime: readClock(), velocity: 0 }; }}
+        onPointerMove={event => { const d = drag.current; if (!d.active) return; const dx = event.clientX - d.x; const now = readClock(); const dt = now - d.lastTime; if (dt > 0) d.velocity = d.velocity * .25 + (d.lastX - event.clientX) / dt * .75; d.lastX = event.clientX; d.lastTime = now; if (Math.abs(dx) > 5) { d.moved = true; event.currentTarget.setPointerCapture(event.pointerId); } if (d.moved) event.currentTarget.scrollLeft = d.scroll - dx; }}
         onPointerUp={event => { touching.current = false; const d = drag.current; const wasDragging = d.active; d.active = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); if (wasDragging && d.moved) releaseWithMomentum(); else scheduleSnap(); }}
         onPointerCancel={() => { touching.current = false; drag.current.active = false; scheduleSnap(); }}
         onLostPointerCapture={() => { touching.current = false; drag.current.active = false; scheduleSnap(); }}>
@@ -287,7 +310,7 @@ export function MealSelector({ food, location, reducedMotion, onChange, onBack, 
       <div className="ss-meal-navigation"><button type="button" onClick={() => go((requestedIndex.current ?? activeRef.current) - 1)} disabled={active === 0} aria-label="Previous option"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m14 5-7 7 7 7" /></svg></button><span aria-live="polite">{list[active]?.name}<small>{active + 1} / {list.length}</small></span><button type="button" onClick={() => go((requestedIndex.current ?? activeRef.current) + 1)} disabled={active === list.length - 1} aria-label="Next option"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m10 5 7 7-7 7" /></svg></button></div>
       <div className="ss-meal-dots" aria-hidden="true">{list.map((meal, index) => <i key={meal.name} className={index === active ? "is-active" : ""} />)}</div>
     </div>
-    <div className="ss-meal-finish"><div><label htmlFor="quest-food">Meal or cuisine <span>(optional)</span></label><input id="quest-food" value={food} onChange={event => { setAnythingSelected(false); onChange(event.target.value); }} placeholder="Anything" /><p>{location}</p></div><button type="button" className="ss-primary" onClick={() => onStart()} disabled={!location.trim()}>Find places to eat <span>→</span></button></div>
+    <div className="ss-meal-finish"><div><label htmlFor="quest-food">Meal or cuisine <span>(optional)</span></label><input id="quest-food" value={food} onChange={event => { setAnythingSelected(false); onChange(event.target.value); }} placeholder="Anything" /><p>{location}</p></div><button type="button" className="ss-primary ss-check-next" onClick={() => onStart()} disabled={!location.trim()} aria-label="Find places to eat"><span aria-hidden="true">✓</span></button></div>
     <button type="button" className="ss-meal-back" onClick={onBack}>← Change destination</button>
   </div>;
 }

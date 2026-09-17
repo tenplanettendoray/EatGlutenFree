@@ -1436,7 +1436,7 @@ export function InteractiveGlobe({ location, reducedMotion, presentation = "dest
   return <div className={`interactive-globe-wrap ${textureReady ? "is-texture-ready" : "is-texture-loading"}`}>
     <div ref={mountRef} className="interactive-globe-canvas" onContextMenu={(event) => event.preventDefault()} onPointerDown={beginDrag} onPointerMove={moveDrag} onPointerLeave={() => { hoveredCountryRef.current = null; hoveredPointLocalRef.current = null; renderFramesRef.current = 18; }} onPointerUp={endDrag} onPointerCancel={endDrag} onLostPointerCapture={endDrag} role="img" aria-label={presentation === "meal" ? "Slowly rotating Earth behind the meal carousel" : "Interactive 3D Earth. Scroll to zoom. Hold the right mouse button and drag to rotate. Left-click to select. On touchscreens, pinch to zoom, drag to rotate and tap to select."} />
     {location.trim() && <div className="globe-location-readout"><span>Destination</span><strong>{location}</strong></div>}
-    {selected && <div className="globe-interaction-hint"><strong>{selected}</strong></div>}
+    {selected && <div className="globe-interaction-hint" role="status"><span>Selected destination</span><strong>{selected}</strong></div>}
     <a className="globe-image-credit" href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noreferrer">Earth: NASA · Clouds: Solar System Scope / CC BY 4.0</a>
   </div>;
 }

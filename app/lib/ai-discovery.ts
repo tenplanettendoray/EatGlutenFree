@@ -16,6 +16,7 @@ export type AiRestaurantLocation = {
 };
 
 export type AiDiscoveredRestaurant = {
+  allergenEvidence?: Array<{ allergy: string; quote: string; url: string }>;
   name: string;
   cuisine: string[];
   website: string;

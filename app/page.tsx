@@ -915,7 +915,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   return (
     <main className={searchPage ? "search-page" : undefined}>
       <motion.header className="site-header" initial={shouldReduceMotion ? false : { opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .3, ease: [.22, 1, .36, 1] }}>
-        <Link className="brand" href="/" aria-label="Return to the Gluten FreEat start page"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
+        <Link className="brand" href="/?step=allergies" aria-label="Return to the Gluten FreEat allergy selection"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
         <AccountControls />
       </motion.header>
 

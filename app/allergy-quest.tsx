@@ -38,7 +38,9 @@ export function AllergyQuest(props: Props) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const stepRef = useRef<1 | 2 | 3>(1);
   const [drag, setDrag] = useState<{ name: string; index: number; width: number; height: number } | null>(null);
+  const [dropPositions, setDropPositions] = useState<Record<string, { x: number; y: number }>>({});
   const [overTarget, setOverTarget] = useState(false);
+  const selectionTimer = useRef<number | null>(null);
   const targetRef = useRef<HTMLDivElement>(null);
   const journeyRef = useRef<HTMLElement>(null);
   const pointer = useRef({ x: 0, y: 0, startX: 0, startY: 0, offsetX: 0, offsetY: 0, moved: false });
@@ -46,13 +48,15 @@ export function AllergyQuest(props: Props) {
   const rotation = useSpring(tilt, { stiffness: 430, damping: 24, mass: .5 });
   const transition = { duration: reducedMotion ? 0 : .36, ease: [.22, 1, .36, 1] as [number, number, number, number] };
   const selectionLabel = allergies.length ? `${allergies.length} ${allergies.length === 1 ? "allergy" : "allergies"} selected` : "No allergies selected yet";
-  const customRimText = editingCustom ? customAllergy || "Add allergy" : "Add allergy";
+  const customRimText = editingCustom ? customAllergy.trim() || "Type an allergy" : "Add allergy";
 
   useEffect(() => {
     if (editingCustom) customInputRef.current?.focus();
     else if (wasEditingCustom.current) customTriggerRef.current?.focus();
     wasEditingCustom.current = editingCustom;
   }, [editingCustom]);
+
+  useEffect(() => () => { if (selectionTimer.current !== null) window.clearTimeout(selectionTimer.current); }, []);
 
   useEffect(() => {
     const restoreStep = () => {
@@ -161,7 +165,12 @@ export function AllergyQuest(props: Props) {
       const r = targetRef.current?.getBoundingClientRect();
       const inside = r && event.clientX >= r.left && event.clientX <= r.right && event.clientY >= r.top && event.clientY <= r.bottom;
       if (!pointer.current.moved) onToggleAllergy(drag.name);
-      else if (inside && !allergies.includes(drag.name)) onToggleAllergy(drag.name);
+      else if (inside && r) {
+        const x = Math.max(16, Math.min(84, ((event.clientX - r.left) / r.width) * 100));
+        const y = Math.max(18, Math.min(78, ((event.clientY - r.top) / r.height) * 100));
+        setDropPositions(current => ({ ...current, [drag.name]: { x, y } }));
+        if (!allergies.includes(drag.name)) onToggleAllergy(drag.name);
+      }
     }
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     resetHover(event.currentTarget); setDrag(null); setOverTarget(false);
@@ -169,12 +178,12 @@ export function AllergyQuest(props: Props) {
 
   return <main className={`ss-experience ss-step-${step}`}>
     <header className="ss-nav">
-      <Link href="/" className="ss-brand" aria-label="Gluten FreEat home"><SafeServeMark /><BrandWordmark /></Link>
+      <Link href="/?step=allergies" className="ss-brand" aria-label="Return to Gluten Freeat allergy selection" onClick={() => { stepRef.current = 1; setStep(1); }}><SafeServeMark /><BrandWordmark /></Link>
       <nav className="ss-steps" aria-label="Search steps"><button type="button" aria-label="1. Allergy profile" aria-current={step === 1 ? "step" : undefined} onClick={() => goToStep(1)}><b>1</b><span>Allergy profile</span></button><i /><button type="button" aria-label="2. Destination" aria-current={step === 2 ? "step" : undefined} onClick={() => goToStep(2)}><b>2</b><span>Destination</span></button><i /><button type="button" disabled={!location.trim()} aria-label="3. What to eat" aria-current={step === 3 ? "step" : undefined} onClick={() => goToStep(3)}><b>3</b><span>What to eat</span></button></nav>
       <AccountControls />
     </header>
     <AnimatePresence mode="wait">
-      {step === 1 ? <motion.section className="ss-table-scene" key="table" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
+      {step === 1 ? <motion.section className="ss-table-scene" key="table" initial={reducedMotion ? false : { opacity: 0, scale: .985 }} animate={{ opacity: 1, scale: 1 }} exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 1.025, filter: "blur(5px)" }} transition={transition}>
         <aside className="ss-sidebar">
           <h1>Your allergy profile</h1>
           <p>Tap the ingredients you avoid.</p>
@@ -190,14 +199,17 @@ export function AllergyQuest(props: Props) {
               <span className="ss-food-plate"><span className="ss-food" /></span><strong className="ss-name-tag">{name}</strong><span className="ss-check" aria-hidden="true">✓</span>
             </button>)}
             <div ref={targetRef} className={`ss-drop-plate ${overTarget ? "is-over" : ""}`} aria-label="Ingredients to avoid">
+              {editingCustom && <span className="ss-rim-feedback" role="status">Type your allergy · press Enter to add</span>}
               <div className="ss-drop-content">
                 <div className="ss-selected-plates">
-                  <AnimatePresence initial={false}>{allergies.map(name => <motion.button
-                    type="button" key={name} className="ss-selected-plate" style={foodStyle(foodIndex(name))}
+                  <AnimatePresence initial={false}>{allergies.map((name, selectedIndex) => {
+                    const position = dropPositions[name] ?? { x: 31 + (selectedIndex % 3) * 19, y: 36 + (Math.floor(selectedIndex / 3) % 2) * 25 };
+                    return <motion.button
+                    type="button" key={name} className="ss-selected-plate" style={{ ...foodStyle(foodIndex(name)), "--drop-x": `${position.x}%`, "--drop-y": `${position.y}%` } as CSSProperties}
                     onClick={() => onToggleAllergy(name)} aria-label={`Remove ${name}`} title={name}
                     initial={reducedMotion ? false : { opacity: 0, scale: .55, y: -12 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: .6 }} transition={transition}
-                  ><span className="ss-food-plate" aria-hidden="true">{foodIndex(name) >= 0 && <span className="ss-food" />}</span></motion.button>)}</AnimatePresence>
+                  ><span className="ss-food-plate" aria-hidden="true">{foodIndex(name) >= 0 && <span className="ss-food" />}</span></motion.button>})}</AnimatePresence>
                 </div>
               </div>
               <button ref={customTriggerRef} type="button" className="ss-plate-rim" aria-label="Add allergy" aria-expanded={editingCustom} aria-controls={editingCustom ? "quest-custom-allergy" : undefined} onClick={() => setEditingCustom(true)}>
@@ -215,14 +227,18 @@ export function AllergyQuest(props: Props) {
             </div>
           </div>
           {allergies.some(name => foodIndex(name) < 0) && <div className="ss-custom-selections" aria-label="Custom allergies">{allergies.filter(name => foodIndex(name) < 0).map(name => <button type="button" key={name} onClick={() => onToggleAllergy(name)} aria-label={`Remove custom allergy ${name}`}>{name}<span aria-hidden="true">×</span></button>)}</div>}
-          <div className="ss-table-actions"><button type="button" className="ss-primary" onClick={() => goToStep(2)}>Continue <span>→</span></button></div>
+          <div className="ss-table-actions"><button type="button" className="ss-primary ss-check-next" onClick={() => goToStep(2)} aria-label="Continue to destination"><span aria-hidden="true">✓</span></button></div>
         </div>
-      </motion.section> : <motion.section ref={journeyRef} className={`ss-destination ss-journey-scene ${step === 3 ? "is-meal-scene" : ""}`} key="destination" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
+      </motion.section> : <motion.section ref={journeyRef} className={`ss-destination ss-journey-scene ${step === 3 ? "is-meal-scene" : ""}`} key="destination" initial={reducedMotion ? false : { opacity: 0, scale: .97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ ...transition, duration: reducedMotion ? 0 : .52 }}>
         <div className="ss-destination-copy" hidden={step === 3}><h1>Where to?</h1>
           <label htmlFor="quest-location">Location</label><div className="ss-location-field"><CityInput id="quest-location" value={location} options={cityOptions} onChange={onLocationChange} onChoose={city => { onLocationChange(city); goToStep(3); }} /><span aria-hidden="true">⌖</span></div>
           <button className="ss-back" type="button" onClick={() => goToStep(1)}>← Allergy profile</button>
         </div>
-        <div className="ss-earth-stage"><InteractiveGlobe location={location} reducedMotion={reducedMotion} presentation={step === 3 ? "meal" : "destination"} onSelectCountry={selection => { onGlobeLocationSelect(selection); goToStep(3); }} /></div>
+        <div className="ss-earth-stage"><InteractiveGlobe location={location} reducedMotion={reducedMotion} presentation={step === 3 ? "meal" : "destination"} onSelectCountry={selection => {
+          onGlobeLocationSelect(selection);
+          if (selectionTimer.current !== null) window.clearTimeout(selectionTimer.current);
+          selectionTimer.current = window.setTimeout(() => goToStep(3), reducedMotion ? 0 : 460);
+        }} /></div>
         <aside className="ss-destination-summary" hidden={step === 3}><div className="ss-destination-card"><span>Current location</span><strong>{location || "Choose a destination"}</strong><span>Your avoid list</span><p>{allergies.length ? allergies.join(", ") : "No allergies selected"}</p></div></aside>
         {step === 3 && <MealSelector food={food} location={location} allergies={allergies} reducedMotion={reducedMotion} onChange={onFoodChange} onBack={() => goToStep(2)} onStart={onStart} />}
       </motion.section>}

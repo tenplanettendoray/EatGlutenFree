@@ -53,6 +53,7 @@ export async function fetchPublicPage(value: string): Promise<{ url: string; htm
   const signal = AbortSignal.timeout(6500);
   try {
     for (let redirects = 0; url && redirects <= 3; redirects++) {
+      signal.throwIfAborted();
       const host = new URL(url).hostname;
       const records = await Promise.race([
         Promise.allSettled([resolve4(host), resolve6(host)]).then(results => results.flatMap(r => r.status === "fulfilled" ? r.value : [])),
@@ -70,7 +71,9 @@ export async function fetchPublicPage(value: string): Promise<{ url: string; htm
         continue;
       }
       if (!response.ok || !/text\/html|application\/xhtml\+xml/i.test(response.headers.get("content-type") || "")) { console.warn("Website page unavailable", host, response.status); await response.body?.cancel(); return null; }
-      return { url, html: await boundedText(response) };
+      // Modern restaurant sites often include more than 700 KB of hydration
+      // data before their menu/footer. Keep a hard limit without excluding them.
+      return { url, html: await boundedText(response, 2_500_000) };
     }
   } catch (error) { console.warn("Website request failed", url ? new URL(url).hostname : "invalid", error instanceof Error ? error.name : "network"); }
   return null;
@@ -87,9 +90,9 @@ export function normalize(value: string) {
 }
 
 export function websiteIdentity(html: string, names: string[], city: string) {
-  const title = htmlText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "");
+  const title = [...html.matchAll(/<(?:title|h1)[^>]*>([\s\S]*?)<\/(?:title|h1)>/gi)].map(match => htmlText(match[1])).join(" ");
   const text = normalize(htmlText(html));
-  const identity = normalize(title + " " + (html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || ""));
+  const identity = normalize(title);
   if (/domain (?:is )?for sale|buy this domain|domain expired|website coming soon/i.test(text)) return false;
   const nameMatch = names.some(name => {
     const words = normalize(name).split(" ").filter(w => !/^(restaurant|cafe|bar|the|le|la|les|and|et|de|du)$/.test(w));
