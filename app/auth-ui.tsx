@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { safeAuthReturn } from "./lib/auth-return";
 import { authClient } from "./lib/auth-client";
 import { SafeServeMark } from "./safe-serve-logo";
 
-type AuthMode = "sign-in" | "sign-up";
 type SocialProvider = "google" | "apple" | "microsoft";
 
 function authErrorMessage(error: unknown, fallback: string) {
@@ -37,16 +37,28 @@ function EyeIcon({ hidden }: { hidden: boolean }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.7" />{hidden && <path d="m4 4 16 16" />}</svg>;
 }
 
+function returnPath() {
+  if (typeof window === "undefined") return "/search";
+  const raw = new URLSearchParams(window.location.search).get("callbackURL") || sessionStorage.getItem("auth-return") || "/search";
+  return safeAuthReturn(raw, window.location.origin);
+}
+
+function rememberPage() {
+  if (/^\/(sign-in|sign-up|onboarding)(\/|$)/.test(window.location.pathname)) return;
+  if (window.history.state?.safeServeDraft) sessionStorage.setItem("auth-search-draft", JSON.stringify(window.history.state.safeServeDraft));
+  sessionStorage.setItem("auth-return", window.location.pathname + window.location.search + window.location.hash);
+}
+
 export function AccountControls() {
   const { data: session, isPending } = authClient.useSession();
   return (
-    <Link className="account-button" href={session ? "/account" : "/sign-up"} aria-label={session ? "Account" : "Make an account"} aria-busy={isPending}>
+    <Link className="account-button" onClick={rememberPage} href={session ? "/account" : "/sign-up"} aria-label={session ? "Account" : "Make an account"} aria-busy={isPending}>
       <span className="account-icon" aria-hidden="true"><UserIcon /></span><span className="account-button-label">{session ? "Account" : "Make an account"}</span>
     </Link>
   );
 }
 
-function SocialButtons({ mode }: { mode: AuthMode }) {
+function SocialButtons() {
   const [busy, setBusy] = useState<SocialProvider | null>(null);
   const [error, setError] = useState("");
   const [enabledProviders, setEnabledProviders] = useState<SocialProvider[]>([]);
@@ -73,8 +85,8 @@ function SocialButtons({ mode }: { mode: AuthMode }) {
     try {
     const result = await authClient.signIn.social({
       provider,
-      callbackURL: mode === "sign-up" ? "/onboarding" : "/",
-      newUserCallbackURL: "/onboarding",
+      callbackURL: returnPath(),
+      newUserCallbackURL: `/onboarding?callbackURL=${encodeURIComponent(returnPath())}`,
     });
     if (result.error) {
       setError(result.error.message || `${provider} sign-in is not configured yet.`);
@@ -112,13 +124,13 @@ function CustomSignIn() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setError("");
-    const result = await authClient.signIn.email({ email: email.trim(), password, rememberMe, callbackURL: "/" });
+    const result = await authClient.signIn.email({ email: email.trim(), password, rememberMe, callbackURL: returnPath() });
     if (result.error) {
       setError(result.error.message || "We could not sign you in.");
       setBusy(false);
       return;
     }
-    window.location.assign("/");
+    window.location.assign(returnPath());
   }
 
   return (
@@ -126,7 +138,7 @@ function CustomSignIn() {
       <div className="auth-card-logo"><SafeServeMark /></div>
       <span className="section-kicker">Gluten FreEat</span>
       <h1>Welcome back</h1>
-      <SocialButtons mode="sign-in" />
+      <SocialButtons />
       <form className="safe-auth-form" onSubmit={submit}>
         <label htmlFor="sign-in-email">Email</label>
         <div className="auth-input-wrap"><span className="auth-field-icon"><MailIcon /></span><input id="sign-in-email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" /></div>
@@ -136,7 +148,7 @@ function CustomSignIn() {
         {error && <p className="auth-error" role="alert">{error}</p>}
         <button className="auth-submit" type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
       </form>
-      <p className="auth-switch">New here? <Link href="/sign-up">Create an account</Link></p>
+      <p className="auth-switch">New here? <Link href="/sign-up" onClick={() => sessionStorage.setItem("auth-return", returnPath())}>Create an account</Link></p>
     </div>
   );
 }
@@ -158,14 +170,14 @@ function CustomSignUp() {
       name: resolvedUsername,
       username: resolvedUsername,
       displayUsername: resolvedUsername,
-      callbackURL: "/",
+      callbackURL: returnPath(),
     });
     if (result.error) {
       setError(result.error.message || "We could not create your account.");
       setBusy(false);
       return;
     }
-    window.location.assign("/");
+    window.location.assign(returnPath());
   }
 
   return (
@@ -173,7 +185,7 @@ function CustomSignUp() {
       <div className="auth-card-logo"><SafeServeMark /></div>
       <span className="section-kicker">Gluten FreEat</span>
       <h1>Create your account</h1>
-      <SocialButtons mode="sign-up" />
+      <SocialButtons />
       <form className="safe-auth-form" onSubmit={register}>
         <label htmlFor="sign-up-email">Email</label>
         <div className="auth-input-wrap"><span className="auth-field-icon"><MailIcon /></span><input id="sign-up-email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" /></div>
@@ -185,7 +197,7 @@ function CustomSignUp() {
         {error && <p className="auth-error" role="alert">{error}</p>}
         <button className="auth-submit" type="submit" disabled={busy}>{busy ? "Creating account…" : "Create account"}</button>
       </form>
-      <p className="auth-switch">Already have an account? <Link href="/sign-in">Sign in</Link></p>
+      <p className="auth-switch">Already have an account? <Link href="/sign-in" onClick={() => sessionStorage.setItem("auth-return", returnPath())}>Sign in</Link></p>
     </div>
   );
 }
@@ -287,7 +299,7 @@ export function OAuthOnboarding() {
       });
       const passwordResult = await passwordResponse.json() as { error?: string };
       if (!passwordResponse.ok) throw new Error(passwordResult.error || "The password could not be set.");
-      window.location.assign("/");
+      window.location.assign(returnPath());
     } catch (onboardingError) {
       setError(authErrorMessage(onboardingError, "We could not finish your account."));
       setBusy(false);

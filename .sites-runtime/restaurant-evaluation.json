@@ -1,0 +1,87 @@
+{
+  "date": "2026-09-12T13:58:54.472Z",
+  "results": [
+    {
+      "query": {
+        "location": "Paris, France",
+        "food": "Pizza",
+        "allergies": [
+          "Gluten",
+          "Sesame"
+        ]
+      },
+      "mode": "runtime-order",
+      "provider": "OpenRouter",
+      "names": [
+        "Little Nonna",
+        "L'Artisan Napolitain"
+      ],
+      "count": 2,
+      "referenceHits": 1,
+      "referenceCount": 1,
+      "expectEmpty": false,
+      "passed": true,
+      "elapsedMs": 5805,
+      "restaurants": [
+        {
+          "name": "Little Nonna",
+          "cuisine": [
+            "Pizza"
+          ],
+          "website": "https://littlenonna-paris.com/en/accueil-english/",
+          "menuSourceUrl": "https://littlenonna-paris.com/en/accueil-english/",
+          "qualitySourceUrl": "https://littlenonna-paris.com/en/accueil-english/",
+          "evidenceSummary": "Gluten: “L'Italie sans gluten Ternes/Étoile 🍕 Pasta, pizzas & dolci maison 🍝 Avec/sans ” Sesame: not confirmed. Confirm ingredients and cross-contact with staff.",
+          "popularitySummary": "Selected from restaurant-published menu information; public ratings were not verified.",
+          "rankingReason": "Gluten-free Pizza options listed on the menu. Sesame handling is unconfirmed.",
+          "supportedAllergies": [
+            "Gluten"
+          ],
+          "missingAllergies": [
+            "Sesame"
+          ],
+          "locations": [
+            {
+              "label": "Paris",
+              "address": "12, Avenue Niel – 75017 Paris",
+              "website": "https://littlenonna-paris.com/en/accueil-english/",
+              "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Little%20Nonna%20Paris%2C%20France"
+            }
+          ],
+          "foodRelevanceTier": 5,
+          "allergyConfidenceTier": 3,
+          "popularityTier": 3
+        },
+        {
+          "name": "L'Artisan Napolitain",
+          "cuisine": [
+            "Pizza"
+          ],
+          "website": "https://artisan-napolitain.fr/pizza-sans-gluten-paris.html",
+          "menuSourceUrl": "https://artisan-napolitain.fr/pizza-sans-gluten-paris.html",
+          "qualitySourceUrl": "https://artisan-napolitain.fr/pizza-sans-gluten-paris.html",
+          "evidenceSummary": "Gluten: “Pizzas avec pate sans gluten pour les intolerances et regimes specifiques” Sesame: not confirmed. Confirm ingredients and cross-contact with staff.",
+          "popularitySummary": "Selected from restaurant-published menu information; public ratings were not verified.",
+          "rankingReason": "Gluten-free Pizza options listed on the menu. Sesame handling is unconfirmed.",
+          "supportedAllergies": [
+            "Gluten"
+          ],
+          "missingAllergies": [
+            "Sesame"
+          ],
+          "locations": [
+            {
+              "label": "Paris",
+              "address": "117 Rue du Théâtre, 75015 Paris",
+              "website": "https://artisan-napolitain.fr/pizza-sans-gluten-paris.html",
+              "sourceUrl": "https://www.google.com/maps/search/?api=1&query=L'Artisan%20Napolitain%20Paris%2C%20France"
+            }
+          ],
+          "foodRelevanceTier": 5,
+          "allergyConfidenceTier": 3,
+          "popularityTier": 3
+        }
+      ]
+    }
+  ]
+}

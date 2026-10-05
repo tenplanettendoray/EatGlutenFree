@@ -1,0 +1,65 @@
+[
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 1914,
+      "completion_tokens": 614,
+      "total_tokens": 2528
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Little Nonna\",\n      \"s\": 1,\n      \"a\": \"12, Avenue Niel – 75017 Paris\",\n      \"fq\": \"pizzas, pastas, salades, desserts, boissons bio et sans gluten (même la bière !)\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"100% sans gluten\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    },\n    {\n      \"n\": \"By Ciro - 22 Avenue Rapp\",\n      \"s\": 2,\n      \"a\": \"22 Avenue Rapp 75007 Paris\",\n      \"fq\": \"Our Organic Italian Menu, 100% Gluten-Free ... crispy pizzas\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"100% gluten-free cuisine\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    },\n    {\n      \"n\": \"By Ciro - 46 Avenue de Suffren\",\n      \"s\": 2,\n      \"a\": \"46 Avenue de Suffren 75015 Paris\",\n      \"fq\": \"100 % sans gluten : pizzas généreuses, pâtes soignées et desserts fondants\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"100 % sans gluten\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    },\n    {\n      \"n\": \"L'Artisan Napolitain\",\n      \"s\": 3,\n      \"a\": \"117 Rue du Theatre\",\n      \"fq\": \"pizza napolitaine ... La Margherita sans gluten ... pizza vegetarienne en version sans gluten\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"pate alternative sans gluten\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Tasca Paris\",\n      \"s\": 5,\n      \"a\": \"46 Avenue De Suffren, 75015 Paris, France 75015\",\n      \"fq\": \"100 % sans gluten : pizzas généreuses, pâtes soignées et desserts fondants\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"100 % sans gluten\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 653,
+      "completion_tokens": 137,
+      "total_tokens": 790
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Street Smash Burgers Cais do Sodré\",\n      \"s\": 1,\n      \"a\": \"Rua da Boavista 34, 1200-012 Lisboa, Portugal\",\n      \"fq\": \"gluten-free bun options, keeping all the texture and authentic taste of our handcrafted burgers\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"gluten-free bun options, keeping all the texture and authentic taste of our handcrafted burgers\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 1793,
+      "completion_tokens": 525,
+      "total_tokens": 2318
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Lievito72\",\n      \"s\": 1,\n      \"a\": \"Via del Forte Braschi 82A - 00167 Roma\",\n      \"fq\": \"Pizza a lunga lievitazione, fritti, bruschette e burger, con tante proposte disponibili anche senza glutine.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"tutto il menu anche senza glutine\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Pizzeria Teresina\",\n      \"s\": 4,\n      \"a\": \"Via San Tommaso d'Aquino 121, 00136 Roma RM\",\n      \"fq\": \"Tutto è disponibile anche senza glutine e lattosio!\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"senza glutine e lattosio\"\n        }\n      ]\n    },\n    {\n      \"n\": \"La Tana Dei Ricci\",\n      \"s\": 3,\n      \"a\": \"Via Pontina 391\",\n      \"fq\": \"Pizza \\\"scrocchiarella\\\", fritti artigianali e specialità di pesce in totale sicurezza.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Senza Glutine\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Trattoria Manzoni\",\n      \"s\": 5,\n      \"a\": \"Viale A. Manzoni, 93\",\n      \"fq\": \"Pizza (anche gluten free)\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"abbiamo una varietà di piatti, alimenti e menù che avranno solo l'imbarazzo della scelta\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Alternativo Roma\",\n      \"s\": 6,\n      \"a\": \"Via di Portonaccio, 33d, Roma, RM, Italia, 00159\",\n      \"fq\": \"Pizze e fritti senza ... buonissimi e nessun ...\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"senza glutine\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  }
+]

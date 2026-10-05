@@ -1,0 +1,65 @@
+[
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 282,
+      "completion_tokens": 312,
+      "total_tokens": 594
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"l\": \"Paris, France\",\n  \"p\": [\n    {\n      \"n\": \"Pizzeria Chez André\",\n      \"b\": \"5th Arrondissement\",\n      \"a\": \"10 Rue de la Huchette\",\n      \"c\": [\"Pizza\", \"Italian\"],\n      \"w\": \"\",\n      \"e\": \"Gluten-free pizza available on request\",\n      \"q\": \"Local spot known for traditional wood-fired pizzas\",\n      \"r\": \"Offers gluten-free pizza base; sesame seeds often used as garnish, confirm omission\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Pizzeria Chez André\",\n      \"b\": \"5th Arrondissement\",\n      \"a\": \"10 Rue de la Huchette\",\n      \"c\": [\"Pizza\", \"Italian\"],\n      \"w\": \"\",\n      \"e\": \"Gluten-free pizza available on request\",\n      \"q\": \"Local spot known for traditional wood-fired pizzas\",\n      \"r\": \"Offers gluten-free pizza base; sesame seeds often used as garnish, confirm omission\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 281,
+      "completion_tokens": 640,
+      "total_tokens": 921
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"l\": \"Lisbon, Portugal\",\n  \"p\": [\n    {\n      \"n\": \"Burgermeister\",\n      \"b\": \"Cais do Sodré\",\n      \"a\": \"Rua da Moeda 111\",\n      \"c\": [\"Burger\", \"Gluten-free\"],\n      \"w\": \"\",\n      \"e\": \"GF bun available\",\n      \"q\": \"Popular spot for burgers with GF bun option\",\n      \"r\": \"GF bun used for burger patty\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 5,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Ponto Final\",\n      \"b\": \"Alfama\",\n      \"a\": \"Rua de Santiago 73\",\n      \"c\": [\"Burger\", \"Seafood\"],\n      \"w\": \"\",\n      \"e\": \"GF bun on request\",\n      \"q\": \"Historic restaurant with GF bun option\",\n      \"r\": \"GF bun used for burger\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 4,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Casa da Índia\",\n      \"b\": \"Baixa\",\n      \"a\": \"Rua da Prata 116\",\n      \"c\": [\"Burger\", \"International\"],\n      \"w\": \"\",\n      \"e\": \"GF bun available\",\n      \"q\": \"International cuisine with GF bun\",\n      \"r\": \"GF bun used for burger\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Adega da Mouraria\",\n      \"b\": \"Mouraria\",\n      \"a\": \"Rua da Mouraria 51\",\n      \"c\": [\"Burger\", \"Portuguese\"],\n      \"w\": \"\",\n      \"e\": \"GF bun on request\",\n      \"q\": \"Portuguese restaurant with GF bun\",\n      \"r\": \"GF bun used for burger\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Time Out Market\",\n      \"b\": \"Baixa\",\n      \"a\": \"Avenida 24 de Julho 49\",\n      \"c\": [\"Burger\", \"Food Court\"],\n      \"w\": \"\",\n      \"e\": \"Multiple stalls with GF bun\",\n      \"q\": \"Food market with burger stalls offering GF bun\",\n      \"r\": \"GF bun available at various stalls\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 279,
+      "completion_tokens": 718,
+      "total_tokens": 997
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"l\": \"Rome, Italy\",\n  \"p\": [\n    {\n      \"n\": \"Pizzeria da Baffetto\",\n      \"b\": \"Trastevere\",\n      \"a\": \"Via della Lungara, 233\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Classic Roman pizza al taglio with gluten-free options\",\n      \"q\": \"Historic pizzeria in Trastevere, established 1961\",\n      \"r\": \"Offers gluten-free pizza bases made from rice and corn flour, cooked separately\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Bonci Pizzeria\",\n      \"b\": \"Testaccio\",\n      \"a\": \"Via della Paglia, 12\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Chef Gabriele Bonci known for gourmet pizza al taglio\",\n      \"q\": \"Renowned for high-quality ingredients and dough research\",\n      \"r\": \"Offers gluten-free pizza bases upon request, prepared in dedicated area\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Pizza Mio\",\n      \"b\": \"Piazza Navona\",\n      \"a\": \"Via di San Biagio della Paglia, 103\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Serves both regular and gluten-free pizza options\",\n      \"q\": \"Popular spot near Piazza Navona with casual atmosphere\",\n      \"r\": \"Gluten-free pizza available with rice flour base, staff aware of cross-contamination\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"La Gatta Mangiona\",\n      \"b\": \"Trastevere\",\n      \"a\": \"Via di San Francesco a Ripa, 145\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Specialty pizza restaurant with extensive menu\",\n      \"q\": \"Known for creative pizza combinations and good wine selection\",\n      \"r\": \"Offers gluten-free pizza bases, noted for accommodating dietary restrictions\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Pizzeria La Montecarlo\",\n      \"b\": \"Flaminio\",\n      \"a\": \"Via Alberto Cadlolo, 10\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Traditional pizzeria with gluten-free options\",\n      \"q\": \"Local favorite for authentic Roman pizza\",\n      \"r\": \"Gluten-free pizza base available, cooked on separate surface when possible\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  }
+]

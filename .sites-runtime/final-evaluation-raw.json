@@ -1,0 +1,86 @@
+[
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 1805,
+      "completion_tokens": 132,
+      "total_tokens": 1937
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Little Nonna\",\n      \"s\": 1,\n      \"a\": \"12, Avenue Niel – 75017 Paris\"\n    },\n    {\n      \"n\": \"L'Artisan Napolitain\",\n      \"s\": 2,\n      \"a\": \"117 Rue du Theatre dans le 15e arrondissement de Paris\"\n    },\n    {\n      \"n\": \"Little Nonna\",\n      \"s\": 4,\n      \"a\": \"12 Avenue Niel, 75017 Paris, France\"\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 694,
+      "completion_tokens": 59,
+      "total_tokens": 753
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Street Smash Burgers\",\n      \"s\": 1,\n      \"a\": \"Rua da Boavista 34, 1200-012 Lisboa, Portugal\"\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 3408,
+      "completion_tokens": 234,
+      "total_tokens": 3642
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Lievito72\",\n      \"s\": 1,\n      \"a\": \"Via del Forte Braschi 82A - 00167 Roma\"\n    },\n    {\n      \"n\": \"Pizzeria Teresina\",\n      \"s\": 2,\n      \"a\": \"Via San Tommaso d'Aquino 121, 00136 Roma RM\"\n    },\n    {\n      \"n\": \"La Tana Dei Ricci\",\n      \"s\": 3,\n      \"a\": \"Via Pontina 391\"\n    },\n    {\n      \"n\": \"Trattoria Manzoni\",\n      \"s\": 5,\n      \"a\": \"Viale A. Manzoni, 93 - 00185 Roma\"\n    },\n    {\n      \"n\": \"Alternativo Roma\",\n      \"s\": 6,\n      \"a\": \"Via di Portonaccio, 33d, Roma, RM, Italia, 00159\"\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 2151,
+      "completion_tokens": 157,
+      "total_tokens": 2308
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Schnipper's\",\n      \"s\": 1,\n      \"a\": \"Midtown NYC\"\n    },\n    {\n      \"n\": \"Burger Village\",\n      \"s\": 3,\n      \"a\": \"120 Church Street, New York NY 10007\"\n    },\n    {\n      \"n\": \"Moo Burger\",\n      \"s\": 4,\n      \"a\": \"Brooklyn\"\n    },\n    {\n      \"n\": \"Bill's Bar and Burger\",\n      \"s\": 5,\n      \"a\": \"16 West 51st St, New York, NY 10019\"\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  }
+]

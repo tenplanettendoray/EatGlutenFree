@@ -1,0 +1,23 @@
+[
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 1877,
+      "completion_tokens": 280,
+      "total_tokens": 2157
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Vinny's Gluten Free Kitchen\",\n      \"s\": 2,\n      \"a\": \"201 West 14th Street, New York, NY 10011\",\n      \"fq\": \"Gluten-Free Burger in Gluten-Free Bun ... ###### Quarter Pounder Hamburger in a Gluten-Free Bun ... Gluten free. Served with pickle, mayo, grilled onion and bourbon sauce.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Gluten-Free Burger in Gluten-Free Bun ... Quarter Pounder Hamburger in a Gluten-Free Bun ... Gluten free.\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Senza Gluten\",\n      \"s\": 3,\n      \"a\": \"Italian gluten-free restaurant in New York City: Senza Gluten\",\n      \"fq\": \"Burger Italiano Prime ground beef, romaine lettuce, red onion, tomato and pickles. Add Cheese $3\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Our menu is 100% gluten-free and there are no gluten-based products used in our restaurant.\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  }
+]

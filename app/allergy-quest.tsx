@@ -35,6 +35,11 @@ export function AllergyQuest(props: Props) {
   const wasEditingCustom = useRef(false);
   const { allergies, allergyOptions, customAllergy, location, food, cityOptions, reducedMotion,
     onToggleAllergy, onCustomAllergyChange, onLocationChange, onFoodChange, onGlobeLocationSelect, onStart } = props;
+  const displayedAllergyOptions = [...allergyOptions].sort((a, b) => {
+    const order = ["peanuts", "tree nuts", "wheat", "gluten", "milk", "eggs"];
+    const aIndex = order.indexOf(a.toLowerCase()), bIndex = order.indexOf(b.toLowerCase());
+    return (aIndex < 0 ? order.length : aIndex) - (bIndex < 0 ? order.length : bIndex);
+  });
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const stepRef = useRef<1 | 2 | 3>(1);
   const [drag, setDrag] = useState<{ name: string; index: number; width: number; height: number } | null>(null);
@@ -192,7 +197,7 @@ export function AllergyQuest(props: Props) {
         </aside>
         <div className="ss-table">
           <div className="ss-plate-grid" aria-label="Choose allergies to avoid">
-            {allergyOptions.map((name, index) => <button key={name} type="button" className={`ss-ingredient ${allergies.includes(name) ? "is-chosen" : ""} ${drag?.name === name ? "is-held" : ""}`} style={{ ...foodStyle(foodIndex(name)), "--entry": index } as CSSProperties}
+            {displayedAllergyOptions.map((name, index) => <button key={name} type="button" className={`ss-ingredient ${allergies.includes(name) ? "is-chosen" : ""} ${drag?.name === name ? "is-held" : ""}`} style={{ ...foodStyle(foodIndex(name)), "--entry": index } as CSSProperties}
               aria-pressed={allergies.includes(name)} aria-label={`${name}: ${allergies.includes(name) ? "remove from" : "add to"} avoid list`}
               onPointerDown={e => begin(e, name, foodIndex(name))} onPointerMove={move} onPointerUp={e => finish(e)} onPointerCancel={e => finish(e, true)} onLostPointerCapture={e => finish(e, true)} onPointerLeave={e => resetHover(e.currentTarget)}
               onClick={e => { if (e.detail === 0) onToggleAllergy(name); }}>

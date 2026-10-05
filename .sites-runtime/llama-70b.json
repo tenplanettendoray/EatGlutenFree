@@ -1,0 +1,64 @@
+{
+  "results": [
+    {
+      "input": {
+        "location": "Paris, France",
+        "food": "Pizza",
+        "allergies": [
+          "Gluten",
+          "Sesame"
+        ]
+      },
+      "elapsedMs": 153,
+      "result": {
+        "locationLabel": "Paris, France",
+        "restaurants": [],
+        "status": "unavailable"
+      }
+    },
+    {
+      "input": {
+        "location": "Lisbon, Portugal",
+        "food": "Burger",
+        "allergies": [
+          "Gluten"
+        ]
+      },
+      "elapsedMs": 113,
+      "result": {
+        "locationLabel": "Lisbon, Portugal",
+        "restaurants": [],
+        "status": "unavailable"
+      }
+    },
+    {
+      "input": {
+        "location": "Rome, Italy",
+        "food": "Pizza",
+        "allergies": [
+          "Gluten"
+        ]
+      },
+      "elapsedMs": 48,
+      "result": {
+        "locationLabel": "Rome, Italy",
+        "restaurants": [],
+        "status": "unavailable"
+      }
+    }
+  ],
+  "calls": [
+    {
+      "status": 410,
+      "model": "meta/llama-3.3-70b-instruct"
+    },
+    {
+      "status": 410,
+      "model": "meta/llama-3.3-70b-instruct"
+    },
+    {
+      "status": 410,
+      "model": "meta/llama-3.3-70b-instruct"
+    }
+  ]
+}

@@ -23,6 +23,10 @@ function createAuth() {
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(getDb(), { provider: "sqlite", schema }),
   emailAndPassword: { enabled: true, minPasswordLength: 8 },
+  // The shared D1 middleware limiter runs in development and production.
+  // Better Auth's own CSRF/origin checks remain enabled as a second layer.
+  advanced: { ipAddress: { ipAddressHeaders: ["cf-connecting-ip"] } },
+  session: { expiresIn: 60 * 60 * 24 * 7, freshAge: 60 * 15 },
   socialProviders,
   plugins: [username({ minUsernameLength: 3, maxUsernameLength: 30 })],
 });

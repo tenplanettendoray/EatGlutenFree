@@ -1,7 +1,10 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
+import { preferenceMatchesContext } from "../../lib/community-preferences";
 import { NextRequest, NextResponse } from "next/server";
+import type { AiDiscoveredRestaurant } from "@/app/lib/ai-discovery";
 import { incrementRestaurantSignals } from "@/app/lib/restaurant-signals";
 import { getAccountAccess } from "@/app/lib/premium";
+import { verifyAndRankRestaurants } from "@/app/lib/restaurant-verification";
 import { getDb } from "../../../db";
 import { restaurantPreference } from "../../../db/schema";
 import { auth } from "../../lib/auth";
@@ -19,6 +22,16 @@ type AiCompatibility = {
   supportedAllergies?: string[];
   unsupportedAllergies?: string[];
   unknownAllergies?: string[];
+};
+type AiRestaurantProfile = AiCompatibility & {
+  name?: string;
+  branch?: string;
+  address?: string;
+  cuisine?: string[];
+  website?: string;
+  menuSourceUrl?: string;
+  popularitySummary?: string;
+  rankingReason?: string;
 };
 
 type AiCompatibilityAttempt = {
@@ -46,7 +59,8 @@ async function hasPremiumAccess(session: Awaited<ReturnType<typeof auth.api.getS
 }
 
 function normalizedName(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\b(restaurants?|nyc|new york)\b/g, "").replace(/\s+/g, " ").trim();
+  const legacy = value.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\b(restaurants?|nyc|new york)\b/g, "").replace(/\s+/g, " ").trim();
+  return legacy || value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 }
 
 function normalizedScope(value: unknown) {
@@ -95,21 +109,8 @@ function mergeContext(primary: { locationScope: string; allergyScope: string; fo
   };
 }
 
-function scopeOverlaps(stored: string, current: string, mode: "location" | "allergy" | "food") {
-  if (!stored) return false;
-  if (!current) return false;
-  if (mode === "allergy") {
-    const storedAllergies = stored.split("|").filter(Boolean);
-    const currentAllergies = new Set(current.split("|").filter(Boolean));
-    return storedAllergies.some((allergy) => currentAllergies.has(allergy));
-  }
-  return stored === current || stored.includes(current) || current.includes(stored);
-}
-
 function rowMatchesContext(row: typeof restaurantPreference.$inferSelect, context: { locationScope: string; allergyScope: string; foodScope: string }) {
-  return scopeOverlaps(row.locationScope, context.locationScope, "location")
-    && scopeOverlaps(row.allergyScope, context.allergyScope, "allergy")
-    && (!row.foodScope || !context.foodScope || scopeOverlaps(row.foodScope, context.foodScope, "food"));
+  return preferenceMatchesContext(row, context);
 }
 
 function cleanName(value: unknown) {
@@ -132,6 +133,10 @@ function preferenceNameMatches(candidateName: string, preferenceName: string) {
   const preference = normalizedName(preferenceName);
   if (!candidate || !preference) return false;
   return candidate === preference || candidate.includes(preference) || preference.includes(candidate);
+}
+
+function normalizedId(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80) || "restaurant";
 }
 
 function parseJsonObject(content: string) {
@@ -316,6 +321,193 @@ async function askAiCompatibility(name: string, location: string, food: string, 
         : `${providerLabel} verification could not connect. Please try again.`,
     };
   }
+}
+
+function cleanStringList(value: unknown, maxItems: number, maxLength: number) {
+  return Array.isArray(value)
+    ? [...new Set(value.map((item) => cleanName(String(item)).slice(0, maxLength)).filter(Boolean))].slice(0, maxItems)
+    : [];
+}
+
+function normalizeAiRestaurantProfile(result: AiRestaurantProfile, fallbackName: string, location: string, food: string, allergies: string[]) {
+  const compatibility = normalizeAiCompatibility(result, allergies);
+  const name = canonicalRestaurantName(cleanName(result.name) || fallbackName);
+  const branch = cleanName(result.branch) || location;
+  const address = cleanName(result.address) || location;
+  const cuisine = cleanStringList(result.cuisine, 6, 80);
+  if (food && !cuisine.some((item) => normalizedName(item) === normalizedName(food))) cuisine.unshift(food);
+  return {
+    ...compatibility,
+    name,
+    branch,
+    address,
+    cuisine: cuisine.length ? cuisine : ["Restaurant"],
+    website: typeof result.website === "string" ? result.website.trim() : "",
+    menuSourceUrl: typeof result.menuSourceUrl === "string" ? result.menuSourceUrl.trim() : "",
+    popularitySummary: cleanName(result.popularitySummary) || "Recommended by the community and checked as a restaurant lead.",
+    rankingReason: cleanName(result.rankingReason) || "Raised by community recommendation after AI restaurant lookup.",
+  };
+}
+
+async function askAiRestaurantProfile(name: string, location: string, food: string, allergies: string[]): Promise<AiCompatibilityAttempt & { profile?: ReturnType<typeof normalizeAiRestaurantProfile> }> {
+  const apiKey = (process.env.OPENROUTER_API_KEY || process.env.NVIDIA_API_KEY || "").trim();
+  if (!apiKey.startsWith("sk-or-v1-")) return { result: null, error: "Restaurant assessment is not configured." };
+  const endpoint = "https://openrouter.ai/api/v1/chat/completions";
+  const model = process.env.OPENROUTER_DISCOVERY_MODEL?.trim() || process.env.OPENROUTER_MODEL?.trim() || "z-ai/glm-5.2:free";
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": process.env.BETTER_AUTH_URL?.trim() || "http://localhost:3000",
+        "X-Title": "Gluten FreEat",
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          {
+            role: "system",
+            content: [
+              "Check a user-recommended restaurant and return one JSON object.",
+              "Find the real business identity for the named restaurant in the requested place.",
+              "Return only official restaurant URLs; use empty strings if unsure. Do not use directories, review sites, maps, delivery apps, social media, or made-up domains.",
+              "Reject only when highly confident the place is fake, closed, not a restaurant, wrong location, irrelevant, or directly conflicts with the allergy request.",
+              "Uncertain allergy support is compatible:false only when confidence is low or medium, not a hard block.",
+              "Never call food safe; always require staff confirmation for ingredients and cross-contact.",
+              "Return JSON only with keys: compatible, confidence, supportedAllergies, unsupportedAllergies, unknownAllergies, reason, name, branch, address, cuisine, website, menuSourceUrl, popularitySummary, rankingReason.",
+            ].join(" "),
+          },
+          {
+            role: "user",
+            content: JSON.stringify({
+              restaurant: name,
+              location,
+              food: food || "any",
+              allergies: allergies.slice(0, 10),
+            }),
+          },
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0,
+        max_tokens: 520,
+        reasoning: { effort: "none", exclude: true },
+        include_reasoning: false,
+      }),
+      signal: AbortSignal.timeout(18000),
+    });
+    if (!response.ok) {
+      const details = (await response.text().catch(() => "")).replace(/\s+/g, " ").trim().slice(0, 180);
+      return {
+        result: null,
+        error: `Restaurant assessment failed (${response.status}${response.statusText ? ` ${response.statusText}` : ""}).${details ? ` ${details}` : ""}`,
+      };
+    }
+    const data = await response.json() as { choices?: Array<{ message?: { content?: unknown } }> };
+    const rawContent = messageContentText(data.choices?.[0]?.message?.content);
+    const parsed = parseJsonObject(rawContent) as AiRestaurantProfile;
+    const compatible = typeof parsed.compatible === "boolean" ? parsed : compatibilityFromText(rawContent);
+    if (!compatible || typeof compatible.compatible !== "boolean") return { result: null };
+    const profile = normalizeAiRestaurantProfile({ ...parsed, ...compatible }, allergies.length ? name : canonicalRestaurantName(name), location, food, allergies);
+    return { result: profile, profile };
+  } catch (error) {
+    const timedOut = error instanceof Error && (error.name === "TimeoutError" || error.name === "AbortError");
+    return {
+      result: null,
+      error: timedOut
+        ? "Restaurant assessment timed out. Please try again."
+        : "Restaurant assessment could not connect. Please try again.",
+    };
+  }
+}
+
+function restaurantCardPayload(restaurant: AiDiscoveredRestaurant, index: number, source: "free" | "ai") {
+  return {
+    id: `community-${index + 1}-${normalizedId(restaurant.name)}`,
+    discoveryRank: index,
+    name: restaurant.name,
+    cuisine: restaurant.cuisine,
+    address: restaurant.locations[0]?.address || "",
+    distanceKm: null,
+    website: restaurant.website,
+    websiteStatus: restaurant.websiteStatus,
+    checkedAt: restaurant.checkedAt,
+    dietary: {},
+    latitude: null,
+    longitude: null,
+    source,
+    sourceUrl: restaurant.locations[0]?.sourceUrl || restaurant.qualitySourceUrl,
+    menuSourceUrl: restaurant.menuSourceUrl,
+    qualitySourceUrl: restaurant.qualitySourceUrl,
+    evidenceSummary: restaurant.evidenceSummary,
+    popularitySummary: restaurant.popularitySummary,
+    rankingReason: restaurant.rankingReason,
+    rating: null,
+    reviewCount: null,
+    suggestionCount: 0,
+    avoidCount: 0,
+    evidenceTier: restaurant.missingAllergies.length ? "partial" as const : "ai" as const,
+    supportedAllergies: restaurant.supportedAllergies,
+    missingAllergies: restaurant.missingAllergies,
+    allergenEvidence: restaurant.allergenEvidence || [],
+    locations: restaurant.locations,
+  };
+}
+
+async function enrichSuggestionRestaurant(name: string, body: Record<string, unknown>, request: NextRequest, context: { locationScope: string; allergyScope: string; foodScope: string }) {
+  const restaurantName = canonicalRestaurantName(name);
+  const location = cleanName(body.location ?? request.nextUrl.searchParams.get("location")) || context.locationScope;
+  const food = cleanName(body.food ?? request.nextUrl.searchParams.get("food")) || context.foodScope;
+  const allergies = allergiesFrom(body.allergies ?? request.nextUrl.searchParams.get("allergies"))
+    .map((allergy) => cleanName(allergy))
+    .filter(Boolean)
+    .slice(0, 20);
+  if (!location || !allergies.length) return { restaurant: null, message: "", tone: "caution" as VerificationVerdict };
+
+  const aiAttempt = await askAiRestaurantProfile(restaurantName, location, food, allergies);
+  const profile = aiAttempt.profile;
+  if (!profile) return { restaurant: null, message: aiAttempt.error || "", tone: "caution" as VerificationVerdict };
+  const evidenceSummary = allergyEvidenceSummary(profile);
+  if (!profile.compatible && profile.confidence === "high") {
+    const hasExplicitlyUnsupportedAllergy = Boolean(profile.unsupportedAllergies?.length);
+    if (hasExplicitlyUnsupportedAllergy || shouldHardBlockAiRejection(restaurantName, profile.reason || "")) {
+      return {
+        restaurant: null,
+        blocked: true,
+        message: `Not a fit for the complete request. ${evidenceSummary} ${profile.reason}`,
+        tone: "blocked" as VerificationVerdict,
+      };
+    }
+  }
+
+  const sourceUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${profile.name} ${profile.address || location}`)}`;
+  const candidate: AiDiscoveredRestaurant = {
+    name: profile.name,
+    cuisine: profile.cuisine,
+    website: profile.website,
+    menuSourceUrl: profile.menuSourceUrl || profile.website,
+    qualitySourceUrl: sourceUrl,
+    evidenceSummary: `${evidenceSummary || profile.reason || "AI checked this as a restaurant lead."} Confirm ingredients and cross-contact directly with the restaurant.`,
+    popularitySummary: profile.popularitySummary,
+    rankingReason: profile.rankingReason,
+    supportedAllergies: profile.supportedAllergies || [],
+    missingAllergies: profile.unknownAllergies?.length ? profile.unknownAllergies : allergies.filter((allergy) => !(profile.supportedAllergies || []).includes(allergy)),
+    locations: [{ label: profile.branch || location, address: profile.address || location, website: profile.website, sourceUrl }],
+    popularityTier: profile.confidence === "high" ? 5 : profile.confidence === "medium" ? 4 : 3,
+    allergyConfidenceTier: profile.compatible ? profile.confidence === "high" ? 5 : 4 : 3,
+    foodRelevanceTier: food ? 5 : 4,
+  };
+  const verified = await verifyAndRankRestaurants([candidate], { location, food, allergies });
+  const restaurant = verified[0] ? restaurantCardPayload(verified[0], 0, "ai") : null;
+  const favorable = profile.compatible && profile.confidence !== "low";
+  return {
+    restaurant,
+    message: favorable
+      ? `AI checked ${restaurant?.name || profile.name}. ${evidenceSummary || profile.reason || "It looks like a reasonable lead."}`
+      : `Saved as a lead, but AI is unsure. ${evidenceSummary || profile.reason || "Confirm with the restaurant before ordering."}`,
+    tone: favorable ? "favorable" as VerificationVerdict : "caution" as VerificationVerdict,
+  };
 }
 
 function decodeEntities(value: string) {
@@ -522,8 +714,7 @@ async function safeIncrementSignals(payload: Parameters<typeof incrementRestaura
 async function preferencePayload(userId: string | undefined, context: { locationScope: string; allergyScope: string; foodScope: string }) {
   const rows = await getDb()
     .select()
-    .from(restaurantPreference)
-    .limit(500);
+    .from(restaurantPreference);
   const publicMap = new Map<string, { kind: PreferenceKind; name: string; normalizedName: string; count: number }>();
   const userSuggested: string[] = [];
   const userAvoided: string[] = [];
@@ -542,8 +733,7 @@ async function preferencePayload(userId: string | undefined, context: { location
   }
 
   const publicPreferences = [...publicMap.values()]
-    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
-    .slice(0, 40);
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
   return {
     publicPreferences,
@@ -558,10 +748,9 @@ export async function GET(request: NextRequest) {
   const session = await currentSession(request);
   const context = contextFromRequest(request);
   const premium = await hasPremiumAccess(session);
-  if (!premium) return NextResponse.json({ authenticated: Boolean(session?.user), premium: false, publicPreferences: [], publicSuggestedRestaurants: [], publicAvoidedRestaurants: [], suggestedRestaurants: [], avoidedRestaurants: [] });
   return NextResponse.json({
     authenticated: Boolean(session?.user),
-    premium: true,
+    premium,
     ...(await preferencePayload(session?.user.id, context)),
   });
 }
@@ -570,9 +759,6 @@ export async function POST(request: NextRequest) {
   const session = await currentSession(request);
   if (!session?.user) {
     return NextResponse.json({ error: "Need an account to make suggestions/avoids." }, { status: 401 });
-  }
-  if (!(await hasPremiumAccess(session))) {
-    return NextResponse.json({ error: "Premium is required to save suggestions or avoids.", premiumRequired: true }, { status: 402 });
   }
 
   const raw: unknown = await request.json().catch(() => null);
@@ -600,8 +786,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Enter at least one restaurant name first." }, { status: 400 });
   }
 
-  // Suggestions and avoids are direct community votes. Allergy assessment is
-  // handled by restaurant search and never runs as part of saving a vote.
+  const enrichedSuggestions = kind === "suggest"
+    ? await Promise.all(names.map((name) => enrichSuggestionRestaurant(name, body, request, context)))
+    : [];
+  const blockedSuggestion = enrichedSuggestions.find((suggestion) => suggestion.blocked);
+  if (blockedSuggestion) {
+    return NextResponse.json({
+      error: blockedSuggestion.message || "AI is highly confident that recommendation is not a fit for this request.",
+      feedbackTone: "blocked",
+      ...(await preferencePayload(session.user.id, context)),
+    }, { status: 409 });
+  }
 
   const db = getDb();
   const now = new Date();
@@ -685,10 +880,12 @@ export async function POST(request: NextRequest) {
   const alreadyClaimed = hasSuggestionBonus(request, today);
   const freeSearchesLimit = FREE_DAILY_LIMIT + (alreadyClaimed ? FREE_SUGGESTION_BONUS : 0);
   const payload = await preferencePayload(session.user.id, context);
-  const feedbackTone = "favorable";
+  const verifiedRestaurants = enrichedSuggestions.flatMap((suggestion) => suggestion.restaurant ? [suggestion.restaurant] : []);
+  const caution = enrichedSuggestions.some((suggestion) => suggestion.tone === "caution" || !suggestion.restaurant);
+  const feedbackTone = kind === "suggest" && caution ? "caution" : "favorable";
   const savedMessage = kind === "avoid"
     ? `${names[0]} avoided. Gluten FreEat will push it down for this location/allergy/search context.`
-    : `${names[0]} suggested. Gluten FreEat will give it a moderate boost for this location/allergy/search context.`;
+    : `${names[0]} suggested. ${verifiedRestaurants.length ? "AI checked the restaurant details and updated the result card." : "Gluten FreEat saved it as a community lead while restaurant details remain unconfirmed."}`;
 
   if (alreadyClaimed) {
     return NextResponse.json({
@@ -696,7 +893,8 @@ export async function POST(request: NextRequest) {
       bonusGranted: false,
       message: `${savedMessage} Today's extra search was already claimed.`,
       feedbackTone,
-      unverifiedSuggestions: [],
+      unverifiedSuggestions: caution ? names : [],
+      verifiedRestaurants,
       freeSearchesRemaining: Math.max(0, freeSearchesLimit - searchCount),
       freeSearchesLimit,
     });
@@ -708,7 +906,8 @@ export async function POST(request: NextRequest) {
     bonusGranted: true,
     message: `${savedMessage} You got 1 extra Free search today.`,
     feedbackTone,
-    unverifiedSuggestions: [],
+    unverifiedSuggestions: caution ? names : [],
+    verifiedRestaurants,
     freeSearchesRemaining: Math.max(0, nextLimit - searchCount),
     freeSearchesLimit: nextLimit,
   });
@@ -728,42 +927,38 @@ export async function DELETE(request: NextRequest) {
   if (!session?.user) {
     return NextResponse.json({ error: "Need an account to make suggestions/avoids." }, { status: 401 });
   }
-  if (!(await hasPremiumAccess(session))) {
-    return NextResponse.json({ error: "Premium is required to edit suggestions or avoids.", premiumRequired: true }, { status: 402 });
-  }
 
   const raw: unknown = await request.json().catch(() => null);
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   const body = raw as Record<string, unknown>;
   const kind = cleanKind(body.kind);
+  if (kind === "avoid" && !(await hasPremiumAccess(session))) return NextResponse.json({ error: "Premium is required to edit avoids.", premiumRequired: true }, { status: 402 });
   const context = mergeContext(contextFromBody(body), contextFromRequest(request));
   const name = cleanName(body.name);
   const normalized = normalizedName(name);
-  if (!normalized) {
+  if (!normalized || !context.locationScope || !context.allergyScope) {
     return NextResponse.json({ error: "Choose a restaurant preference to remove." }, { status: 400 });
   }
 
-  const existingPreference = await getDb().select({ id: restaurantPreference.id }).from(restaurantPreference).where(and(
+  const existingPreferences = await getDb().select().from(restaurantPreference).where(and(
     eq(restaurantPreference.userId, session.user.id),
     eq(restaurantPreference.kind, kind),
     eq(restaurantPreference.normalizedName, normalized),
-  )).limit(1).then((rows) => rows[0]);
+  )).then((rows) => rows.filter((row) => rowMatchesContext(row, context)));
 
-  await getDb().delete(restaurantPreference).where(and(
-    eq(restaurantPreference.userId, session.user.id),
-    eq(restaurantPreference.kind, kind),
-    eq(restaurantPreference.normalizedName, normalized),
-  ));
-
-  if (existingPreference) {
-    await safeIncrementSignals([{
-      name,
-      locationScope: context.locationScope,
-      allergyScope: context.allergyScope,
-      foodScope: context.foodScope,
+  if (existingPreferences.length) {
+    await getDb().delete(restaurantPreference).where(and(
+      eq(restaurantPreference.userId, session.user.id),
+      inArray(restaurantPreference.id, existingPreferences.map((row) => row.id)),
+    ));
+    await safeIncrementSignals(existingPreferences.map((row) => ({
+      name: row.name,
+      locationScope: row.locationScope,
+      allergyScope: row.allergyScope,
+      foodScope: row.foodScope,
       suggestionWeight: kind === "suggest" ? -1 : 0,
       avoidWeight: kind === "avoid" ? -1 : 0,
-    }]);
+    })));
   }
 
   return NextResponse.json({

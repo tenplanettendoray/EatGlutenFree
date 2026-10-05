@@ -6,20 +6,30 @@ import { getDb } from "../../db";
 import { user } from "../../db/schema";
 
 export const PREMIUM_COOKIE = "safeserve_premium_plan";
-export type PremiumPlan = "monthly" | "annual";
+export type PremiumPlan = "monthly" | "annual" | "lifetime";
 
 type SessionLike = {
   user?: {
     id?: string | null;
     email?: string | null;
+    emailVerified?: boolean;
   } | null;
 } | null;
 
 function envList(name: string) {
   return (process.env[name] || "")
-    .split(",")
+    .split(/[\s,;]+/)
     .map((value) => value.trim().toLowerCase())
     .filter(Boolean);
+}
+
+function adminEmails() {
+  return [...envList("ADMIN_EMAILS"), ...envList("ADMIN_EMAIL")];
+}
+
+export function isConfiguredAdminEmail(email: string | null | undefined) {
+  const normalized = email?.trim().toLowerCase();
+  return Boolean(normalized && adminEmails().includes(normalized));
 }
 
 export function isWhitelistedUser(session: SessionLike) {
@@ -35,7 +45,7 @@ export function isConfiguredAdmin(session: SessionLike) {
   const email = session?.user?.email?.trim().toLowerCase();
   const userId = session?.user?.id?.trim().toLowerCase();
   return Boolean(
-    (email && envList("ADMIN_EMAILS").includes(email)) ||
+    isConfiguredAdminEmail(email) ||
       (userId && envList("ADMIN_USER_IDS").includes(userId)),
   );
 }
@@ -46,6 +56,10 @@ export async function getAccountAccess(session: SessionLike) {
     role: "user" | "admin";
     premiumPlan: PremiumPlan | null;
     premiumActivatedAt: Date | null;
+    premiumPaymentReference: string | null;
+    premiumExpiresAt: Date | null;
+    trialStartedAt?: Date | null;
+    trialCancelledAt?: Date | null;
   } | null = null;
 
   if (userId) {
@@ -55,6 +69,10 @@ export async function getAccountAccess(session: SessionLike) {
           role: user.role,
           premiumPlan: user.premiumPlan,
           premiumActivatedAt: user.premiumActivatedAt,
+          premiumPaymentReference: user.premiumPaymentReference,
+          premiumExpiresAt: user.premiumExpiresAt,
+          trialStartedAt: user.trialStartedAt,
+          trialCancelledAt: user.trialCancelledAt,
         })
         .from(user)
         .where(eq(user.id, userId))
@@ -66,12 +84,21 @@ export async function getAccountAccess(session: SessionLike) {
   }
 
   const whitelisted = isWhitelistedUser(session);
-  const admin = isConfiguredAdmin(session) || account?.role === "admin";
-  const plan = account?.premiumPlan || null;
+  const admin = Boolean(account && (isConfiguredAdmin(session) || account.role === "admin"));
+  const paid = Boolean(account?.premiumPaymentReference && account?.premiumActivatedAt &&
+    (account.premiumPlan === "lifetime" || (account.premiumExpiresAt && account.premiumExpiresAt.getTime() > Date.now())));
+  const plan = paid ? account?.premiumPlan || null : null;
 
+  const trialEndsAt = account?.trialStartedAt ? new Date(account.trialStartedAt.getTime() + 7 * 86400000) : null;
+  const trialActive = Boolean(!account?.trialCancelledAt && trialEndsAt && trialEndsAt.getTime() > Date.now());
+  const trialReminder = Boolean(trialActive && trialEndsAt!.getTime() - Date.now() <= 2 * 86400000);
   return {
+    trialEndsAt,
+    trialActive,
+    trialReminder,
+    trialEligible: Boolean(userId && account && !account.trialStartedAt && !account.trialCancelledAt && !plan),
     authenticated: Boolean(userId),
-    premium: Boolean(userId && (plan || whitelisted || admin)),
+    premium: Boolean(userId && account && (plan || trialActive)),
     plan,
     whitelisted,
     admin,
@@ -81,7 +108,7 @@ export async function getAccountAccess(session: SessionLike) {
 
 export function premiumPlanFromRequest(request: NextRequest): PremiumPlan | null {
   const value = request.cookies.get(PREMIUM_COOKIE)?.value;
-  return value === "monthly" || value === "annual" ? value : null;
+  return value === "monthly" || value === "annual" || value === "lifetime" ? value : null;
 }
 
 export function premiumCookieOptions() {

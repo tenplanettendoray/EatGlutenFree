@@ -1,0 +1,86 @@
+[
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 2336,
+      "completion_tokens": 355,
+      "total_tokens": 2691
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Little Nonna\",\n      \"s\": 1,\n      \"a\": \"12 Avenue Niel, 75017 Paris\",\n      \"fq\": \"Pizza gourmet c’est sur l’ardoise ! 23 €\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Pizza sans gluten, il fallait y penser. Les prix sont relativement élevés notamment pour les plats à partager. Très bon dessert sinon (je recommande le tiramisu à la pistache !) jamais mangé dans un restaurant de cuisine sans gluten. Donc je suis complètement novice dans ce domaine là. Pourquoi j'y suis allée ? Parce que mon amie est complètement intolérante au gluten. C'est un restaurant italien, avec des pâtes et des pizzas.\"\n        }\n      ]\n    },\n    {\n      \"n\": \"L'Artisan Napolitain\",\n      \"s\": 3,\n      \"a\": \"117 Rue du Theatre, 15e arrondissement\",\n      \"fq\": \"Pizza sans gluten a Paris : l’alternative napolitaine de ...\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"L’intolerance au gluten ne devrait jamais être une raison de se priver du plaisir d’une authentique pizza napolitaine. Chez L’Artisan Napolitain, au 117 Rue du Theatre dans le 15e arrondissement de Paris, nous proposons une ... l’une des meilleures pizzas sans gluten qu’ils aient goûtées à Paris.\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 435,
+      "completion_tokens": 97,
+      "total_tokens": 532
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Street Smash Burgers - Cais do Sodré\",\n      \"s\": 1,\n      \"a\": \"Cais do Sodré, Lisbon\",\n      \"fq\": \"Smash Burger\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Our burgers are served on gluten-free buns.\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 3974,
+      "completion_tokens": 658,
+      "total_tokens": 4632
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Lievito72\",\n      \"s\": 1,\n      \"a\": \"Lievito72 Via del Forte Braschi 82A - 00167 Roma\",\n      \"fq\": \"Pizza a lunga lievitazione, fritti, bruschette e burger, con tante proposte disponibili anche senza glutine.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Tutto anche Senza glutine Pizza, fritti, primi, piatti della cucina e dolci: Lievito72 offre un'ampia scelta di piatti tutta disponibile anche senza glutine.\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Pizzeria Teresina\",\n      \"s\": 2,\n      \"a\": \"Pizzeria Teresina\",\n      \"fq\": \"Gluten and lactose free ... accommodating customers who want gluten-free or lactose-free alternatives.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Separated kitchens, dedicated ingredients, dedicated wood ovens: no\"\n        }\n      ]\n    },\n    {\n      \"n\": \"La Tana Dei Ricci\",\n      \"s\": 3,\n      \"a\": \"La Tana Dei Ricci Via Pontina 391\",\n      \"fq\": \"La Vera Pizza Romana. Classica e Senza Glutine. Doppia Cucina, Zero Contaminazioni.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Doppia Cucina, Zero Contaminazioni. Il gusto di sempre, per tutti.\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Trattoria Manzoni\",\n      \"s\": 5,\n      \"a\": \"Trattoria Manzoni Viale A. Manzoni, 93 Roma, 00185\",\n      \"fq\": \"Pizza senza glutine era incantevole con birra gf accanto, ma hanno anche offerto pasta gf e altri piatti.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Pizza senza glutine era incantevole con birra gf accanto, ma hanno anche offerto pasta gf e altri piatti.\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Alternativo Roma\",\n      \"s\": 6,\n      \"a\": \"Alternativo Roma Via di Portonaccio, 33d Roma, RM, Italia, 00159\",\n      \"fq\": \"Pizze e fritti senza glutine buonissimi e nessun sovrapprezzo rispetto alle alternative con gluti...\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Pizze e fritti senza glutine buonissimi e nessun sovrapprezzo rispetto alle alternative con gluti...\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 2167,
+      "completion_tokens": 246,
+      "total_tokens": 2413
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Schnipper's\",\n      \"s\": 1,\n      \"a\": \"Gluten Free | Schnipper's | Burgers, Salads, Catering & Group Dining in Midtown NYC\",\n      \"fq\": \"All Burgers* Beef, turkey, and Impossible Burger ordered without the bun or on a gluten free bun\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"All Burgers* Beef, turkey, and Impossible Burger ordered without the bun or on a gluten free bun\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Burger Village\",\n      \"s\": 3,\n      \"a\": \"120 Church Street, New York NY 10007\",\n      \"fq\": \"Gluten Free Veggie Burger Non GMO verified handcrafted vegan burger.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Gluten Free Veggie Burger Non GMO verified handcrafted vegan burger.\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  }
+]

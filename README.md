@@ -39,11 +39,28 @@ After editing the auth schema, create a database migration with `npm run db:gene
 
 `npm run dev` automatically applies pending migrations to the local D1 database before starting the site.
 
-## AI search configuration
+## Restaurant search configuration
 
-The free and premium search providers read their server-side API keys from `.env.local`. Keep that file private.
+Both search modes use the server-only `OPENROUTER_API_KEY` from `.env.local` (or the hosting environment). `GOOGLE_API_KEY` remains a legacy alias for an OpenRouter key; it is not a direct Google API integration. Tavily and Foursquare are not used by the active restaurant search.
 
-Restaurant searches use the original AI discovery flow: OpenRouter for free search and OpenAI for premium search, with the existing cached results, fallback candidates and community preference ranking. The map-catalog ranking engine has been reverted. Restaurant suggestions and linked websites still need direct confirmation with the venue.
+Public web sources supply restaurant candidates and concise context to the AI. The default primary model is `google/gemma-4-26b-a4b-it:free`, with `liquid/lfm-2.5-2.6b:free` as the fallback. Override them with `OPENROUTER_DISCOVERY_MODEL` and `OPENROUTER_FALLBACK_MODEL`. A model-specific upstream limit permits fallback; an account quota stops further AI requests. Requests and retries are bounded, and free provider capacity is not unlimited.
+
+Restaurants need evidence for the requested city and dish. Official website buttons require fetched business identity checks; allergy claims require actual website excerpts. Unverified addresses, ratings and websites are omitted. Confidence describes the evidence, not a guarantee of safety. Cross-contamination mentions are shown separately, and gluten-free evidence does not imply wheat-free accommodation. If public retrieval is unavailable, the fallback AI can propose research leads, which require independent website verification. If AI is unavailable, verified websites and explicit local directory listings can provide results with a visible fallback notice.
+
+The supplied 2026 city guide contains 299 category entries in 20 cities. Gluten-only burger, pizza and dessert searches include matching guide picks; AI supplies distinct additions. Other cities, meals and allergy combinations use AI discovery. The guide's reported and unconfirmed labels are preserved; they do not certify safety. Import a revised list with `node scripts/import-city-guide.mjs /path/to/guide.txt`.
+
+All results sort first by community reactions (30 points per heart and 8 per average star), then documented allergy evidence, guide inclusion/editorial order, public popularity, and original AI order. Votes can lift AI discoveries above guide picks, but never change verified allergy claims or remove cross-contact warnings. Saved recommendations remain visible even outside the normal result window. Successful results expire after 24 hours; degraded fallback results expire after 15 minutes. Identical simultaneous searches share discovery work, and cached results receive live community totals.
+
+After every search-engine change, increment the cache version in `app/lib/search-cache.ts` and run `npm run search:cache:clear` after validation. The command deletes only local saved search results and reports the remaining row count. It preserves user accounts, search history, ratings, and subscriptions.
+
+Run an opt-in live evaluation (uses provider quota):
+
+```bash
+node scripts/evaluate-restaurant-search.mjs "New York City" burger
+node scripts/evaluate-restaurant-search.mjs "Paris" pizza
+```
+
+Reports under `outputs/search-evaluation/` contain public place details, confidence and source excerpts, never API keys. A failed quality check exits nonzero; the script does not modify production caches.
 
 AI customer support has its own model configuration (OPENAI_SUPPORT_MODEL and OPENROUTER_SUPPORT_MODEL), using the existing server-side API keys. Chat keeps its compact 400-token response cap, bounded history, one provider fallback, and five-minute cooldown for quota/auth failures. Its common reviewed answers use no model tokens.
 
@@ -80,3 +97,5 @@ npm run build
 ```
 
 The app is built with Vinext for a Cloudflare-compatible runtime.
+
+Restaurant searches request up to nine distinct restaurants. Sparse searches may return fewer than three when more candidates cannot be supported; names and safety claims are never invented to meet a count.

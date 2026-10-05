@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+import { SupportInbox } from "./support-inbox";
+import { SecurityPanel } from "./security-panel";
+import { AdminUserDetails } from "./user-details";
+
 import { BrandWordmark, SafeServeMark } from "../safe-serve-logo";
 
 type AdminUser = {
@@ -11,7 +15,7 @@ type AdminUser = {
   username?: string | null;
   email: string;
   role: "user" | "admin";
-  premiumPlan: "monthly" | "annual" | null;
+  premiumPlan: "monthly" | "annual" | "lifetime" | null;
   premiumActivatedAt: string | null;
   createdAt: string;
   searchCount: number;
@@ -23,6 +27,7 @@ type AdminUser = {
 };
 
 type AdminData = {
+  viewerId: string;
   summary: { users: number; premiumUsers: number; searches: number; searchesToday: number };
   users: AdminUser[];
 };
@@ -36,6 +41,7 @@ export default function AdminPage() {
   const [data, setData] = useState<AdminData | null>(null);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/users", { cache: "no-store" })
@@ -62,12 +68,14 @@ export default function AdminPage() {
       </header>
 
       <section className="admin-content">
+        {data && <SecurityPanel />}
         <div className="admin-title-row">
           <div><span className="section-kicker">Operations</span><h1>User overview</h1><p>Account entitlements, search activity, and community participation.</p></div>
           <label className="admin-search"><span>Filter users</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name, email, plan..." /></label>
         </div>
 
         {error ? <div className="admin-denied"><strong>Access unavailable</strong><p>{error}</p><Link href="/">Return home</Link></div> : !data ? <div className="admin-loading">Loading user activity...</div> : <>
+          <SupportInbox />
           <div className="admin-summary-grid">
             <article><span>Total users</span><strong>{data.summary.users}</strong></article>
             <article><span>Premium users</span><strong>{data.summary.premiumUsers}</strong></article>
@@ -75,16 +83,17 @@ export default function AdminPage() {
             <article><span>Searches today</span><strong>{data.summary.searchesToday}</strong></article>
           </div>
 
+          {selectedId && <AdminUserDetails key={selectedId} userId={selectedId} onClose={() => setSelectedId(null)} onCancelled={() => setData(previous => previous ? { ...previous, users: previous.users.map(u => u.id === selectedId ? { ...u, premiumPlan: null } : u) } : previous)} />}
           <div className="admin-table-wrap">
             <table className="admin-users-table">
-              <thead><tr><th>User</th><th>Access</th><th>Search activity</th><th>Community</th><th>Last search</th></tr></thead>
+              <thead><tr><th>User</th><th>Access</th><th>Search activity</th><th>Community</th><th>Last search</th><th>Details</th></tr></thead>
               <tbody>{visibleUsers.map((account) => <tr key={account.id}>
                 <td><strong>{account.username || account.name}</strong><span>{account.email}</span><small>Joined {readableDate(account.createdAt)}</small></td>
                 <td><span className={`admin-plan-badge ${account.premiumPlan || account.role}`}>{account.role === "admin" ? "Admin" : account.premiumPlan ? `${account.premiumPlan} Premium` : "Free"}</span>{account.premiumActivatedAt && <small>Active since {readableDate(account.premiumActivatedAt)}</small>}</td>
                 <td><strong>{account.searchCount}</strong><span>{account.premiumSearchCount} Premium</span></td>
                 <td><strong>{account.suggestionCount} ♥</strong><span>{account.avoidCount} avoided</span></td>
                 <td>{account.lastSearch ? <><strong>{account.lastSearch.location}</strong><span>{account.lastSearch.food || "Any food"} · {account.lastSearch.allergies || "No allergies"}</span><small>{readableDate(account.lastSearchAt)} · {account.lastSearch.resultCount} results</small></> : <span>No recorded searches</span>}</td>
-              </tr>)}</tbody>
+              <td><button type="button" onClick={() => setSelectedId(account.id)}>View {account.id === data.viewerId ? "your account" : "account"}</button></td></tr>)}</tbody>
             </table>
             {!visibleUsers.length && <p className="admin-empty">No users match this filter.</p>}
           </div>

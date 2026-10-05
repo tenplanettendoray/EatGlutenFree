@@ -1,0 +1,60 @@
+
+--- 2026-09-25T06:53:40.969Z debug
+🪵  Writing logs to "/home/zedit/Documents/Gluten-Freeat/.wrangler-config/.wrangler/logs/wrangler-2026-09-25_06-53-40_750.log"
+---
+
+--- 2026-09-25T06:53:40.968Z debug
+.env file not found at "/home/zedit/Documents/Gluten-Freeat/.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-25T06:53:40.982Z log
+
+ ⛅️ wrangler 4.92.0 (update available 4.140.0)
+──────────────────────────────────────────────
+---
+
+--- 2026-09-25T06:53:40.984Z log
+Resource location: local 
+
+---
+
+--- 2026-09-25T06:53:40.985Z log
+Use --remote if you want to access the remote instance.
+
+---
+
+--- 2026-09-25T06:53:40.997Z debug
+Metrics dispatcher: Posting data {"deviceId":"11abb1d2-c89c-4617-9a5d-62ef9c095aaa","event":"wrangler command started","timestamp":1790319220996,"properties":{"amplitude_session_id":1790319220993,"amplitude_event_id":0,"wranglerVersion":"4.92.0","wranglerMajorVersion":4,"wranglerMinorVersion":92,"wranglerPatchVersion":0,"osPlatform":"Linux","osVersion":"#31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026","nodeVersion":22,"packageManager":"npm","isFirstUsage":false,"configFileType":"jsonc","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":["command","config","local"],"argsCombination":"command, config, local","sanitizedCommand":"d1 execute","sanitizedArgs":{"local":true}}}
+---
+
+--- 2026-09-25T06:53:41.027Z log
+🌀 Executing on local database site-creator-d1 (00000000-0000-4000-8000-000000000000) from .wrangler/state/v3/d1:
+---
+
+--- 2026-09-25T06:53:41.027Z log
+🌀 To execute on your remote database, add a --remote flag to your wrangler command.
+---
+
+--- 2026-09-25T06:53:41.357Z log
+🚣 1 command executed successfully.
+---
+
+--- 2026-09-25T06:53:41.357Z log
+[
+  {
+    "results": [
+      {
+        "count": 4
+      }
+    ],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  }
+]
+---
+
+--- 2026-09-25T06:53:41.358Z debug
+Metrics dispatcher: Posting data {"deviceId":"11abb1d2-c89c-4617-9a5d-62ef9c095aaa","event":"wrangler command completed","timestamp":1790319221358,"properties":{"amplitude_session_id":1790319220993,"amplitude_event_id":1,"wranglerVersion":"4.92.0","wranglerMajorVersion":4,"wranglerMinorVersion":92,"wranglerPatchVersion":0,"osPlatform":"Linux","osVersion":"#31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026","nodeVersion":22,"packageManager":"npm","isFirstUsage":false,"configFileType":"jsonc","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":["command","config","local"],"argsCombination":"command, config, local","sanitizedCommand":"d1 execute","sanitizedArgs":{"local":true},"durationMs":385}}
+---

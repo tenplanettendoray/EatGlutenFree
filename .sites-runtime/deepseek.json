@@ -1,0 +1,21 @@
+{
+  "results": [
+    {
+      "input": {
+        "location": "Paris, France",
+        "food": "Pizza",
+        "allergies": [
+          "Gluten",
+          "Sesame"
+        ]
+      },
+      "elapsedMs": 60015,
+      "result": {
+        "locationLabel": "Paris, France",
+        "restaurants": [],
+        "status": "unavailable"
+      }
+    }
+  ],
+  "calls": []
+}

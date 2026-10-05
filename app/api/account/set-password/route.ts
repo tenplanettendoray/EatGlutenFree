@@ -1,8 +1,8 @@
 import { auth } from "../../../lib/auth";
 
 export async function POST(request: Request) {
-  const body = await request.json() as { newPassword?: string };
-  if (!body.newPassword || body.newPassword.length < 8) {
+  const body = await request.json().catch(() => ({})) as { newPassword?: string };
+  if (!body || typeof body.newPassword !== "string" || body.newPassword.length < 8 || body.newPassword.length > 128) {
     return Response.json({ error: "Password must be at least 8 characters." }, { status: 400 });
   }
   try {
@@ -13,7 +13,6 @@ export async function POST(request: Request) {
     await auth.api.setPassword({ body: { newPassword: body.newPassword }, headers: request.headers });
     return Response.json({ status: true });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "The password could not be set.";
-    return Response.json({ error: message }, { status: 400 });
+    return Response.json({ error: "The password could not be set. Sign in again and retry." }, { status: 400 });
   }
 }

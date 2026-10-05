@@ -1,0 +1,8 @@
+
+--- 2026-09-27T10:25:14.964Z debug
+🪵  Writing logs to "/home/zedit/Documents/Gluten-Freeat/.wrangler-config/.wrangler/logs/wrangler-2026-09-27_10-25-14_706.log"
+---
+
+--- 2026-09-27T10:25:14.963Z debug
+.env file not found at "/home/zedit/Documents/Gluten-Freeat/.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---

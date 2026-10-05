@@ -1,0 +1,8966 @@
+{
+  "title": "GF + Allergy World City Index — 2026 Compact Edition",
+  "sourceDate": "2026-10-04",
+  "cities": [
+    {
+      "city": "Amsterdam",
+      "country": "Netherlands",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Burger Bar",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Burgermeester",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "The Burger Room",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "The Happy Bull",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Croque Madame",
+            "label": "D"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "The Chicken Bar",
+            "label": "?"
+          },
+          {
+            "rank": 3,
+            "name": "Cannibale Royale",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Rotisserie Amsterdam",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Croque Madame",
+            "label": "D"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Craft Coffee & Pastry",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Melly's StroopWafels",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Croque Madame",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "De Glutenvrije Winkel",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "SottoZero Gelato",
+            "label": "A"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Pho 91",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Umami by Han",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Happyhappyjoyjoy",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Restaurant Olijfje",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "L'Antica Pizzeria da Michele",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Loulou Pizzabar",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "De Italiaan",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Pizza Amsterdam",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "De Glutenvrije Winkel",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sumo",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Taiko",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Yamazato",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Sushi Fanatics",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Ken Sushi",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Vegan Junk Food Bar",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Meatless District",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Mr. & Mrs. Watson",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "The Burger Room",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "Croque Madame",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Vegan Junk Food Bar",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Meatless District",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Mr. & Mrs. Watson",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Auckland",
+      "country": "New Zealand",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "BurgerFuel",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Wise Boys",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "The Chosen Bun",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Better Burger",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Gorilla Kitchen",
+            "label": "V"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Bird on a Wire",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Lowbrow",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Nando's",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Peach's Hot Chicken",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "BurgerFuel",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "The GF Store",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Little Bird Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Wen & Yen",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Bluebells Cakery",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Giapo",
+            "label": "A"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Monsoon Poon",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Hello Beasty",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Wok'n Noodle",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Mekong Baby",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "The Blue Breeze Inn",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "HELL Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Dante's Pizzeria",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Farina",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "That's Amore",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Epolito's",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "St Pierre's Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "&Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Azabu",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Ebisu",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Kushi Japanese Kitchen",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Little Bird Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Wise Boys",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Gorilla Kitchen",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "BurgerFuel",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "HELL Pizza",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Nando's",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Little Bird Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Wise Boys",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Gorilla Kitchen",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Bangkok",
+      "country": "Thailand",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Theera Healthy Bake Room",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Broccoli Revolution",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vistro",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Veganerie",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Prime Burger",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Theera Healthy Bake Room",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Vistro",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Broccoli Revolution",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Bangkok Bold Kitchen",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Kub Kao' Kub Pla",
+            "label": "?"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Theera Healthy Bake Room",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Veganerie",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vistro",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Sweet Pista",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Steps Bakery",
+            "label": "M"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Broccoli Revolution",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "May Veggie Home",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Ethos",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Vistro",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Supanniga Eating Room",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Vistro",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Veganerie",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Pala Pizza Romana",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Peppina",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Pizza Massilia",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sushi Hiro",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Kouen Sushi Bar",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "ISAO",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Sushi Masa",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Broccoli Revolution",
+            "label": "V"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Vistro",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Broccoli Revolution",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Veganerie",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Theera Healthy Bake Room",
+            "label": "Q"
+          },
+          {
+            "rank": 2,
+            "name": "Steps",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "Bangkok Bold Kitchen",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Vistro",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Broccoli Revolution",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Veganerie",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Barcelona",
+      "country": "Spain",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Bacoa Burger",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Timesburg",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "La Pepita",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Makamaka Beach Burger Cafe",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Gula Sana",
+            "label": "D"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Copasetic Barcelona",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "En Ville",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Messié Sin Gluten",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Out of China",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Gula Sana",
+            "label": "D"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Jansana",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Gula Sana",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Sana Locura",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Cøliaki",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Glutery",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Out of China",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Boa-Bao",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Koku Kitchen",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Monster Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Copasetic Barcelona",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Grosso Napoletano Senza Glutine",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Messié Sin Gluten",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Pizza Natura",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Il Piccolo Focone",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "M2 Gluten Free",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Monster Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Kibuka",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Robata",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Ikibana",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Carlota Akaneya",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Rasoterra",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Teresa Carles",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vegan Junk Food Bar",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "En Ville",
+            "label": "Q"
+          },
+          {
+            "rank": 2,
+            "name": "Out of China",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Timesburg",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Rasoterra",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Teresa Carles",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vegan Junk Food Bar",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Beijing",
+      "country": "China",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "MOKA BROS",
+            "label": "?"
+          },
+          {
+            "rank": 2,
+            "name": "Tribe",
+            "label": "?"
+          },
+          {
+            "rank": 3,
+            "name": "Glo Kitchen + Fitness",
+            "label": "?"
+          },
+          {
+            "rank": 4,
+            "name": "4 Corners",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Schindler's Tankstelle",
+            "label": "?"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Tribe",
+            "label": "?"
+          },
+          {
+            "rank": 2,
+            "name": "Glo Kitchen + Fitness",
+            "label": "?"
+          },
+          {
+            "rank": 3,
+            "name": "MOKA BROS",
+            "label": "?"
+          },
+          {
+            "rank": 4,
+            "name": "Home Plate BBQ",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Dali Courtyard",
+            "label": "?"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "King's Joy",
+            "label": "?"
+          },
+          {
+            "rank": 2,
+            "name": "LokkaBakka",
+            "label": "?"
+          },
+          {
+            "rank": 3,
+            "name": "MOKA BROS",
+            "label": "?"
+          },
+          {
+            "rank": 4,
+            "name": "Glo Kitchen + Fitness",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Tribe",
+            "label": "?"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "King's Joy",
+            "label": "?"
+          },
+          {
+            "rank": 2,
+            "name": "Tribe",
+            "label": "?"
+          },
+          {
+            "rank": 3,
+            "name": "In & Out Yunnan Restaurant",
+            "label": "?"
+          },
+          {
+            "rank": 4,
+            "name": "Dali Courtyard",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Vege Tiger",
+            "label": "?"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Gung Ho! Gourmet Pizza",
+            "label": "?"
+          },
+          {
+            "rank": 2,
+            "name": "Fratelli Fresh",
+            "label": "?"
+          },
+          {
+            "rank": 3,
+            "name": "Maison FLO",
+            "label": "?"
+          },
+          {
+            "rank": 4,
+            "name": "Jiaoban Pizza",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "4 Corners",
+            "label": "?"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Hatsune",
+            "label": "?"
+          },
+          {
+            "rank": 2,
+            "name": "Sake Manzo",
+            "label": "?"
+          },
+          {
+            "rank": 3,
+            "name": "Sushi Yotsuba",
+            "label": "?"
+          },
+          {
+            "rank": 4,
+            "name": "King's Joy",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Shota Muni Sushi",
+            "label": "?"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "King's Joy",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vege Tiger",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Suhu Vegetarian Tiger",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Tribe",
+            "label": "Q"
+          },
+          {
+            "rank": 2,
+            "name": "MOKA BROS",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "Glo Kitchen + Fitness",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "King's Joy",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vege Tiger",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Suhu Vegetarian Tiger",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Berlin",
+      "country": "Germany",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Peter Pane",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Grindhouse",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Burgerie",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "BURGER JAM",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "BRGRS",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Risa Chicken",
+            "label": "?"
+          },
+          {
+            "rank": 2,
+            "name": "KOKIO",
+            "label": "?"
+          },
+          {
+            "rank": 3,
+            "name": "The Bird",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "ChickenBuzz",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Tommi's Burger Joint",
+            "label": "M"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "AERA",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Jute Bäckerei",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Oshione",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Brotquelle",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Velicious Cafe",
+            "label": "A"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "SOY",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "1990 Vegan Living",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Monsieur Vuong",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Umami",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Good Morning Vietnam",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Lovebirds",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "mama trattoria",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Zeus Pizza & Pide",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Oshione",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Sotto",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sticks'n'Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "I-Ke-Su",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Smartdeli",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Sasaya",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Omoni",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Kopps",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "1990 Vegan Living",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "SOY",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Peter Pane",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Sticks'n'Sushi",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "AERA",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Kopps",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "1990 Vegan Living",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "SOY",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Boston",
+      "country": "United States",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "110 Grill",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Burtons Grill",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Tavern in the Square",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Boston Burger Company",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Mr. Bartley's Burger Cottage",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "110 Grill",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Burtons Grill",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Legal Sea Foods",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Yard House",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Sweet Cheeks Q",
+            "label": "M"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Kane's Donuts",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Jennifer Lee's Gourmet Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Verveine Cafe & Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "FoMu",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Something Sweet Without Wheat",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Myers + Chang",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Pho Pasteur",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Shojo",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Banyan Bar + Refuge",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "OTTO Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Veggie Crust",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Mast' Restaurant",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Penguin Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Uno Pizzeria & Grill",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Douzo",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Fuji at Ink Block",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Oishii Boston",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Genki Ya",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Purple Shell",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Jennifer Lee's Gourmet Bakery",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Veggie Galaxy",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "My Thai Vegan Cafe",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "110 Grill",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Burtons Grill",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Tavern in the Square",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Jennifer Lee's Gourmet Bakery",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Veggie Galaxy",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "My Thai Vegan Cafe",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Buenos Aires",
+      "country": "Argentina",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Sintaxis",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Campobravo",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Green Eat",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Mudrá",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Dandy",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Sintaxis",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Campobravo",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Green Eat",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Sacro",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Buenos Aires Verde",
+            "label": "V"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Gout Gluten Free",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Celigourmet",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Cocelia",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Sintaxis",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Smeterling Patisserie",
+            "label": "?"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Sintaxis",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Mudrá",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Sacro",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Buenos Aires Verde",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Green Eat",
+            "label": "A"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Sintaxis",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Gout Gluten Free",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Campobravo",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Celigourmet",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "La Continental",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Mudrá",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Fabric Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Dashi",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "SushiClub",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Osaka",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Mudrá",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Sacro",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Buenos Aires Verde",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Green Eat",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Sintaxis",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "Campobravo",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Mudrá",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Sacro",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Buenos Aires Verde",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Chicago",
+      "country": "United States",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Small Cheval",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Beatrix",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Wildfire",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Lady Gregory's",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Fatpour Tap Works",
+            "label": "A"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Wheat's End",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Bloom Plant Based Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Do-Rite Donuts & Chicken",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "The Roost Carolina Kitchen",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Yardbird",
+            "label": "M"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Stan's Donuts",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "defloured",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Wheat's End",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Vaca's Creamery",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Sweet Vegan Bakes",
+            "label": "V"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Big Bowl",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Saigon Sisters",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Sunda",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "HaiSous",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Joy Yee Noodle",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Lou Malnati's",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Robert's Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Forno Rosso",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Chicago's Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Homeslice",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sunda",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Roka Akor",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Sushi-san",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "RA Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Blue Sushi Sake Grill",
+            "label": "A"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Bloom Plant Based Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Kitchen 17",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Chicago Diner",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Wildfire",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Beatrix",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Big Bowl",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Bloom Plant Based Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Kitchen 17",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Chicago Diner",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Copenhagen",
+      "country": "Denmark",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Halifax",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Gasoline Grill",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Palæo",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "The Organic Boho",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Souls",
+            "label": "V"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Palæo",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Halifax",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Bistro Lupa",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Souls",
+            "label": "V"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "H.U.G Bageri",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Naturally Gluten Free",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Kaf",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "The Organic Boho",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Palæo",
+            "label": "A"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "District Tonkin",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Hidden Dimsum",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Slurp Ramen Joint",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Jah Izakaya",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Frankies Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Gorm's",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Mother",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Pico Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Neighbourhood",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sticks'n'Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Letz Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Sushi Lovers",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Karma Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Bento",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "VeVe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Souls",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Bistro Lupa",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Sticks'n'Sushi",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Halifax",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "VeVe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Souls",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Bistro Lupa",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Dubai",
+      "country": "United Arab Emirates",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Five Guys",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Black Tap",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "The Cycle Bistro",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Tawa Gluten-Free Eatery",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Lapa Eatery",
+            "label": "A"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Tawa",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "The Cycle Bistro",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Nando's",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "P.F. Chang's",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Lapa Eatery",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Angel Cakes",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Skinny Genie Cafe",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "So Free Organic Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Better Bakes",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Tawa",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Vietnamese Foodies",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "P.F. Chang's",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Asia Asia",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Reif Japanese Kushiyaki",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Eataly",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "PizzaExpress",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Massimo's",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Oliva",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Tawa",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Tawa",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Nobu",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Zuma",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "SushiArt",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Kinoya",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Wild & The Moon",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "SEVA Table",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Planet Terra",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "P.F. Chang's",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Nando's",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Wild & The Moon",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "SEVA Table",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Planet Terra",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Dublin",
+      "country": "Ireland",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Bunsen",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "BóBós",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "BuJo",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Krewe",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Handsome Burger",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Nando's",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Mad Egg",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Krewe",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Pitt Bros",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Wishbone",
+            "label": "M"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Hansel and Gretel",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Toca Tapioca House",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Coconut & Moo Moo",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Brew Lab",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Dae Ice Cream",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Yamamori",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Opium",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Neon Asian Street Food",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Pho Kim",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Milano",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Zizzi",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Vice Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "One Society",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Kodiak",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Yamamori",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Musashi",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Zakura",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Michie Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Takara",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Cornucopia",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Glas",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Veginity",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Nando's",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Milano",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Cornucopia",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Glas",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Veginity",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Istanbul",
+      "country": "Türkiye",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Bi Nevi Deli",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegan Istanbul",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Cafe MU",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Akali",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Zula",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Bi Nevi Deli",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Saf-i Glutensiz",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Cafe MU",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Community Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Tatbak",
+            "label": "?"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Saf-i Glutensiz",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Bi Nevi Deli",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vegan Istanbul",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Gabfoods",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Glutensiz Fırın",
+            "label": "?"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Bi Nevi Deli",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegan Istanbul",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Community Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Çok Çok Thai",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Çin Büfe",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Saf-i Glutensiz",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Bi Nevi Deli",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "49 Çukurcuma",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Pizzeria Pera",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Miss Pizza",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Inari Omakase",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "SushiCo",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Ioki",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Miyabi Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Itsumi",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Bi Nevi Deli",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegan Istanbul",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Community Kitchen",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Saf-i Glutensiz",
+            "label": "Q"
+          },
+          {
+            "rank": 2,
+            "name": "SushiCo",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Cafe MU",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Bi Nevi Deli",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegan Istanbul",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Community Kitchen",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Lisbon",
+      "country": "Portugal",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Hard Rock Cafe",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Café do Rio",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "h3",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Hambúrguer Real",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Manjerica",
+            "label": "A"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Bonjardim",
+            "label": "Q"
+          },
+          {
+            "rank": 2,
+            "name": "Frangasqueira Nacional",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "Manjerica",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Hard Rock Cafe",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Rice Me",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Despensa N.6",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Rice Me Deli",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Gelataria Scoop",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Sam Bolos",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Saludê",
+            "label": "A"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Rice Me",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Miss Saigon",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Boa-Bao",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Soão",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Panda Cantina",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "La Trattoria",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "In Bocca Al Lupo",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "TOTALE",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Coppola",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Il Pizzarium",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sushi Café Avenida",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Yakuza",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Confraria",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Go Juu",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Boa-Bao",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "The Food Temple",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Ao 26 Vegan Food Project",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Veganapati",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Hard Rock Cafe",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Rice Me",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "La Trattoria",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "The Food Temple",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Ao 26 Vegan Food Project",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Veganapati",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "London",
+      "country": "United Kingdom",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Patty & Bun",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Hard Rock Cafe",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Fat Hippo",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Niche",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "The Red Lion",
+            "label": "A"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Niche",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Nando's",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "LEON",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Jamaica Patty Co.",
+            "label": "M"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Libby's",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Manna Dew",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Free From Bakehouse",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Dendara",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Ma Ma Boutique Bakery",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Pho",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Rosa's Thai",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Banana Tree",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Bone Daddies",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Santa Maria",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Purezza",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "PizzaExpress",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Cotto",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Dijön",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sticks'n'Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Sushi Atelier",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "SUSHISAMBA",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Chisou",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Japan Centre Ichiba",
+            "label": "A"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Mildreds",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Unity Diner",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Club Mexicana",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Wagamama",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Nando's",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "PizzaExpress",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Mildreds",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Unity Diner",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Club Mexicana",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Los Angeles",
+      "country": "United States",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "In-N-Out",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Hopdoddy",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Crossroads Kitchen",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "True Food Kitchen",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Great White",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Pikunico",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Yardbird",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Honey's Kettle",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Shojin",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "True Food Kitchen",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Erin McKenna's Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Modern Bread and Bagel",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Kirari West",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Yvonne's Vegan Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Truman's Bakery",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Tatsu Ramen",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Shojin",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Pine & Crane",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "My Lai Kitchen",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Viet Noodle Bar",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Pizzeria Mozza",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Pizzana",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Prime Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Antonio's",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Pizza Boy",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Shojin",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "RICE Manhattan Beach",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "SUGARFISH",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "KazuNori",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Takami",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Shojin",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Crossroads Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Plant Food + Wine",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "True Food Kitchen",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "SUGARFISH",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Hopdoddy",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Shojin",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Crossroads Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Plant Food + Wine",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Madrid",
+      "country": "Spain",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "New York Burger",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Hamburguesa Nostra",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Beatae Burger",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Honey Burger",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Al Punto",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Naked & Sated",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Beatae Burger",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Celicioso",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Okashi Sanda",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "New York Burger",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Celicioso",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Sana Locura",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Pastelería La Oriental",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Nicolina",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Escorza",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Okashi Sanda",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Naked & Sated",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Tuk Tuk Asian Street Food",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Thai Arturo Soria",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Sushita",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Grosso Napoletano Senza Glutine",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Pizza Natura",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Pizz-End-Gluten",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Il Piccolino",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Chacabuco",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Okashi Sanda",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Sushita",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "99 Sushi Bar",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Kippu",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Kabuki",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Freedom Cakes",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Santa y Pura",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vega",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "New York Burger",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Okashi Sanda",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "Naked & Sated",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Freedom Cakes",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Santa y Pura",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vega",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Melbourne",
+      "country": "Australia",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Grill'd",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Betty's Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Seedling Cafe",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Huxtaburger",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "The B.East",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Le Feu Frankston",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Bird Bang'n Chicken",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Bodega Underground",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Grill'd",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Rufio",
+            "label": "D"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Ardor Food Co.",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Caffe Strada",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Seedling Cafe",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Kudo",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Gluten Free 4 U",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Rufio",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Rice Paper Scissors",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Red Spice Road",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Hochi Mama",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Straight Outta Saigon",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Shop225",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Red Sparrow Pizza",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Da Guido La Pasta",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Queen Margherita Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "11 Inch Pizza",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Chocolate Buddha",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Shimbashi Soba",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Tokui Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Komeyui",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Rice Workshop",
+            "label": "A"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Smith & Daughters",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegie Bar",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Sister of Soul",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Grill'd",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Chocolate Buddha",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Rice Paper Scissors",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Smith & Daughters",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegie Bar",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Sister of Soul",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Mexico City",
+      "country": "Mexico",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Forever Vegano",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Vegamo",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Goy's Plant-Based Burgers",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Fat Vegan",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Soul La Roma",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "La Otilia",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Ojo de Agua",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Forever Vegano",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Vegamo",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Los Sifones",
+            "label": "Q"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "La Otilia",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Pan Filio",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Mestizo Cacao",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "ANGARDY",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Chokolat Pimienta",
+            "label": "?"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Plantasia",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Mora Mora",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vegamo",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Asian Bay",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Yun Nan",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Farina Roma",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Antica Forneria",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Pizzantástica",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Pan Filio",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "MFY Pizza",
+            "label": "?"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Plantasia",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Sushi Roll",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Suntory",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Rokai",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Deigo",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Forever Vegano",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegamo",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Plantasia",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Ojo de Agua",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Pan Filio",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "La Otilia",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Forever Vegano",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegamo",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Plantasia",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Miami",
+      "country": "United States",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Lokal",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Kush",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "True Food Kitchen",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Love Life Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Shake Shack",
+            "label": "A"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Yardbird",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Naked Farmer",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Bolay",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "P.F. Chang's",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Carrot Express",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Bunnie Cakes",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Dora's Bakery & Bistro",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Stephanie's Crepes",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Manna Life Food",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "L'Artisane Creative Bakery",
+            "label": "V"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "P.F. Chang's",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Planta Queen",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "107 Taste",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Pho 79",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Lung Yai Thai Tapas",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Mister O1",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Spris Artisan Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Piola",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Andiamo! Brick Oven Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Dora's Bakery & Bistro",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Pubbelly Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Makoto",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Sushi Maki",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Planta Queen",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "26 Sushi & Tapas",
+            "label": "A"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Love Life Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Planta",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Full Bloom Vegan",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "True Food Kitchen",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Bolay",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "P.F. Chang's",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Love Life Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Planta",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Full Bloom Vegan",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Milan",
+      "country": "Italy",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Old Wild West",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Tripburger",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Bistrò",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "SPECIAL Hamburger",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Holy Burger",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Be Bop",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Pàn Per Me",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Bistrò",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Old Wild West",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "GluFree Bakery",
+            "label": "D"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "GluFree Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Pàn Per Me",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Via dalla Spiga",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Pasticceria Navotti",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Pansy Pasticceria",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Pàn Per Me",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Be Bop",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Gong Oriental Attitude",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Mu Dimsum",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Casa Ramen",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "O'Peperino e Milano",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Be Bop",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Pàn Per Me",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "GluFree Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "La Spiga Amica",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Iyo",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Temakinho",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Basara",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Sushi B",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Zero Contemporary Food",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Flower Burger",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Joia",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Alhambra Risto Veg",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Old Wild West",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Be Bop",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Pàn Per Me",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Flower Burger",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Joia",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Alhambra Risto Veg",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Montreal",
+      "country": "Canada",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Notre-Boeuf-De-Grâce",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Frite Alors!",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Pub Quartier Latin",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Shack Attakk",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Brasserie des Rapides",
+            "label": "A"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Cantine Panella",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Poulet Rouge",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "St-Hubert",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Benny & Co.",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Scores",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Le Marquis",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Cookie Stéfanie",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "L'Artisan sans gluten et sans lait",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Cantine Panella",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Parc Sans Gluten",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "ChuChai",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Umami Ramen",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "LOV",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Pho Bac",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Kinton Ramen",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Pizzeria NO.900",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "La Piazzetta",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Cantine Panella",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Pizzeria Zac",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "L'Artisan",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Bloom Sushi",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Sushi Momo",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Ryu",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Park",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Kyo Bar Japonais",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "LOV",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Sushi Momo",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "ChuChai",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "St-Hubert",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Poulet Rouge",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "La Piazzetta",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "LOV",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Sushi Momo",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "ChuChai",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "New York City",
+      "country": "United States",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Bareburger",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Wild",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Schnipper's",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Friedman's",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Burger Village",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Friedman's",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Wild",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Senza Gluten",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "P.F. Chang's",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Lilli & Loo",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Modern Bread and Bagel",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Erin McKenna's Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "By the Way Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Posh Pop",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Senza Gluten Cafe",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Lilli & Loo",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Wei West",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "P.F. Chang's",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Nami Nori",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Senza Gluten",
+            "label": "D"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Rubirosa",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Kesté",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Don Antonio",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Wild",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Modern Bread and Bagel",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Nami Nori",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Sushi Counter",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "SUGARFISH",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "KazuNori",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Blue Ribbon Sushi Bar",
+            "label": "A"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Coletta",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Spicy Moon",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Willow",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "P.F. Chang's",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Bareburger",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Friedman's",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Coletta",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Spicy Moon",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Willow",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Oslo",
+      "country": "Norway",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Døgnvill Burger",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Munchies",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Kverneriet",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Bastard Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Nordvegan",
+            "label": "V"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Egon",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Nordvegan",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Rice Bowl Thai Cafe",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Hrimnir Ramen",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Olivia",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Oslo Raw",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Baker Hansen",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Håndbakt",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Kumi",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Palett",
+            "label": "M"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Hrimnir Ramen",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Rice Bowl Thai Cafe",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Südøst",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Dinner Bar & Restaurant",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Lemongrass",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Peppes Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Olivia",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Villa Paradiso",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Mamma Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "ZZ Pizza",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sabi Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Alex Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Nodee",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Hanami",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Sushi City",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Nordvegan",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Oslo Raw",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Funky Fresh Foods",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Egon",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Peppes Pizza",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Sabi Sushi",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Nordvegan",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Oslo Raw",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Funky Fresh Foods",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Paris",
+      "country": "France",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "PNY Pigalle",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Noglu",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Little Apple",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Apéti",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "Tasty Burger",
+            "label": "?"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Noglu",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Riz Riz",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Kapunka",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Wild & The Moon",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Little Nonna",
+            "label": "D"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Copains",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Chambelland",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "No Glu",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Maison Plume",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "ONYRIZA",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Riz Riz",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Kapunka",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Little Nonna",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Thaïsil",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Wild & The Moon",
+            "label": "V"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Little Nonna",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Tasca by Ciro",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Su Misura",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "La Mia Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Happiz Monge",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Riz Riz",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Côté Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Sushi Shop",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Blueberry Maki Bar",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Matsuri",
+            "label": "A"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Wild & The Moon",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Aujourd'hui Demain",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Le Potager de Charlotte",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Sushi Shop",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Côté Sushi",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Noglu",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Wild & The Moon",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Aujourd'hui Demain",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Le Potager de Charlotte",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Portland",
+      "country": "United States",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Ground Breaker Brewing",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Verde Cocina",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Burgerville",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "PDX Sliders",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Next Level Burger",
+            "label": "V"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Ground Breaker Brewing",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Kann",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Butterfly Belly Asian Cuisine",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Jojo",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Pollo Norte",
+            "label": "M"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "New Cascadia Traditional",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Petunia's Pies & Pastries",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Mikiko Mochi Donuts",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Gem Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Kyra's Bake Shop",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Butterfly Belly Asian Cuisine",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Kann",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Luc Lac",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Kati Portland",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Nong's Khao Man Gai",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "New Cascadia Traditional",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Virtuous Pie",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Rudy's Gourmet Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Mississippi Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "East Glisan Pizza Lounge",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Bamboo Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Zilla Sake",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Masu Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Mirakutei",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Obon Shokudo",
+            "label": "V"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Blossoming Lotus",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Epif",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Fermenter",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Burgerville",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Rudy's Gourmet Pizza",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Butterfly Belly",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Blossoming Lotus",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Epif",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Fermenter",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Prague",
+      "country": "Czechia",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "U Agamy",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Forky's",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Dish Fine Burger Bistro",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Sad Man's Tongue",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "The Street",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Alriso",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "U Agamy",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Bassotto",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Palo Verde",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Forky's",
+            "label": "V"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "MyRaw Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Cukrářství Buchalovi",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Babiččina spíž",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Alriso",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Den Noc",
+            "label": "M"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Alriso",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Wokin",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Modrý zub",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "SIA",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Lemon Leaf",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Bassotto",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Alriso",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Pizza Nuova",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Le Pizze di Frankie",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Pizza Letná",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Yami Sushi House",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Hanabi",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Miyabi",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Mash Hana",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Sushi Oishi",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Palo Verde",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Moment",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Střecha",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Alriso",
+            "label": "Q"
+          },
+          {
+            "rank": 2,
+            "name": "U Agamy",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "SIA",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Palo Verde",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Moment",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Střecha",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Rome",
+      "country": "Italy",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Old Wild West",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "T-Burger Station",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "The Butcher House",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Erudito",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "California Cookhouse",
+            "label": "A"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Mama Eat",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "New Food Gluten Free",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Old Wild West",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "T-Burger Station",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Voglia di Pizza",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Celiachiamo Lab",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "New Food Gluten Free",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Napoleoni",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Forno Dolci Sapori",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Senza Pensieri",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Mama Eat",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "La Soffitta Renovatio",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Voglia di Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Le Altre Farine del Mulino",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Risotteria Melotti",
+            "label": "D"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Pizza in Trevi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Mama Eat",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "La Soffitta Renovatio",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Voglia di Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Cimarra 4",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Temakinho",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Hamasei",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Zuma Rome",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Shinto",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Sushi e Noodles",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Rifugio Romano",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Romeow Cat Bistrot",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Ma Va'?",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Old Wild West",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Mama Eat",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "La Soffitta Renovatio",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Rifugio Romano",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Romeow Cat Bistrot",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Ma Va'?",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "San Francisco",
+      "country": "United States",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Roam Artisan Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Super Duper Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Kitava",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Wildseed",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Gott's Roadside",
+            "label": "A"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Proposition Chicken",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Firefly",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Kitava",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Pica Pica",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Wildseed",
+            "label": "V"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Mariposa Baking Company",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Wholesome Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Third Culture Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Salt & Straw",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Peña Pachamama",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Asian Box",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Osha Thai",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Burma Love",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Perilla",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Wildseed",
+            "label": "V"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Tony's Pizza Napoletana",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Pizzetta 211",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Delarosa",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Baiano Pizzeria",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Firefly",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Shizen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Tataki",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Kuma on Valencia",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Robin",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Akiko's",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Shizen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Wildseed",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Peña Pachamama",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Asian Box",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Roam Artisan Burgers",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Gott's Roadside",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Shizen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Wildseed",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Peña Pachamama",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Santiago",
+      "country": "Chile",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Vg Burger",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Quínoa",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "El Huerto",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Holy Moly",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Uncle Fletch",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Quínoa",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "El Huerto",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Zerogluten",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "P.F. Chang's",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Pollo Stop",
+            "label": "?"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "La Celiacoteca",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Zerogluten",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Dulce Cariño",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Quínoa",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Vegan Bunker",
+            "label": "V"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "P.F. Chang's",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Vietnam Discovery",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Karai by Mitsuharu",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Quínoa",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "El Huerto",
+            "label": "V"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Zerogluten",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Pizzería Da Dino",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Omertá",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Brunapoli",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "La Fabbrica",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Karai",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Matsuri",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Japón",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Naoki",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Niu Sushi",
+            "label": "A"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "El Huerto",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegan Bunker",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vg Burger",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "P.F. Chang's",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Niu Sushi",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Zerogluten",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "El Huerto",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegan Bunker",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vg Burger",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "São Paulo",
+      "country": "Brazil",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Le Manjue",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "The New",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "A Chapa",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Z Deli Sandwich Shop",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Patties",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Le Manjue",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Urbano Cozinha Orgânica",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Galeto's",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Frutaria São Paulo",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Pop Vegan Food",
+            "label": "V"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Lilóri",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Colher de Mel",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Le Manjue",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "A Tal da Castanha",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Isabela Akkari",
+            "label": "M"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Le Manjue",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Urbano Cozinha Orgânica",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Micaela",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Thai E-San",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Pop Vegan Food",
+            "label": "V"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Le Manjue",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Pizzaria Nacional",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Veridiana",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "A Pizza da Mooca",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Maremonti",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Aoyama",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Mori Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "JAM Jardins",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Jun Sakamoto",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Nakka",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Pop Vegan Food",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Loving Hut",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Purana.CO",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Galeto's",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Aoyama",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Le Manjue",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Pop Vegan Food",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Loving Hut",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Purana.CO",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Seattle",
+      "country": "United States",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "A Stir",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Ghostfish Brewing",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Li'l Woody's",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Red Mill Burgers",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Uneeda Burger",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "The Chicken Supply",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Bok a Bok",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "A Stir",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Ghostfish Brewing",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Nando's",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Nuflours Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Wildflour Gluten-Free Baking",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Frankie & Jo's",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Flying Apron",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Shug's Soda Fountain",
+            "label": "A"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Wild Ginger",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Araya's Place",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Ba Bar",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Pho Bac",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Kati Vegan Thai",
+            "label": "V"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Razzí's Pizzeria",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Ghostfish Brewing",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Pagliacci Pizza",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Tutta Bella",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Zeeks Pizza",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Bamboo Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Japonessa",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Sushi Kashiba",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Momiji",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Umi Sake House",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Plum Bistro",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Kati Vegan Thai",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Araya's Place",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Nando's",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Bamboo Sushi",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Razzí's Pizzeria",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Plum Bistro",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Kati Vegan Thai",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Araya's Place",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Seoul",
+      "country": "South Korea",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Plant Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegetus",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Monk's Butcher",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "The Booth",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Brooklyn The Burger Joint",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Plant Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegetus",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Nammi Plant Lab",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Plantude",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Sunny Bread",
+            "label": "D"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Sunny Bread",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Pan Honesta",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Vegetus",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Grain Seoul",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Plant Cafe",
+            "label": "V"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Osegye Hyang",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Nammi Plant Lab",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Plantude",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Maji",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Maru Jayeonsik Gimbap",
+            "label": "V"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Plant Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegetus",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Monk's Butcher",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "The Booth",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Spacca Napoli",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Maru Jayeonsik Gimbap",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Sushiro",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Kappa Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Sushi Cho",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Ariake",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Plant Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegetus",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Nammi Plant Lab",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Sunny Bread",
+            "label": "Q"
+          },
+          {
+            "rank": 2,
+            "name": "Plantude",
+            "label": "Q"
+          },
+          {
+            "rank": 3,
+            "name": "Sushiro",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Plant Cafe",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegetus",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Nammi Plant Lab",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Singapore",
+      "country": "Singapore",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Hans im Glück",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "VeganBurg",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "The Butcher's Wife",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Three Buns",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Carrotsticks & Cravings",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "The Butcher's Wife",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Nando's",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "ASTONS",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Kenny Rogers Roasters",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "The Soup Spoon",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Tiann's",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "The Whole Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Delcie's Desserts",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Kind Kones",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "The Butcher's Wife",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "The Butcher's Wife",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "So Pho",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Whole Earth",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Original Sin",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Shimbashi Soba",
+            "label": "A"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "The Butcher's Wife",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Cicheti",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Alt. Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "PizzaExpress",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Kith Cafe",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sushi Tei",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Genki Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "The Sushi Bar",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Sen of Japan",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Shimbashi Soba",
+            "label": "A"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Whole Earth",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Original Sin",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "VeganBurg",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Nando's",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "PizzaExpress",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Sushi Tei",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Whole Earth",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Original Sin",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "VeganBurg",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Stockholm",
+      "country": "Sweden",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Brödernas",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "MAX Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Bastard Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Bun Meat Bun",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Chutney",
+            "label": "V"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "MAX Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Brödernas",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Pong",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Chutney",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Hermans",
+            "label": "V"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Under Kastanjen",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Malvas Glutenfria Hantverksbageri",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Happy Atelier",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Bageri Passion",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Sattva",
+            "label": "V"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Lao Wai",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Eatnam",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Minh Mat",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Pong",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Tokyo Diner",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Giro Pizzeria",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "1889 Fast Fine Pizza",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Meno Male",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Vapiano",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Brödernas",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sushi Yama",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Naked Fish",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Susherian",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "ESA Sushi",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Blue Light Yokohama",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Chutney",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Hermans",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Lao Wai",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "MAX Burgers",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Brödernas",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Pong",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Chutney",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Hermans",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Lao Wai",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Sydney",
+      "country": "Australia",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Grill'd",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Betty's Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Bar Luca",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "BL Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Burgers 8",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Wholegreen Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Comeco Foods",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Grill'd",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Betty's Burgers",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Butter",
+            "label": "M"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Wholegreen Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Sébastien Sans Gluten",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Comeco Foods",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Hudson's Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Messy Spoon",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Comeco Foods",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Chat Thai",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Muum Maam",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Chin Chin",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Ho Jiak",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Made in Italy",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "OOSHMAN",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "City Oltra",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Keep Tone",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Bella Cibo",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Sokyo",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Sushi e",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Makoto",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Niji Sushi Bar",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "RK San",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Yulli's",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Bodhi",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Shift Eatery",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Grill'd",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Chat Thai",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Made in Italy",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Yulli's",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Bodhi",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Shift Eatery",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Tokyo",
+      "country": "Japan",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Teddy's Bigger Burgers",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Shochikuen Cafe",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Shogun Burger",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "OKOMEDOKI Rice Burger",
+            "label": "?"
+          },
+          {
+            "rank": 5,
+            "name": "T's Kitchen",
+            "label": "D"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "T's Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Shochikuen Cafe",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Rainbow Raw Food",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Nataraj",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Mr. Farmer",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "I'm donut? Gluten Free",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Rizlabo Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "NachuRa",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Shochikuen Cafe",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "otaco",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "T's Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Soranoiro",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Shochikuen Cafe",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "RICEHACK",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Gluten Free Kushiage Su",
+            "label": "D"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Pizzakaya",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Shochikuen Cafe",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "SHOGUN PIZZA",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "RICEHACK",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Komeko IMpossible",
+            "label": "D"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "T's Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Gonpachi Nori-Temaki",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "KINKA Sushi Bar",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Sushiro",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Sushi no Midori",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "T's Tantan",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegan Bistro Jangara",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Ain Soph",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Mr. Farmer",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Sushiro",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "T's Kitchen",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "T's Tantan",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Vegan Bistro Jangara",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Ain Soph",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Toronto",
+      "country": "Canada",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "The Burger's Priest",
+            "label": "M"
+          },
+          {
+            "rank": 2,
+            "name": "Hero Certified Burgers",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Almond Butterfly Bistro",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Impact Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "ZEAL Burgers",
+            "label": "M"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Riz on Yonge",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Almond Butterfly",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Impact Kitchen",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Fresh",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Nando's",
+            "label": "A"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Bunner's Bakeshop",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Almond Butterfly",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Whisked",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Cock-A-Doodle-Doo",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Wild Blue Bakery",
+            "label": "D"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Riz on Yonge",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Planta Queen",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Khao San Road",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Pai",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Pho Tien Thanh",
+            "label": "M"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Pizzeria Libretto",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Pi Co.",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Pizzeria Defina",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Tulia Osteria",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Sol Pizza",
+            "label": "A"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Riz on Yonge",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Kibo Sushi",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Miku",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Planta Queen",
+            "label": "V"
+          },
+          {
+            "rank": 5,
+            "name": "Sushi on Bloor",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Planta Queen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Fresh",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Rosalinda",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Nando's",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Kibo Sushi",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Pizzeria Libretto",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Planta Queen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Fresh",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Rosalinda",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Vancouver",
+      "country": "Canada",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "MeeT",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Bin 4 Burger Lounge",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Romer's Burger Bar",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "The Wallflower",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Virtuous Pie",
+            "label": "V"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Juke Fried Chicken",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Nando's",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "The Wallflower",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Downlow Chicken Shack",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Chickpea",
+            "label": "V"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "The Gluten Free Epicurean",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Lemonade Gluten Free Bakery",
+            "label": "D"
+          },
+          {
+            "rank": 3,
+            "name": "Heirs Pears",
+            "label": "D"
+          },
+          {
+            "rank": 4,
+            "name": "Cartems Donuts",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Level V Bakery",
+            "label": "V"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Iki Japanese Bistro",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Chau Veggie Express",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Do Chay",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Anh and Chi",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "MeeT",
+            "label": "V"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Virtuous Pie",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Rocky Mountain Flatbread",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Pizzeria Farina",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Nuba",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "The Parlour",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Iki Japanese Bistro",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Miku",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Minami",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Shizen Ya",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Temaki Sushi",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "MeeT",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Chickpea",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Do Chay",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Nando's",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Bin 4 Burger Lounge",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Iki Japanese Bistro",
+            "label": "AM"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "MeeT",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Chickpea",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Do Chay",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    },
+    {
+      "city": "Vienna",
+      "country": "Austria",
+      "categories": {
+        "B": [
+          {
+            "rank": 1,
+            "name": "Swing Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Le Burger",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Hard Rock Cafe",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Rinderwahn",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Veggiezz",
+            "label": "V"
+          }
+        ],
+        "C": [
+          {
+            "rank": 1,
+            "name": "Gasthaus Zum Wohl",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Wrenkh",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Hard Rock Cafe",
+            "label": "A"
+          },
+          {
+            "rank": 4,
+            "name": "Le Burger",
+            "label": "A"
+          },
+          {
+            "rank": 5,
+            "name": "Velani",
+            "label": "V"
+          }
+        ],
+        "D": [
+          {
+            "rank": 1,
+            "name": "Allergiker Café",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Simply Raw Bakery",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Ausnahmsweise",
+            "label": "V"
+          },
+          {
+            "rank": 4,
+            "name": "Gasthaus Zum Wohl",
+            "label": "D"
+          },
+          {
+            "rank": 5,
+            "name": "Blue Orange",
+            "label": "A"
+          }
+        ],
+        "N": [
+          {
+            "rank": 1,
+            "name": "Gasthaus Zum Wohl",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "ra'mien",
+            "label": "M"
+          },
+          {
+            "rank": 3,
+            "name": "Vietthao",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Wok & More",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Soya",
+            "label": "V"
+          }
+        ],
+        "P": [
+          {
+            "rank": 1,
+            "name": "Gasthaus Zum Wohl",
+            "label": "D"
+          },
+          {
+            "rank": 2,
+            "name": "Vapiano",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Scarabocchio",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Pizzeria Riva",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Pizza Quartier",
+            "label": "M"
+          }
+        ],
+        "S": [
+          {
+            "rank": 1,
+            "name": "Ebi",
+            "label": "A"
+          },
+          {
+            "rank": 2,
+            "name": "Akakiko",
+            "label": "A"
+          },
+          {
+            "rank": 3,
+            "name": "Hitomi",
+            "label": "M"
+          },
+          {
+            "rank": 4,
+            "name": "Mochi",
+            "label": "M"
+          },
+          {
+            "rank": 5,
+            "name": "Natsu",
+            "label": "M"
+          }
+        ]
+      },
+      "allergyCategories": {
+        "ML": [
+          {
+            "rank": 1,
+            "name": "Swing Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Velani",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Veggiezz",
+            "label": "V"
+          }
+        ],
+        "PN": [
+          {
+            "rank": 1,
+            "name": "Hard Rock Cafe",
+            "label": "AM"
+          },
+          {
+            "rank": 2,
+            "name": "Akakiko",
+            "label": "AM"
+          },
+          {
+            "rank": 3,
+            "name": "Gasthaus Zum Wohl",
+            "label": "Q"
+          }
+        ],
+        "SF": [
+          {
+            "rank": 1,
+            "name": "Swing Kitchen",
+            "label": "V"
+          },
+          {
+            "rank": 2,
+            "name": "Velani",
+            "label": "V"
+          },
+          {
+            "rank": 3,
+            "name": "Veggiezz",
+            "label": "V"
+          }
+        ]
+      },
+      "sources": [
+        "/gluten-free-city-guide.txt"
+      ]
+    }
+  ]
+}

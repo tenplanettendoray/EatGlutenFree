@@ -1,0 +1,398 @@
+{
+  "results": [
+    {
+      "input": {
+        "location": "Paris, France",
+        "food": "Pizza",
+        "allergies": [
+          "Gluten",
+          "Sesame"
+        ]
+      },
+      "elapsedMs": 16860,
+      "result": {
+        "locationLabel": "Paris, France",
+        "restaurants": [
+          {
+            "name": "Pizzeria Chez André",
+            "cuisine": [
+              "Pizza",
+              "Italian"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Chez%20Andr%C3%A9%2010%20Rue%20de%20la%20Huchette",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Chez%20Andr%C3%A9%2010%20Rue%20de%20la%20Huchette",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Chez%20Andr%C3%A9%2010%20Rue%20de%20la%20Huchette",
+            "evidenceSummary": "Gluten-free pizza available on request Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Local spot known for traditional wood-fired pizzas",
+            "rankingReason": "Offers gluten-free pizza base; sesame seeds often used as garnish, confirm omission",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [
+              "Sesame"
+            ],
+            "locations": [
+              {
+                "label": "5th Arrondissement",
+                "address": "10 Rue de la Huchette",
+                "website": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Chez%20Andr%C3%A9%2010%20Rue%20de%20la%20Huchette",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Chez%20Andr%C3%A9%2010%20Rue%20de%20la%20Huchette"
+              }
+            ],
+            "popularityTier": 3,
+            "allergyConfidenceTier": 3,
+            "foodRelevanceTier": 3
+          }
+        ],
+        "status": "used",
+        "provider": "NVIDIA"
+      }
+    },
+    {
+      "input": {
+        "location": "Lisbon, Portugal",
+        "food": "Burger",
+        "allergies": [
+          "Gluten"
+        ]
+      },
+      "elapsedMs": 13903,
+      "result": {
+        "locationLabel": "Lisbon, Portugal",
+        "restaurants": [
+          {
+            "name": "Burgermeister",
+            "cuisine": [
+              "Burger",
+              "Gluten-free"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Burgermeister%20Rua%20da%20Moeda%20111",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Burgermeister%20Rua%20da%20Moeda%20111",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Burgermeister%20Rua%20da%20Moeda%20111",
+            "evidenceSummary": "GF bun available Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Popular spot for burgers with GF bun option",
+            "rankingReason": "GF bun used for burger patty",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Cais do Sodré",
+                "address": "Rua da Moeda 111",
+                "website": "https://www.google.com/maps/search/?api=1&query=Burgermeister%20Rua%20da%20Moeda%20111",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Burgermeister%20Rua%20da%20Moeda%20111"
+              }
+            ],
+            "popularityTier": 5,
+            "allergyConfidenceTier": 3,
+            "foodRelevanceTier": 3
+          },
+          {
+            "name": "Ponto Final",
+            "cuisine": [
+              "Burger",
+              "Seafood"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Ponto%20Final%20Rua%20de%20Santiago%2073",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Ponto%20Final%20Rua%20de%20Santiago%2073",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Ponto%20Final%20Rua%20de%20Santiago%2073",
+            "evidenceSummary": "GF bun on request Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Historic restaurant with GF bun option",
+            "rankingReason": "GF bun used for burger",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Alfama",
+                "address": "Rua de Santiago 73",
+                "website": "https://www.google.com/maps/search/?api=1&query=Ponto%20Final%20Rua%20de%20Santiago%2073",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Ponto%20Final%20Rua%20de%20Santiago%2073"
+              }
+            ],
+            "popularityTier": 4,
+            "allergyConfidenceTier": 3,
+            "foodRelevanceTier": 3
+          },
+          {
+            "name": "Casa da Índia",
+            "cuisine": [
+              "Burger",
+              "International"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Casa%20da%20%C3%8Dndia%20Rua%20da%20Prata%20116",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Casa%20da%20%C3%8Dndia%20Rua%20da%20Prata%20116",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Casa%20da%20%C3%8Dndia%20Rua%20da%20Prata%20116",
+            "evidenceSummary": "GF bun available Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "International cuisine with GF bun",
+            "rankingReason": "GF bun used for burger",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Baixa",
+                "address": "Rua da Prata 116",
+                "website": "https://www.google.com/maps/search/?api=1&query=Casa%20da%20%C3%8Dndia%20Rua%20da%20Prata%20116",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Casa%20da%20%C3%8Dndia%20Rua%20da%20Prata%20116"
+              }
+            ],
+            "popularityTier": 3,
+            "allergyConfidenceTier": 3,
+            "foodRelevanceTier": 3
+          },
+          {
+            "name": "Adega da Mouraria",
+            "cuisine": [
+              "Burger",
+              "Portuguese"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Adega%20da%20Mouraria%20Rua%20da%20Mouraria%2051",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Adega%20da%20Mouraria%20Rua%20da%20Mouraria%2051",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Adega%20da%20Mouraria%20Rua%20da%20Mouraria%2051",
+            "evidenceSummary": "GF bun on request Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Portuguese restaurant with GF bun",
+            "rankingReason": "GF bun used for burger",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Mouraria",
+                "address": "Rua da Mouraria 51",
+                "website": "https://www.google.com/maps/search/?api=1&query=Adega%20da%20Mouraria%20Rua%20da%20Mouraria%2051",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Adega%20da%20Mouraria%20Rua%20da%20Mouraria%2051"
+              }
+            ],
+            "popularityTier": 3,
+            "allergyConfidenceTier": 3,
+            "foodRelevanceTier": 3
+          }
+        ],
+        "status": "used",
+        "provider": "NVIDIA"
+      }
+    },
+    {
+      "input": {
+        "location": "Rome, Italy",
+        "food": "Pizza",
+        "allergies": [
+          "Gluten"
+        ]
+      },
+      "elapsedMs": 21911,
+      "result": {
+        "locationLabel": "Rome, Italy",
+        "restaurants": [
+          {
+            "name": "Bonci Pizzeria",
+            "cuisine": [
+              "Pizza"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Bonci%20Pizzeria%20Via%20della%20Paglia%2C%2012",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Bonci%20Pizzeria%20Via%20della%20Paglia%2C%2012",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Bonci%20Pizzeria%20Via%20della%20Paglia%2C%2012",
+            "evidenceSummary": "Chef Gabriele Bonci known for gourmet pizza al taglio Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Renowned for high-quality ingredients and dough research",
+            "rankingReason": "Offers gluten-free pizza bases upon request, prepared in dedicated area",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Testaccio",
+                "address": "Via della Paglia, 12",
+                "website": "https://www.google.com/maps/search/?api=1&query=Bonci%20Pizzeria%20Via%20della%20Paglia%2C%2012",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Bonci%20Pizzeria%20Via%20della%20Paglia%2C%2012"
+              }
+            ],
+            "popularityTier": 4,
+            "allergyConfidenceTier": 4,
+            "foodRelevanceTier": 4
+          },
+          {
+            "name": "La Gatta Mangiona",
+            "cuisine": [
+              "Pizza"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=La%20Gatta%20Mangiona%20Via%20di%20San%20Francesco%20a%20Ripa%2C%20145",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=La%20Gatta%20Mangiona%20Via%20di%20San%20Francesco%20a%20Ripa%2C%20145",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=La%20Gatta%20Mangiona%20Via%20di%20San%20Francesco%20a%20Ripa%2C%20145",
+            "evidenceSummary": "Specialty pizza restaurant with extensive menu Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Known for creative pizza combinations and good wine selection",
+            "rankingReason": "Offers gluten-free pizza bases, noted for accommodating dietary restrictions",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Trastevere",
+                "address": "Via di San Francesco a Ripa, 145",
+                "website": "https://www.google.com/maps/search/?api=1&query=La%20Gatta%20Mangiona%20Via%20di%20San%20Francesco%20a%20Ripa%2C%20145",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=La%20Gatta%20Mangiona%20Via%20di%20San%20Francesco%20a%20Ripa%2C%20145"
+              }
+            ],
+            "popularityTier": 4,
+            "allergyConfidenceTier": 4,
+            "foodRelevanceTier": 4
+          },
+          {
+            "name": "Pizzeria da Baffetto",
+            "cuisine": [
+              "Pizza"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20da%20Baffetto%20Via%20della%20Lungara%2C%20233",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20da%20Baffetto%20Via%20della%20Lungara%2C%20233",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20da%20Baffetto%20Via%20della%20Lungara%2C%20233",
+            "evidenceSummary": "Classic Roman pizza al taglio with gluten-free options Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Historic pizzeria in Trastevere, established 1961",
+            "rankingReason": "Offers gluten-free pizza bases made from rice and corn flour, cooked separately",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Trastevere",
+                "address": "Via della Lungara, 233",
+                "website": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20da%20Baffetto%20Via%20della%20Lungara%2C%20233",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20da%20Baffetto%20Via%20della%20Lungara%2C%20233"
+              }
+            ],
+            "popularityTier": 3,
+            "allergyConfidenceTier": 3,
+            "foodRelevanceTier": 3
+          },
+          {
+            "name": "Pizza Mio",
+            "cuisine": [
+              "Pizza"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Pizza%20Mio%20Via%20di%20San%20Biagio%20della%20Paglia%2C%20103",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizza%20Mio%20Via%20di%20San%20Biagio%20della%20Paglia%2C%20103",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizza%20Mio%20Via%20di%20San%20Biagio%20della%20Paglia%2C%20103",
+            "evidenceSummary": "Serves both regular and gluten-free pizza options Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Popular spot near Piazza Navona with casual atmosphere",
+            "rankingReason": "Gluten-free pizza available with rice flour base, staff aware of cross-contamination",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Piazza Navona",
+                "address": "Via di San Biagio della Paglia, 103",
+                "website": "https://www.google.com/maps/search/?api=1&query=Pizza%20Mio%20Via%20di%20San%20Biagio%20della%20Paglia%2C%20103",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizza%20Mio%20Via%20di%20San%20Biagio%20della%20Paglia%2C%20103"
+              }
+            ],
+            "popularityTier": 3,
+            "allergyConfidenceTier": 3,
+            "foodRelevanceTier": 3
+          },
+          {
+            "name": "Pizzeria La Montecarlo",
+            "cuisine": [
+              "Pizza"
+            ],
+            "website": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20La%20Montecarlo%20Via%20Alberto%20Cadlolo%2C%2010",
+            "menuSourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20La%20Montecarlo%20Via%20Alberto%20Cadlolo%2C%2010",
+            "qualitySourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20La%20Montecarlo%20Via%20Alberto%20Cadlolo%2C%2010",
+            "evidenceSummary": "Traditional pizzeria with gluten-free options Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Local favorite for authentic Roman pizza",
+            "rankingReason": "Gluten-free pizza base available, cooked on separate surface when possible",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Flaminio",
+                "address": "Via Alberto Cadlolo, 10",
+                "website": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20La%20Montecarlo%20Via%20Alberto%20Cadlolo%2C%2010",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20La%20Montecarlo%20Via%20Alberto%20Cadlolo%2C%2010"
+              }
+            ],
+            "popularityTier": 3,
+            "allergyConfidenceTier": 3,
+            "foodRelevanceTier": 3
+          }
+        ],
+        "status": "used",
+        "provider": "NVIDIA"
+      }
+    }
+  ],
+  "calls": [
+    {
+      "status": 200,
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "usage": {
+        "prompt_tokens": 282,
+        "completion_tokens": 312,
+        "total_tokens": 594
+      },
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "content": "{\n  \"l\": \"Paris, France\",\n  \"p\": [\n    {\n      \"n\": \"Pizzeria Chez André\",\n      \"b\": \"5th Arrondissement\",\n      \"a\": \"10 Rue de la Huchette\",\n      \"c\": [\"Pizza\", \"Italian\"],\n      \"w\": \"\",\n      \"e\": \"Gluten-free pizza available on request\",\n      \"q\": \"Local spot known for traditional wood-fired pizzas\",\n      \"r\": \"Offers gluten-free pizza base; sesame seeds often used as garnish, confirm omission\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Pizzeria Chez André\",\n      \"b\": \"5th Arrondissement\",\n      \"a\": \"10 Rue de la Huchette\",\n      \"c\": [\"Pizza\", \"Italian\"],\n      \"w\": \"\",\n      \"e\": \"Gluten-free pizza available on request\",\n      \"q\": \"Local spot known for traditional wood-fired pizzas\",\n      \"r\": \"Offers gluten-free pizza base; sesame seeds often used as garnish, confirm omission\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    }\n  ]\n}",
+            "role": "assistant",
+            "reasoning_content": null
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ]
+    },
+    {
+      "status": 200,
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "usage": {
+        "prompt_tokens": 281,
+        "completion_tokens": 640,
+        "total_tokens": 921
+      },
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "content": "{\n  \"l\": \"Lisbon, Portugal\",\n  \"p\": [\n    {\n      \"n\": \"Burgermeister\",\n      \"b\": \"Cais do Sodré\",\n      \"a\": \"Rua da Moeda 111\",\n      \"c\": [\"Burger\", \"Gluten-free\"],\n      \"w\": \"\",\n      \"e\": \"GF bun available\",\n      \"q\": \"Popular spot for burgers with GF bun option\",\n      \"r\": \"GF bun used for burger patty\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 5,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Ponto Final\",\n      \"b\": \"Alfama\",\n      \"a\": \"Rua de Santiago 73\",\n      \"c\": [\"Burger\", \"Seafood\"],\n      \"w\": \"\",\n      \"e\": \"GF bun on request\",\n      \"q\": \"Historic restaurant with GF bun option\",\n      \"r\": \"GF bun used for burger\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 4,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Casa da Índia\",\n      \"b\": \"Baixa\",\n      \"a\": \"Rua da Prata 116\",\n      \"c\": [\"Burger\", \"International\"],\n      \"w\": \"\",\n      \"e\": \"GF bun available\",\n      \"q\": \"International cuisine with GF bun\",\n      \"r\": \"GF bun used for burger\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Adega da Mouraria\",\n      \"b\": \"Mouraria\",\n      \"a\": \"Rua da Mouraria 51\",\n      \"c\": [\"Burger\", \"Portuguese\"],\n      \"w\": \"\",\n      \"e\": \"GF bun on request\",\n      \"q\": \"Portuguese restaurant with GF bun\",\n      \"r\": \"GF bun used for burger\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Time Out Market\",\n      \"b\": \"Baixa\",\n      \"a\": \"Avenida 24 de Julho 49\",\n      \"c\": [\"Burger\", \"Food Court\"],\n      \"w\": \"\",\n      \"e\": \"Multiple stalls with GF bun\",\n      \"q\": \"Food market with burger stalls offering GF bun\",\n      \"r\": \"GF bun available at various stalls\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    }\n  ]\n}",
+            "role": "assistant",
+            "reasoning_content": null
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ]
+    },
+    {
+      "status": 200,
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "usage": {
+        "prompt_tokens": 279,
+        "completion_tokens": 718,
+        "total_tokens": 997
+      },
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "content": "{\n  \"l\": \"Rome, Italy\",\n  \"p\": [\n    {\n      \"n\": \"Pizzeria da Baffetto\",\n      \"b\": \"Trastevere\",\n      \"a\": \"Via della Lungara, 233\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Classic Roman pizza al taglio with gluten-free options\",\n      \"q\": \"Historic pizzeria in Trastevere, established 1961\",\n      \"r\": \"Offers gluten-free pizza bases made from rice and corn flour, cooked separately\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"Bonci Pizzeria\",\n      \"b\": \"Testaccio\",\n      \"a\": \"Via della Paglia, 12\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Chef Gabriele Bonci known for gourmet pizza al taglio\",\n      \"q\": \"Renowned for high-quality ingredients and dough research\",\n      \"r\": \"Offers gluten-free pizza bases upon request, prepared in dedicated area\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Pizza Mio\",\n      \"b\": \"Piazza Navona\",\n      \"a\": \"Via di San Biagio della Paglia, 103\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Serves both regular and gluten-free pizza options\",\n      \"q\": \"Popular spot near Piazza Navona with casual atmosphere\",\n      \"r\": \"Gluten-free pizza available with rice flour base, staff aware of cross-contamination\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    },\n    {\n      \"n\": \"La Gatta Mangiona\",\n      \"b\": \"Trastevere\",\n      \"a\": \"Via di San Francesco a Ripa, 145\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Specialty pizza restaurant with extensive menu\",\n      \"q\": \"Known for creative pizza combinations and good wine selection\",\n      \"r\": \"Offers gluten-free pizza bases, noted for accommodating dietary restrictions\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Pizzeria La Montecarlo\",\n      \"b\": \"Flaminio\",\n      \"a\": \"Via Alberto Cadlolo, 10\",\n      \"c\": [\"Pizza\"],\n      \"w\": \"\",\n      \"e\": \"Traditional pizzeria with gluten-free options\",\n      \"q\": \"Local favorite for authentic Roman pizza\",\n      \"r\": \"Gluten-free pizza base available, cooked on separate surface when possible\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [],\n      \"pt\": 3,\n      \"at\": 3,\n      \"ft\": 3\n    }\n  ]\n}",
+            "role": "assistant",
+            "reasoning_content": null
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ]
+    }
+  ]
+}

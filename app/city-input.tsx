@@ -21,7 +21,7 @@ export function CityInput({ id, value, options, onChange, onChoose }: {
     onChoose(city.trim());
   }
   return <div className="city-autocomplete">
-    <input id={id} value={value} placeholder="City or ZIP code" autoComplete="off" autoCorrect="off" spellCheck={false} enterKeyHint="go" maxLength={160}
+    <input id={id} value={value} placeholder="Type a city" autoComplete="off" autoCorrect="off" spellCheck={false} enterKeyHint="go" maxLength={160}
       role="combobox" aria-autocomplete="list" aria-expanded={expanded} aria-controls={expanded ? listId : undefined}
       aria-activedescendant={expanded && activeSuggestion >= 0 ? `${listId}-${activeSuggestion}` : undefined}
       onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}

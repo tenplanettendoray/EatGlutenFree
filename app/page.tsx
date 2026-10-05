@@ -5,8 +5,14 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { readJson } from "./lib/http-json";
+import { applyCommunityPreferences, createCommunityRestaurant, preferenceContextKey, preferenceMatchesRestaurant, visibleRestaurantResults, type PublicPreference } from "./lib/community-preferences";
 import { useDialogFocus } from "./lib/use-dialog-focus";
 import { useRouter } from "next/navigation";
+import { RestaurantStars } from "./restaurant-stars";
+import { stockPhotoChoice, stockPhotoTile } from "./lib/stock-photos";
+import { restaurantRatingKey } from "./lib/rating-key";
+import { rankWithCommunityPopularity } from "./lib/community-ranking";
+import { AllergySymbol } from "./allergy-symbol";
 import { AccountControls } from "./auth-ui";
 import { CityInput } from "./city-input";
 import { AllergyQuest } from "./allergy-quest";
@@ -24,6 +30,15 @@ type RestaurantLocation = {
 };
 
 type Restaurant = {
+  guideRank?: number;
+  guideName?: string;
+  guideLabel?: string;
+  phone?: string;
+  evidenceRank?: number;
+  confidence?: "strong" | "medium" | "weak";
+  crossContaminationWarning?: string;
+  evidenceSources?: Array<{ title: string; url: string; quote: string }>;
+  sourceUrls?: string[];
   id: string;
   name: string;
   cuisine: string[];
@@ -42,6 +57,10 @@ type Restaurant = {
   rankingReason: string;
   rating?: number | null;
   reviewCount?: number | null;
+  discoveryRank?: number;
+  matchQuality?: number;
+  popularityTier?: number;
+  communityRating?: number | null;
   suggestionCount?: number;
   avoidCount?: number;
   evidenceTier?: "ai" | "community" | "partial";
@@ -74,6 +93,12 @@ type RestaurantLookup = {
 type SearchMode = "free" | "premium";
 type SuggestionFeedback = "idle" | "saving" | "success" | "favorable" | "warning" | "caution" | "blocked" | "error";
 type GlobeSelection = { label: string; latitude: number; longitude: number };
+type PreferenceResponse = {
+  suggestedRestaurants?: string[];
+  avoidedRestaurants?: string[];
+  publicPreferences?: PublicPreference[];
+  verifiedRestaurants?: Restaurant[];
+};
 
 const allergyOptions = ["Peanuts", "Tree nuts", "Milk", "Eggs", "Wheat", "Gluten"];
 const loadingSteps = ["Finding nearby restaurants", "Checking menu signals", "Ranking allergy-aware matches"];
@@ -87,7 +112,7 @@ function normalizeCitySearch(value: string) {
 }
 
 function cityOnlySearchLocation(value: string) {
-  return value.trim().replace(/\s+/g, " ").slice(0, 200);
+  return value.split(",")[0].trim().replace(/\s+/g, " ").slice(0, 200);
 }
 
 async function readJsonResponse(response: Response) {
@@ -110,15 +135,14 @@ const safetyItems = [
   { icon: "◎", title: "Cross-contact matters", copy: "Shared fryers, grills, utensils, and surfaces can introduce allergens." },
   { icon: "☎", title: "Call before you go", copy: "Confirm your needs directly with a manager or trained staff member." },
 ];
-const fallbackRestaurantPhotos = [
-  "https://images.unsplash.com/photo-1673081760594-828ed9f8d0f5?auto=format&fit=crop&w=1200&q=82",
-  "https://images.unsplash.com/photo-1744776411221-702f2848b0b2?auto=format&fit=crop&w=1200&q=82",
-  "https://images.unsplash.com/photo-1758537697448-dbfc1cb83e49?auto=format&fit=crop&w=1200&q=82",
-];
 
-function fallbackRestaurantPhoto(name: string) {
-  const hash = [...name].reduce((total, character) => total + character.charCodeAt(0), 0);
-  return fallbackRestaurantPhotos[hash % fallbackRestaurantPhotos.length];
+function AvoidSymbol({ className = "" }: { className?: string }) {
+  return <span className={`avoid-symbol${className ? ` ${className}` : ""}`} aria-hidden="true" />;
+}
+
+function StockPhoto({ tile, food, cuisine }: { tile: number; food?: string; cuisine?: string[] }) {
+  const photo = stockPhotoChoice(tile, food, cuisine);
+  return <svg className="restaurant-stock-photo" viewBox={`${photo.x} ${photo.y} ${photo.width} ${photo.height}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={photo.label}><image href={photo.src} width={photo.atlasWidth} height={photo.atlasHeight} preserveAspectRatio="none" /></svg>;
 }
 
 function HeroImageLayers({ reducedMotion }: { reducedMotion: boolean | null }) {
@@ -178,29 +202,24 @@ function HeadlineWord({ children, index, reducedMotion }: { children: string; in
   return <motion.span className="word-group" initial={reducedMotion ? false : { opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .65 }} transition={{ duration: reducedMotion ? 0 : .25, delay: reducedMotion ? 0 : index * .025, ease: "easeOut" }}>{children}</motion.span>;
 }
 
-function WebsitePreview({ restaurant }: { restaurant: Restaurant }) {
+function WebsitePreview({ restaurant, food = "" }: { restaurant: Restaurant; food?: string }) {
+  const [photo, setPhoto] = useState<{ url: string; candidates?: string[]; illustrative: boolean } | null>(null);
   const [failed, setFailed] = useState(false);
-  const photoParams = new URLSearchParams({
-    name: restaurant.name,
-    food: restaurant.cuisine.join(" "),
-    website: restaurant.website || "",
-    menu: restaurant.menuSourceUrl || "",
-  });
-  const imageUrl = failed ? fallbackRestaurantPhoto(restaurant.name) : `/api/restaurant-image?${photoParams.toString()}`;
-  return (
-    <div className={`restaurant-visual ${failed ? "visual-fallback" : ""}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={imageUrl}
-        alt={restaurant.website && !failed ? `Restaurant website image for ${restaurant.name}` : `Illustrative restaurant photo; not ${restaurant.name}`}
-        onError={() => { if (!failed) setFailed(true); }}
-        referrerPolicy="no-referrer"
-      />
-      <div className="visual-shade" />
-      {(!restaurant.website || failed) && <span className="restaurant-image-caption">Illustrative photo</span>}
-      <span className="distance-pill">{restaurant.locations.length} mapped {restaurant.locations.length === 1 ? "location" : "locations"}</span>
-    </div>
-  );
+  const [photoIndex, setPhotoIndex] = useState(0);
+  useEffect(() => {
+    let active = true;
+    const params = new URLSearchParams({ website: restaurant.website || "", menu: restaurant.menuSourceUrl || "", name: restaurant.name, location: restaurant.locations[0]?.label || restaurant.address, format: "json" });
+    fetch(`/api/restaurant-image?${params}`).then(response => response.json() as Promise<{ url: string; candidates?: string[]; illustrative: boolean }>).then(value => { if (active) { setPhoto(value); setPhotoIndex(0); setFailed(false); } }).catch(() => {});
+    return () => { active = false; };
+  }, [restaurant.website, restaurant.menuSourceUrl, restaurant.name, restaurant.address, restaurant.locations]);
+  const illustrative = !photo || photo.illustrative || failed;
+  const tile = stockPhotoTile(restaurant.name);
+  return <div className="restaurant-visual">
+    {illustrative && <StockPhoto tile={tile} food={food} cuisine={restaurant.cuisine} />}
+    {!illustrative && <img src={photo.candidates?.[photoIndex] || photo.url} alt={`Website photo for ${restaurant.name}`} onError={() => { if (photo.candidates && photoIndex + 1 < photo.candidates.length) setPhotoIndex(photoIndex + 1); else setFailed(true); }} referrerPolicy="no-referrer" />}
+    <div className="visual-shade" />
+    <span className="distance-pill">{restaurant.locations.length} mapped {restaurant.locations.length === 1 ? "location" : "locations"}</span>
+  </div>;
 }
 
 function RestaurantMap({ restaurants }: { restaurants: Restaurant[] }) {
@@ -215,7 +234,7 @@ function RestaurantMap({ restaurants }: { restaurants: Restaurant[] }) {
   const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(mapPosition)}&output=embed`;
 
   return (
-    <section className="ai-location-map" aria-label="Map of AI-researched restaurant locations">
+    <section className="ai-location-map" aria-label="Map of restaurant locations">
       <div className="map-heading">
         <div><span className="section-kicker">Location overview</span><h3>Restaurant location map</h3></div>
         <p>{places.length} {places.length === 1 ? "location" : "locations"}</p>
@@ -238,7 +257,7 @@ function RestaurantMap({ restaurants }: { restaurants: Restaurant[] }) {
 function LockedRestaurantCard({ index, visibleCount, onUnlock }: { index: number; visibleCount: number; onUnlock: () => void }) {
   return (
     <button type="button" className="restaurant-card locked-restaurant-card" aria-label="Unlock this Premium restaurant result" onClick={onUnlock}>
-      <div className="locked-preview-image" style={{ backgroundImage: `url(${fallbackRestaurantPhotos[index % fallbackRestaurantPhotos.length]})` }} />
+      <div className="locked-preview-image"><StockPhoto tile={index % 12} /></div>
       <div className="restaurant-body locked-preview-body" aria-hidden="true">
         <span className="rank-number">#{visibleCount + index + 1}</span>
         <span className="locked-copy-line locked-copy-title" />
@@ -258,7 +277,7 @@ function LocationList({ restaurant }: { restaurant: Restaurant }) {
         <li key={`${location.address}-${index}`}>
           <div><strong>{location.label}</strong><span>{location.address}</span></div>
           <div className="location-links">
-            <a href={location.website || location.sourceUrl} target="_blank" rel="noreferrer">{location.website ? "Restaurant website ↗" : "Map listing ↗"}</a>
+            <a href={location.website || location.sourceUrl} target="_blank" rel="noreferrer">{location.website ? "Restaurant website ↗" : "Search on Maps ↗"}</a>
             <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`} target="_blank" rel="noreferrer">Directions ↗</a>
           </div>
         </li>
@@ -274,8 +293,12 @@ function AllergyReview({ restaurant }: { restaurant: Restaurant }) {
   return (
     <div className="allergy-review">
       <div className="review-title-row"><span className="review-icon" aria-hidden="true">✦</span><div><strong>Allergen information</strong><p>{isPartial ? "Some requested allergens have no confirmed menu evidence" : "Menu information still needs direct confirmation with staff"}</p></div></div>
-      <div className={`review-status ${isCommunity || isPartial || !restaurant.supportedAllergies?.length ? "unknown" : "cautiously-positive"}`}><strong>{restaurant.supportedAllergies?.length ? "Options mentioned on the website" : "Direct confirmation needed"}</strong><span>{restaurant.evidenceSummary}</span><a className="evidence-link" href={restaurant.menuSourceUrl || restaurant.sourceUrl} target="_blank" rel="noreferrer">{restaurant.menuSourceUrl ? "Open menu source ↗" : "Open map listing ↗"}</a></div>
-      {Boolean(restaurant.allergenEvidence?.length) && <ul className="allergen-evidence">{restaurant.allergenEvidence!.map(item => <li key={item.allergy}><strong>{item.allergy}</strong><q>{item.quote}</q><a href={item.url} target="_blank" rel="noreferrer">Read the source ↗</a></li>)}</ul>}
+      <div className="restaurant-allergy-symbols">{[...new Set([...(restaurant.supportedAllergies || []), ...(restaurant.missingAllergies || [])])].map(allergy => <span className="restaurant-allergy-badge" key={allergy}><AllergySymbol name={allergy} /><span>{allergy}<small>{restaurant.supportedAllergies?.includes(allergy) ? "Option mentioned in sources" : "Needs confirmation"}</small></span></span>)}</div>
+      <div className={`review-status ${isCommunity || isPartial || !restaurant.supportedAllergies?.length ? "unknown" : "cautiously-positive"}`}><strong>{restaurant.supportedAllergies?.length ? "Options mentioned in sources" : "Direct confirmation needed"}</strong><span>{restaurant.evidenceSummary}</span><a className="evidence-link" href={restaurant.menuSourceUrl || restaurant.sourceUrl} target="_blank" rel="noreferrer">{restaurant.menuSourceUrl ? "Open evidence source ↗" : "Search on Maps ↗"}</a></div>
+      {restaurant.confidence && <p className="evidence-confidence">Evidence confidence: <strong>{restaurant.confidence}</strong> · {restaurant.confidence === "weak" ? "Needs confirmation" : "Likely option; confirm with staff"}</p>}
+      {restaurant.crossContaminationWarning && <p className="cross-contact-warning">{restaurant.crossContaminationWarning}</p>}
+      {Boolean(restaurant.evidenceSources?.length) && <details className="discovery-sources"><summary>Read allergy evidence and sources</summary><ul>{restaurant.evidenceSources!.map((source, index) => <li key={`${source.url}-${index}`}><q>{source.quote}</q><a href={source.url} target="_blank" rel="noreferrer">{source.title || "Read source"} ↗</a></li>)}</ul></details>}
+      {Boolean(restaurant.allergenEvidence?.length) && <ul className="allergen-evidence">{restaurant.allergenEvidence!.map(item => <li key={`${item.allergy}-${item.url}-${item.quote}`}><strong>{item.allergy}</strong><q>{item.quote}</q><a href={item.url} target="_blank" rel="noreferrer">Read the source ↗</a></li>)}</ul>}
     </div>
   );
 }
@@ -323,10 +346,40 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   const [suggestionMessage, setSuggestionMessage] = useState("");
   const [suggestionFeedback, setSuggestionFeedback] = useState<SuggestionFeedback>("idle");
   const [suggestionSaving, setSuggestionSaving] = useState(false);
+  const [heartActive, setHeartActive] = useState("");
   const [suggestionAccountRequired, setSuggestionAccountRequired] = useState(false);
   const [restaurantLookup, setRestaurantLookup] = useState<RestaurantLookup[]>([]);
   const [restaurantLookupLoading, setRestaurantLookupLoading] = useState(false);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const restaurantGridRef = useRef<HTMLDivElement | null>(null);
+  const restaurantOrderRef = useRef<string[]>([]);
+  const pendingFollowRestaurantId = useRef("");
+
+  function prepareRestaurantFollow(next: Restaurant[]) {
+    const previous = restaurantOrderRef.current;
+    if (!previous.length || previous.length !== next.length) return;
+    const previousSet = new Set(previous);
+    if (next.some((restaurant) => !previousSet.has(restaurant.id))) return;
+    const moved = next.find((restaurant, index) => previous[index] !== restaurant.id);
+    if (moved) pendingFollowRestaurantId.current = moved.id;
+  }
+
+  useEffect(() => {
+    const updateRating = (event: Event) => {
+      const detail = (event as CustomEvent<{ key: string; average: number | null }>).detail;
+      if (!detail?.key) return;
+      const update = (items: Restaurant[]) => items.map(item => restaurantRatingKey(item.name, item.address) === detail.key ? { ...item, communityRating: detail.average } : item);
+      discoveryResults.current.restaurants = update(discoveryResults.current.restaurants);
+      setRestaurants(items => {
+        const ranked = rankWithCommunityPopularity(update(items).map((restaurant, index) => ({ restaurant, originalIndex: restaurant.discoveryRank ?? index, communityScore: 0, missingAllergyCount: 0, guideRank: restaurant.guideRank, evidenceRank: restaurant.evidenceRank || 0, popularityTier: restaurant.popularityTier || 0, heartCount: restaurant.suggestionCount || 0, avoidCount: restaurant.avoidCount || 0, starRating: restaurant.communityRating ?? restaurant.rating ?? 3 }))).map(item => item.restaurant);
+        prepareRestaurantFollow(ranked);
+        return ranked;
+      });
+      setSelected(current => current && restaurantRatingKey(current.name, current.address) === detail.key ? { ...current, communityRating: detail.average } : current);
+    };
+    window.addEventListener("restaurant-rating-changed", updateRating);
+    return () => window.removeEventListener("restaurant-rating-changed", updateRating);
+  }, []);
   const [lockedResultCount, setLockedResultCount] = useState(0);
   const [cacheStatus, setCacheStatus] = useState<"hit" | "miss" | "">("");
   const [selected, setSelected] = useState<Restaurant | null>(null);
@@ -336,18 +389,43 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   const [searchedLocation, setSearchedLocation] = useState("");
   const [agentQuery, setAgentQuery] = useState("");
   const [aiProvider, setAiProvider] = useState("");
+  const [searchWarning, setSearchWarning] = useState("");
   const [aiResearch, setAiResearch] = useState<Record<string, AiResearch>>({});
   const [aiLoadingId, setAiLoadingId] = useState("");
   const [aiError, setAiError] = useState("");
   const shouldReduceMotion = useReducedMotion();
+  useEffect(() => {
+    const followId = pendingFollowRestaurantId.current;
+    restaurantOrderRef.current = restaurants.map((restaurant) => restaurant.id);
+    if (!followId || shouldReduceMotion) {
+      pendingFollowRestaurantId.current = "";
+      return;
+    }
+    pendingFollowRestaurantId.current = "";
+    window.requestAnimationFrame(() => {
+      const target = restaurantGridRef.current?.querySelector<HTMLElement>(`[data-restaurant-id="${CSS.escape(followId)}"]`);
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      if (rect.top < 120 || rect.bottom > window.innerHeight - 80) target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    });
+  }, [restaurants, shouldReduceMotion]);
   const initialSearchStarted = useRef(false);
   const searchRequest = useRef<AbortController | null>(null);
+  const discoveryResults = useRef<{ restaurants: Restaurant[]; locked: number; contextKey: string }>({ restaurants: [], locked: 0, contextKey: "" });
+  const preferenceRevision = useRef(0);
+  const preferencePending = useRef(false);
+  const latestPreferences = useRef<{ preferences: PublicPreference[]; verifiedRestaurants: Restaurant[]; contextKey: string } | null>(null);
+  useEffect(() => { preferenceRevision.current += 1; latestPreferences.current = null; }, [location, food, allergies, searchMode]);
   const [draftReady, setDraftReady] = useState(false);
   useEffect(() => () => searchRequest.current?.abort(), []);
   useEffect(() => {
     if (searchPage) return;
-    const draft = window.history.state?.safeServeDraft;
+    let savedDraft = null;
+    try { savedDraft = JSON.parse(sessionStorage.getItem("auth-search-draft") || "null"); sessionStorage.removeItem("auth-search-draft"); } catch {}
+    const draft = window.history.state?.safeServeDraft || savedDraft;
     if (draft && typeof draft === "object") {
+      // Browser-owned draft state can only be restored after hydration.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (typeof draft.location === "string") setLocation(draft.location.slice(0, 160));
       if (typeof draft.food === "string") setFood(draft.food.slice(0, 160));
       if (Array.isArray(draft.allergies)) setAllergies(draft.allergies.filter((name: unknown): name is string => typeof name === "string" && Boolean(name.trim())).slice(0, 100));
@@ -461,10 +539,39 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     router.push(`/premium?${params.toString()}`);
   }
 
+  function preferencesForContext(contextKey: string) {
+    const latest = latestPreferences.current;
+    return latest?.contextKey === contextKey ? latest : null;
+  }
+
+  function communityRestaurantFactory(verifiedRestaurants: Restaurant[], context: { location: string; food: string; allergies: string[]; mode: SearchMode }) {
+    return (name: string, index: number) => {
+      const verified = verifiedRestaurants.find((restaurant) => preferenceMatchesRestaurant(restaurant.name, name));
+      if (verified) return { ...verified, discoveryRank: index };
+      return createCommunityRestaurant(name, index, context);
+    };
+  }
+
+  function changeSearchMode(mode: SearchMode) {
+    if (mode === searchMode) return;
+    if (mode === "premium" && !premiumAccess) { openPremium("switch"); return; }
+    searchRequest.current?.abort();
+    discoveryResults.current = { restaurants: [], locked: 0, contextKey: "" };
+    latestPreferences.current = null;
+    setSearchMode(mode);
+    setRestaurants([]);
+    setLockedResultCount(0);
+    setSelected(null);
+    setLoading(false);
+    setError("");
+  }
+
   async function runSearch(params: URLSearchParams, label: string, overrides?: { mode: SearchMode; food: string; occasion: string; allergies: string[]; suggestedRestaurants: string[]; avoidedRestaurants: string[] }) {
     searchRequest.current?.abort();
     const controller = new AbortController();
     searchRequest.current = controller;
+    latestPreferences.current = null;
+    discoveryResults.current = { restaurants: [], locked: 0, contextKey: "" };
     const activeMode = overrides?.mode ?? searchMode;
     const activeFood = overrides?.food ?? food;
     const activeOccasion = overrides?.occasion ?? occasion;
@@ -472,15 +579,19 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     const activeSuggestions = overrides?.suggestedRestaurants ?? suggestedRestaurants;
     const activeAvoids = overrides?.avoidedRestaurants ?? avoidedRestaurants;
     params.set("mode", activeMode);
+    if (selectedCoordinates && cityOnlySearchLocation(label) === cityOnlySearchLocation(location)) {
+      params.set("latitude", String(selectedCoordinates.latitude));
+      params.set("longitude", String(selectedCoordinates.longitude));
+    }
     if (activeFood.trim()) params.set("food", activeFood.trim());
     if (activeOccasion) params.set("occasion", activeOccasion.toLowerCase());
     if (activeAllergies.length) params.set("allergies", activeAllergies.join("|"));
     if (activeSuggestions.length) params.set("suggestedRestaurants", activeSuggestions.join("|"));
     if (activeAvoids.length) params.set("avoidedRestaurants", activeAvoids.join("|"));
-    setLoading(true); setLoadingStage(0); setError(""); setSelected(null); setLockedResultCount(0); setCacheStatus(""); setAiProvider("");
+    setLoading(true); setLoadingStage(0); setError(""); setSelected(null); setLockedResultCount(0); setCacheStatus(""); setAiProvider(""); setSearchWarning("");
     try {
       const response = await fetch(`/api/restaurants?${params.toString()}`, { signal: controller.signal });
-      const data = await readJson<{ freeSearchesRemaining?: number | null; freeSearchesLimit?: number; premiumAccess?: boolean; premiumRequired?: boolean; error?: string; restaurants: Restaurant[]; lockedResultCount?: number; cacheStatus?: string; location?: string; agentQuery?: string; aiProvider?: string }>(response);
+      const data = await readJson<{ freeSearchesRemaining?: number | null; freeSearchesLimit?: number; premiumAccess?: boolean; premiumRequired?: boolean; error?: string; restaurants: Restaurant[]; lockedResultCount?: number; cacheStatus?: string; location?: string; agentQuery?: string; aiProvider?: string; searchWarning?: string }>(response);
       if (controller.signal.aborted) return;
       if (typeof data.freeSearchesRemaining === "number" || data.freeSearchesRemaining === null) setFreeSearchesRemaining(data.freeSearchesRemaining);
       if (typeof data.freeSearchesLimit === "number") setFreeSearchesLimit(data.freeSearchesLimit);
@@ -495,12 +606,19 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
           : "Premium is not active on this account. Free search is still available."));
       }
       if (!response.ok) throw new Error(data.error || "Restaurant search failed.");
-      setRestaurants(data.restaurants);
-      setLockedResultCount(typeof data.lockedResultCount === "number" ? data.lockedResultCount : 0);
+      const locked = typeof data.lockedResultCount === "number" ? data.lockedResultCount : 0;
+      const contextKey = preferenceContextKey({ location: label, food: activeFood, allergies: activeAllergies, mode: activeMode });
+      discoveryResults.current = { restaurants: data.restaurants, locked, contextKey };
+      const preferences = preferencesForContext(contextKey);
+      const ranked = preferences ? applyCommunityPreferences(data.restaurants, preferences.preferences,
+        communityRestaurantFactory(preferences.verifiedRestaurants, { location: label, food: activeFood, allergies: activeAllergies, mode: activeMode })) : data.restaurants;
+      setRestaurants(visibleRestaurantResults(ranked));
+      setLockedResultCount(activeMode === "free" ? Math.max(0, locked + ranked.length - visibleRestaurantResults(ranked).length - Math.max(0, data.restaurants.length - 12)) : 0);
       setCacheStatus(data.cacheStatus === "hit" ? "hit" : data.cacheStatus === "miss" ? "miss" : "");
       setSearchedLocation(data.location || label);
       setAgentQuery(data.agentQuery || "");
-      setAiProvider(data.aiProvider || "");
+      setAiProvider(data.aiProvider === "Public web fallback" || data.aiProvider === "City guide" ? "" : data.aiProvider || "");
+      setSearchWarning(data.searchWarning || "");
       if (!data.restaurants.length) setError(activeMode === "free" ? "No nearby food-relevant restaurants could be researched right now. Try the city name, a broader food, or search again in a moment." : "Not enough restaurants could be researched for this search. Try a broader food or location.");
     } catch (searchError) {
       if (controller.signal.aborted) return;
@@ -541,9 +659,26 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     void runSearch(params, searchLocation, { mode: "premium", food, occasion, allergies, suggestedRestaurants, avoidedRestaurants });
   }
 
-  function applyPreferenceData(data: { suggestedRestaurants?: string[]; avoidedRestaurants?: string[] }) {
+  function applyPreferenceData(data: PreferenceResponse, updateResults = false) {
     if (Array.isArray(data.suggestedRestaurants)) setSuggestedRestaurants(data.suggestedRestaurants);
     if (Array.isArray(data.avoidedRestaurants)) setAvoidedRestaurants(data.avoidedRestaurants);
+    if (!updateResults || !Array.isArray(data.publicPreferences)) return;
+    const contextKey = preferenceContextKey({ location, food, allergies, mode: searchMode });
+    const previousVerified = latestPreferences.current?.contextKey === contextKey ? latestPreferences.current.verifiedRestaurants : [];
+    const verifiedRestaurants = [...previousVerified];
+    for (const restaurant of Array.isArray(data.verifiedRestaurants) ? data.verifiedRestaurants : []) {
+      const existingIndex = verifiedRestaurants.findIndex((item) => preferenceMatchesRestaurant(item.name, restaurant.name));
+      if (existingIndex >= 0) verifiedRestaurants[existingIndex] = restaurant;
+      else verifiedRestaurants.push(restaurant);
+    }
+    latestPreferences.current = { preferences: data.publicPreferences, verifiedRestaurants, contextKey };
+    const base = discoveryResults.current;
+    if (!base.contextKey || base.contextKey !== contextKey) return;
+    const ranked = applyCommunityPreferences(base.restaurants, data.publicPreferences,
+      communityRestaurantFactory(verifiedRestaurants, { location: searchedLocation || location, food, allergies, mode: searchMode }));
+    setRestaurants(visibleRestaurantResults(ranked));
+    setLockedResultCount(searchMode === "free" ? Math.max(0, base.locked + ranked.length - visibleRestaurantResults(ranked).length - Math.max(0, base.restaurants.length - 12)) : 0);
+    setSelected(current => current ? ranked.find(item => item.id === current.id) || null : null);
   }
 
   function preferenceContext() {
@@ -574,6 +709,12 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   }
 
   async function removePreference(kind: "suggest" | "avoid", value: string) {
+    if (preferencePending.current) return;
+    preferencePending.current = true;
+    const revision = ++preferenceRevision.current;
+    const previousSuggestions = suggestedRestaurants;
+    const previousAvoids = avoidedRestaurants;
+    setSuggestionSaving(true);
     const context = preferenceContext();
     const query = preferenceQueryFromContext(context);
     if (kind === "suggest") setSuggestedRestaurants((current) => current.filter((item) => item !== value));
@@ -586,12 +727,20 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       });
       const data = await readJsonResponse(response);
       if (!response.ok) throw new Error(responseString(data, "error") || "Could not remove that preference.");
-      applyPreferenceData(data);
+      if (revision !== preferenceRevision.current) return;
+      preferenceRevision.current += 1;
+      applyPreferenceData(data, true);
       setSuggestionMessage(responseString(data, "message") || "Preference removed.");
       setSuggestionFeedback("success");
     } catch (preferenceError) {
+      if (revision !== preferenceRevision.current) return;
+      setSuggestedRestaurants(previousSuggestions);
+      setAvoidedRestaurants(previousAvoids);
       setSuggestionMessage(preferenceError instanceof Error ? preferenceError.message : "Could not remove that preference.");
       setSuggestionFeedback("error");
+    } finally {
+      preferencePending.current = false;
+      setSuggestionSaving(false);
     }
   }
 
@@ -603,8 +752,9 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     void removePreference("avoid", value);
   }
 
-  async function savePreference(kind: "suggest" | "avoid") {
-    const value = (kind === "suggest" ? suggestedRestaurant : avoidedRestaurant).trim();
+  async function savePreference(kind: "suggest" | "avoid", restaurantName?: string) {
+    if (preferencePending.current) return;
+    const value = (restaurantName ?? (kind === "suggest" ? suggestedRestaurant : avoidedRestaurant)).trim();
     const context = preferenceContext();
     if (!value) {
       setSuggestionMessage("Enter a restaurant name first.");
@@ -623,19 +773,21 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       setSuggestionFeedback("warning");
       return;
     }
+    preferencePending.current = true;
+    const revision = ++preferenceRevision.current;
     const previousSuggestedRestaurants = suggestedRestaurants;
     const previousAvoidedRestaurants = avoidedRestaurants;
     const query = preferenceQueryFromContext(context);
     setSuggestionSaving(true);
     setSuggestionFeedback("saving");
-    setSuggestionMessage(kind === "suggest" ? `Adding ${value}...` : `Avoiding ${value}...`);
+    setSuggestionMessage(kind === "suggest" ? `Checking ${value} and adding it...` : `Avoiding ${value}...`);
     if (kind === "suggest") {
       setSuggestedRestaurants((current) => current.some((item) => item.toLowerCase() === value.toLowerCase()) ? current : [value, ...current].slice(0, 8));
     } else {
       setAvoidedRestaurants((current) => current.some((item) => item.toLowerCase() === value.toLowerCase()) ? current : [value, ...current].slice(0, 8));
     }
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 12000);
+    const timeout = window.setTimeout(() => controller.abort(), kind === "suggest" ? 35000 : 12000);
     try {
       const response = await fetch(`/api/suggestions${query ? `?${query}` : ""}`, {
         method: "POST",
@@ -650,7 +802,9 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
         if (data.premiumRequired) openPremium("community");
         throw new Error(responseString(data, "error") || "Could not save that suggestion.");
       }
-      applyPreferenceData(data);
+      if (revision !== preferenceRevision.current) return;
+      preferenceRevision.current += 1;
+      applyPreferenceData(data, true);
       if (kind === "suggest") setSuggestedRestaurant("");
       else setAvoidedRestaurant("");
       setSuggestionAccountRequired(false);
@@ -662,24 +816,20 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
           : data.feedbackTone === "caution" || Array.isArray(data.unverifiedSuggestions) && data.unverifiedSuggestions.length
             ? "caution"
             : data.bonusGranted ? "success" : "warning");
-      if (searchPage && location.trim()) {
-        const nextSuggestions = Array.isArray(data.suggestedRestaurants) ? data.suggestedRestaurants as string[] : suggestedRestaurants;
-        const nextAvoids = Array.isArray(data.avoidedRestaurants) ? data.avoidedRestaurants as string[] : avoidedRestaurants;
-        setSuggestionMenuOpen(false);
-        const searchLocation = cityOnlySearchLocation(location);
-        void runSearch(new URLSearchParams({ location: searchLocation }), searchLocation, { mode: "premium", food, occasion, allergies, suggestedRestaurants: nextSuggestions, avoidedRestaurants: nextAvoids });
-      }
+      if (searchPage) setSuggestionMenuOpen(false);
     } catch (suggestionError) {
+      if (revision !== preferenceRevision.current) return;
       setSuggestedRestaurants(previousSuggestedRestaurants);
       setAvoidedRestaurants(previousAvoidedRestaurants);
       const message = suggestionError instanceof Error && suggestionError.name === "AbortError"
-        ? "Saving took too long. Finish the current restaurant search, then try again."
+        ? "The restaurant check took too long. Please try again."
         : suggestionError instanceof Error ? suggestionError.message : "Could not save that suggestion.";
       if (/account/i.test(message)) setSuggestionAccountRequired(true);
       setSuggestionMessage(message);
       setSuggestionFeedback(/^Not a fit:/i.test(message) ? "blocked" : "error");
     } finally {
       window.clearTimeout(timeout);
+      preferencePending.current = false;
       setSuggestionSaving(false);
     }
   }
@@ -741,10 +891,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
         if (!cancelled) {
           const hasPremium = Boolean(data.premium);
           setPremiumAccess(hasPremium);
-          if (!hasPremium) {
-            setSuggestedRestaurants([]);
-            setAvoidedRestaurants([]);
-          }
+          if (!hasPremium) setAvoidedRestaurants([]);
         }
       })
       .catch(() => undefined)
@@ -759,14 +906,15 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
   }, [router, searchPage]);
 
   useEffect(() => {
-    if (!premiumAccess) return;
+    if (!accountAccessLoaded) return;
     let cancelled = false;
     const timeout = window.setTimeout(() => {
       const query = preferenceQuery();
+      const revision = preferenceRevision.current;
       fetch(`/api/suggestions${query ? `?${query}` : ""}`, { cache: "no-store" })
         .then((response) => readJsonResponse(response))
         .then((data) => {
-          if (cancelled) return;
+          if (cancelled || preferencePending.current || revision !== preferenceRevision.current) return;
           setSuggestionAccountRequired(!data.authenticated);
           applyPreferenceData(data);
         })
@@ -780,7 +928,7 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
     };
     // Reload saved chips when the preference context changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, food, allergies.join("|"), premiumAccess]);
+  }, [location, food, allergies.join("|"), premiumAccess, accountAccessLoaded]);
   useEffect(() => {
     if (!searchPage || !accountAccessLoaded || initialSearchStarted.current) return;
     initialSearchStarted.current = true;
@@ -938,21 +1086,21 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
             <motion.span key={`${freeSearchesRemaining}-${searchMode}-${premiumAccess}`} className="search-credit-pill heading-credit-pill" initial={shouldReduceMotion ? false : { opacity: 0, scale: .92, y: -3 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: .18, ease: "easeOut" }}><WordGroups text={freeSearchesRemaining === null || (premiumAccess && searchMode === "premium") ? "Unlimited" : `${freeSearchesRemaining ?? freeSearchesLimit} left`} /></motion.span>
           </motion.div>
           <div className="search-mode-switch" aria-label="Search mode">
-            <button type="button" className={searchMode === "free" ? "active" : ""} aria-pressed={searchMode === "free"} onClick={() => { setSearchMode("free"); setRestaurants([]); setLockedResultCount(0); setSelected(null); setError(""); }}>
+            <button type="button" className={searchMode === "free" ? "active" : ""} aria-pressed={searchMode === "free"} onClick={() => changeSearchMode("free")}>
               <span><small>Included</small><strong>Free</strong></span>
               <b>{searchMode === "free" ? "Selected" : "Use"}</b>
             </button>
-            <button type="button" className={searchMode === "premium" ? "active premium" : "premium"} aria-pressed={searchMode === "premium"} onClick={() => { if (!premiumAccess) { openPremium("switch"); return; } setSearchMode("premium"); setRestaurants([]); setLockedResultCount(0); setSelected(null); setError(""); }}>
+            <button type="button" className={searchMode === "premium" ? "active premium" : "premium"} aria-pressed={searchMode === "premium"} onClick={() => changeSearchMode("premium")}>
               <span><small>{premiumAccess ? "Unlimited" : "Upgrade"}</small><strong>Premium</strong></span>
               <b>{premiumAccess ? (searchMode === "premium" ? "Selected" : "Use") : "View"}</b>
             </button>
           </div>
-          <label id="location-picker-label"><WordGroups text="Where are you dining?" /></label>
-          <button type="button" id="search-location-button" className="location-picker-button" onClick={() => setLocationPickerOpen(true)} aria-labelledby="location-picker-label" aria-haspopup="dialog" aria-expanded={locationPickerOpen} aria-controls="search-location-picker">
+          <label id="location-picker-label" htmlFor="search-location-input"><WordGroups text="Where are you dining?" /></label>
+          <div className="location-picker-button location-entry">
             <span className="location-picker-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></svg></span>
-            <strong>{location || "Choose a city or country"}</strong>
-            <span className="location-picker-action" aria-hidden="true">↗</span>
-          </button>
+            <CityInput id="search-location-input" value={location} options={cityOptions} onChange={updateLocation} onChoose={city => applySearchFilters({ location: city })} />
+            <button type="button" id="search-location-button" className="location-picker-action" onClick={() => setLocationPickerOpen(true)} aria-label="Choose location on globe" aria-haspopup="dialog" aria-expanded={locationPickerOpen} aria-controls="search-location-picker">↗</button>
+          </div>
           <datalist id="city-catalog-options">{cityOptions.map((city) => <option value={city} key={city} />)}</datalist>
           <label className="food-label" htmlFor="food"><WordGroups text="What food are you craving?" /></label>
           <div className="food-row food-picker-row"><span className="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></svg></span><input id="food" value={food} onChange={(event) => setFood(event.target.value)} placeholder="Pizza, burgers, sushi, tacos…" /><button type="button" className="food-picker-button" onClick={() => setFoodPickerOpen(true)} aria-label="Browse meals and cuisines" aria-haspopup="dialog" aria-expanded={foodPickerOpen} aria-controls="search-food-picker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M4 14h16" /><path d="M6 14a6 6 0 0 1 12 0" /><path d="M12 6V4" /><path d="M3 18h18" /></svg></button></div>
@@ -961,14 +1109,14 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
             <AnimatePresence initial={false}>
               {allergies.length ? allergies.map((allergy) => (
                 <motion.button type="button" key={allergy} className="selected-allergy-pill" onClick={() => toggleAllergy(allergy)} aria-label={`Remove ${allergy}`} initial={shouldReduceMotion ? false : { opacity: 0, x: 14, scale: .94 }} animate={{ opacity: 1, x: 0, scale: 1 }} exit={shouldReduceMotion ? undefined : { opacity: 0, x: 28, scale: .78, filter: "blur(3px)" }} transition={{ duration: shouldReduceMotion ? 0 : .2, ease: "easeOut" }} whileTap={shouldReduceMotion ? undefined : { scale: .95 }}>
-                  <WordGroups text={allergy} /><b>×</b>
+                  <AllergySymbol name={allergy} /><WordGroups text={allergy} /><b>×</b>
                 </motion.button>
               )) : <motion.p className="selected-allergy-empty" initial={shouldReduceMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }}><WordGroups text="No allergy filters selected" /></motion.p>}
             </AnimatePresence>
             <div className="custom-allergy-row search-allergy-add"><input value={customAllergy} onChange={(event) => setCustomAllergy(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addCustomAllergy(); } }} placeholder="Add allergy" aria-label="Add another allergy" /><button type="button" onClick={addCustomAllergy}><WordGroups text="Add" /></button></div>
           </div> : <>
             <div className="allergy-grid">
-              {visibleAllergyOptions.map((allergy) => <motion.button type="button" key={allergy} className={allergies.includes(allergy) ? "allergy-chip selected" : "allergy-chip"} onClick={() => toggleAllergy(allergy)} aria-pressed={allergies.includes(allergy)} whileTap={shouldReduceMotion ? undefined : { scale: .94 }} transition={{ duration: .12 }}><span className="allergy-chip-icon">{allergies.includes(allergy) ? "✓" : "+"}</span><WordGroups text={allergy} /></motion.button>)}
+              {visibleAllergyOptions.map((allergy) => <motion.button type="button" key={allergy} className={allergies.includes(allergy) ? "allergy-chip selected" : "allergy-chip"} onClick={() => toggleAllergy(allergy)} aria-pressed={allergies.includes(allergy)} whileTap={shouldReduceMotion ? undefined : { scale: .94 }} transition={{ duration: .12 }}><AllergySymbol name={allergy} /><WordGroups text={allergy} /></motion.button>)}
             </div>
             <div className="custom-allergy-row"><input value={customAllergy} onChange={(event) => setCustomAllergy(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addCustomAllergy(); } }} placeholder="Add another allergy" aria-label="Add another allergy" /><button type="button" onClick={addCustomAllergy}><WordGroups text="Add" /></button></div>
           </>}
@@ -994,17 +1142,20 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
             <div className="search-progress-steps">{loadingSteps.map((step, index) => <div key={step} className={index < loadingStage ? "done" : index === loadingStage ? "active" : ""}><i>{index + 1}</i><span>{step}</span></div>)}</div>
           </div>
         </motion.div> : restaurants.length > 0 ? <>
+          {searchWarning && <p className="search-source-notice" role="status">{searchWarning}</p>}
           <motion.div className="results-heading" initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .3 }} transition={{ duration: .25, ease: "easeOut" }}><div><motion.span className="section-kicker" initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .7 }} transition={{ duration: .2 }}><WordGroups text={agentQuery || [food, occasion].filter(Boolean).join(" · ") || "Restaurant research"} /></motion.span><motion.h2 className="living-heading" initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .55 }} transition={{ duration: .22 }}><WordGroups text={`Best matches around ${searchedLocation}`} /></motion.h2></div>{aiProvider && <motion.span className="ai-provider-pill" initial={shouldReduceMotion ? false : { opacity: 0, scale: .94, y: -4 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: .18, ease: "easeOut" }}><WordGroups text={`AI: ${aiProvider}`} /></motion.span>}</motion.div>
-          <div className="restaurant-grid">{restaurants.map((restaurant, index) => <motion.button type="button" className="restaurant-card" key={restaurant.id} onClick={() => setSelected(restaurant)} aria-label={`Review ${restaurant.name} details`} aria-haspopup="dialog" aria-expanded={selected?.id === restaurant.id} initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .18 }} transition={{ duration: .25, delay: shouldReduceMotion ? 0 : (index % 3) * .025, ease: "easeOut" }} whileTap={shouldReduceMotion ? undefined : { scale: .99 }}>
-            <WebsitePreview restaurant={restaurant} />
+          <motion.div key={restaurants.map(restaurant => restaurant.id).join("|")} className="restaurant-grid" initial={shouldReduceMotion ? false : { opacity: 0, y: 18, scale: .992 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: shouldReduceMotion ? 0 : .38, ease: [.22, 1, .36, 1] }}>{restaurants.map((restaurant, index) => <article className="restaurant-card" key={restaurant.id}>
+            <button type="button" className="restaurant-photo-button" onClick={() => setSelected(restaurant)} aria-label={`Review ${restaurant.name} details`} aria-haspopup="dialog"><WebsitePreview restaurant={restaurant} food={food} /></button>
             <div className="restaurant-body">
-              <div className="restaurant-title-row"><div><span className="rank-number">#{index + 1}</span><h3><WordGroups text={restaurant.name} /></h3><p><WordGroups text={restaurant.cuisine.length ? restaurant.cuisine.join(" · ") : "Restaurant"} /></p></div></div>
-              <p className="ranking-reason">{restaurant.rankingReason}</p>
+              <div className="restaurant-title-row"><div><span className="rank-number">#{index + 1}</span><h3><button type="button" className="restaurant-name-button" onClick={() => setSelected(restaurant)}><WordGroups text={restaurant.name} /></button></h3></div></div>
+              <div className="restaurant-social-row"><RestaurantStars restaurant={restaurant} editable compact /><div className="restaurant-reaction-buttons"><motion.button type="button" className="recommendation-heart" disabled={suggestionSaving} aria-pressed={suggestedRestaurants.some(name => preferenceMatchesRestaurant(restaurant.name, name))} aria-label={`${suggestedRestaurants.some(name => preferenceMatchesRestaurant(restaurant.name, name)) ? "Remove recommendation for" : "Recommend"} ${restaurant.name}; ${restaurant.suggestionCount || 0} hearts`} onClick={() => { setHeartActive(restaurant.id); const own = suggestedRestaurants.find(name => preferenceMatchesRestaurant(restaurant.name, name)); if (own) void removePreference("suggest", own); else void savePreference("suggest", restaurant.name); }} whileTap={shouldReduceMotion ? undefined : { scale: .78 }}><span key={restaurant.suggestionCount || 0} className={shouldReduceMotion ? "" : "rating-pop"} aria-hidden="true">♥</span> {restaurant.suggestionCount || 0}</motion.button><motion.button type="button" className="recommendation-dislike" disabled={suggestionSaving} aria-pressed={avoidedRestaurants.some(name => preferenceMatchesRestaurant(restaurant.name, name))} aria-label={`${avoidedRestaurants.some(name => preferenceMatchesRestaurant(restaurant.name, name)) ? "Remove dislike for" : "Dislike"} ${restaurant.name}; ${restaurant.avoidCount || 0} dislikes`} onClick={() => { setHeartActive(restaurant.id); const own = avoidedRestaurants.find(name => preferenceMatchesRestaurant(restaurant.name, name)); if (own) void removePreference("avoid", own); else void savePreference("avoid", restaurant.name); }} whileTap={shouldReduceMotion ? undefined : { scale: .78 }}><span key={restaurant.avoidCount || 0} className={shouldReduceMotion ? "" : "rating-pop"} aria-hidden="true">⊘</span> {restaurant.avoidCount || 0}</motion.button></div></div>
+              <div className="restaurant-cuisine-block"><p className="restaurant-cuisine"><WordGroups text={restaurant.cuisine.length ? restaurant.cuisine.join(" · ") : "Restaurant"} /></p><div className="card-allergy-symbols" aria-label="Allergen evidence">{[...new Set([...(restaurant.supportedAllergies || []), ...(restaurant.missingAllergies || [])])].map(allergy => <span key={allergy} tabIndex={0} className="card-allergy-icon" aria-label={`${allergy} free`}><AllergySymbol name={allergy} /><span className="allergy-icon-tooltip" role="tooltip"><strong>{allergy} free</strong></span></span>)}</div>{heartActive === restaurant.id && ["error", "warning", "blocked"].includes(suggestionFeedback) && <small className="rating-feedback" role="status">{suggestionMessage}</small>}</div>
+              <div className="ranking-reason">{restaurant.guideRank && <span className="guide-pick-badge" title={restaurant.guideName}>Certified</span>}{restaurant.confidence && <span className={`evidence-confidence confidence-${restaurant.confidence}`}>{restaurant.confidence} evidence</span>}<p>{restaurant.rankingReason}</p>{restaurant.crossContaminationWarning && <small className="cross-contact-warning">Cross-contamination discussed — check the source</small>}</div>
               <ul className="branch-preview">{restaurant.locations.slice(0, 3).map((branch) => <li key={branch.address}><strong>{branch.label}</strong><span>{branch.address}</span></li>)}</ul>
-              {restaurant.locations.length > 3 && <p className="more-locations">+ {restaurant.locations.length - 3} more locations</p>}
-              <span className="details-button"><WordGroups text="Review all locations" /> <span>→</span></span>
+              <p className="more-locations">{restaurant.locations.length > 3 ? `+ ${restaurant.locations.length - 3} more locations` : ""}</p>
+              <button type="button" className="details-button" onClick={() => setSelected(restaurant)} aria-haspopup="dialog"><WordGroups text="Review all locations" /> <span>→</span></button>
             </div>
-          </motion.button>)}{searchMode === "free" && Array.from({ length: Math.min(3, lockedResultCount) }, (_, index) => <LockedRestaurantCard key={`locked-${index}`} index={index} visibleCount={restaurants.length} onUnlock={() => openPremium("locked")} />)}</div>
+          </article>)}{searchMode === "free" && Array.from({ length: Math.min(3, lockedResultCount) }, (_, index) => <LockedRestaurantCard key={`locked-${index}`} index={index} visibleCount={restaurants.length} onUnlock={() => openPremium("locked")} />)}</motion.div>
           {searchMode === "free" && lockedResultCount > 0 && <motion.div className="premium-results-gate" initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}><div><span>More matches are ready</span><strong>Unlock every ranked restaurant and unlimited searches.</strong></div><button type="button" onClick={upgradeAndSearch}>Upgrade to Premium for more <span>→</span></button></motion.div>}
           <motion.p className="ranking-disclosure" initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .7 }} transition={{ duration: .24 }}><WordGroups text="Research only. Confirm ingredients and cross-contact directly with restaurant staff." /></motion.p>
         </> : !loading && !error ? <motion.div className="empty-state empty-state-simple" id="how-it-works" initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .3 }} transition={{ duration: .25, ease: "easeOut" }}><motion.h2 className="living-heading" initial={shouldReduceMotion ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .6 }} transition={{ duration: .22 }}><WordGroups text="Start with a location, food, and allergies." /></motion.h2></motion.div> : null}
@@ -1081,18 +1232,19 @@ export function SafeServeApp({ searchPage = false }: { searchPage?: boolean }) {
       </AnimatePresence>
 
       <AnimatePresence>
-      {selected && <motion.div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: shouldReduceMotion ? 0 : .2 }}><motion.section className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title" onMouseDown={(event) => event.stopPropagation()} initial={shouldReduceMotion ? false : { opacity: 0, y: 26, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={shouldReduceMotion ? undefined : { opacity: 0, y: 18, scale: .98 }} transition={{ duration: shouldReduceMotion ? 0 : .28, ease: "easeOut" }}><button className="close-button" onClick={() => setSelected(null)} aria-label="Close restaurant details">×</button><WebsitePreview restaurant={selected} /><div className="detail-content">
-        <span className="section-kicker">Restaurant summary</span><div className="detail-title-row"><h2 id="detail-title">{selected.name}</h2><span>{selected.locations.length} {selected.locations.length === 1 ? "location" : "locations"}</span></div><p className="detail-meta">{selected.cuisine.length ? selected.cuisine.join(" · ") : "Restaurant"} · {selected.source === "free" ? "ranked with public location data" : "ranked with premium research"}</p>
+      {selected && <motion.div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: shouldReduceMotion ? 0 : .2 }}><motion.section className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title" onMouseDown={(event) => event.stopPropagation()} initial={shouldReduceMotion ? false : { opacity: 0, y: 26, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={shouldReduceMotion ? undefined : { opacity: 0, y: 18, scale: .98 }} transition={{ duration: shouldReduceMotion ? 0 : .28, ease: "easeOut" }}><button className="close-button" onClick={() => setSelected(null)} aria-label="Close restaurant details">×</button><WebsitePreview restaurant={selected} food={food} /><div className="detail-content">
+        <span className="section-kicker">Restaurant summary</span><div className="detail-title-row"><h2 id="detail-title">{selected.name}</h2><span>{selected.locations.length} {selected.locations.length === 1 ? "location" : "locations"}</span></div><p className="detail-meta">{selected.cuisine.length ? selected.cuisine.join(" · ") : "Restaurant"} · ranked with restaurant research</p>
         <p className="detail-ranking">{selected.rankingReason}</p>
+        <RestaurantStars key={selected.id} restaurant={selected} editable />
         <AllergyReview restaurant={selected} />
-        <div className="detail-section"><div className="detail-section-heading"><h3>All grouped locations</h3><span>{selected.source === "free" ? "OpenStreetMap records" : "AI location results"}</span></div><LocationList restaurant={selected} /></div>
+        <div className="detail-section"><div className="detail-section-heading"><h3>All grouped locations</h3><span>Suggested locations</span></div><LocationList restaurant={selected} /></div>
         <RestaurantMap restaurants={[selected]} />
         <div className="detail-section"><div className="detail-section-heading"><h3>Restaurant research</h3><span>Restaurant confirmation required</span></div>
           {selected.source === "free" ? <div className="ingredient-empty"><span aria-hidden="true">⌕</span><div><strong>Check the restaurant details.</strong><p>Review the available restaurant and menu links. Ingredients and preparation still need direct confirmation with staff.</p></div></div> : aiResearch[selected.id] ? <div className="ai-research-result"><div className="ai-research-label"><span>✦</span><strong>Source-linked web research</strong></div><CitedResearch research={aiResearch[selected.id]} /><button type="button" className="ai-refresh-button" onClick={() => researchRestaurant(selected)} disabled={aiLoadingId === selected.id}>Research again</button></div> : <div className="ingredient-empty"><span aria-hidden="true">✦</span><div><strong>Run a deeper menu and ingredient check.</strong><p>Premium research will revisit current official sources and link its findings. This uses API credit and does not certify that a meal is safe.</p><button type="button" className="ai-research-button" onClick={() => researchRestaurant(selected)} disabled={aiLoadingId === selected.id}>{aiLoadingId === selected.id ? <><span className="spinner" /> Researching official sources…</> : "Research ingredients"}</button></div></div>}
           {aiError && <p className="ai-error" role="alert">{aiError}</p>}
         </div>
-        <dl className="restaurant-facts"><dt>Why it ranks</dt><dd>{selected.rankingReason}</dd>{premiumAccess && (selected.suggestionCount || 0) > 0 && <><dt>Community suggestions</dt><dd>♥ {selected.suggestionCount}</dd></>}{premiumAccess && (selected.avoidCount || 0) > 0 && <><dt>Community avoids</dt><dd>⊘ {selected.avoidCount}</dd></>}<dt>Quality signal</dt><dd>{selected.popularitySummary}</dd><dt>Found through</dt><dd>{selected.source === "free" ? "Restaurant discovery + OpenStreetMap" : "Premium restaurant research"}</dd><dt>Safety</dt><dd>Restaurant confirmation required</dd></dl>
-        <div className="detail-actions"><a className="primary-link" href={selected.website || selected.sourceUrl} target="_blank" rel="noreferrer">{selected.website ? "Open restaurant website ↗" : "Open map listing ↗"}</a>{selected.menuSourceUrl && <a className="map-link" href={selected.menuSourceUrl} target="_blank" rel="noreferrer">Menu source</a>}<a className="map-link" href={selected.qualitySourceUrl} target="_blank" rel="noreferrer">{selected.source === "free" ? "Map source" : "Quality source"}</a></div>
+        <dl className="restaurant-facts">{selected.phone && <><dt>Phone</dt><dd><a href={`tel:${selected.phone.replace(/[^+0-9]/g, "")}`}>{selected.phone}</a></dd></>}{selected.distanceKm !== null && <><dt>Distance from search centre</dt><dd>{selected.distanceKm.toFixed(1)} km</dd></>}<dt>Why it ranks</dt><dd>{selected.rankingReason}</dd>{(selected.suggestionCount || 0) > 0 && <><dt>Community suggestions</dt><dd>♥ {selected.suggestionCount}</dd></>}{premiumAccess && (selected.avoidCount || 0) > 0 && <><dt>Community avoids</dt><dd>⊘ {selected.avoidCount}</dd></>}<dt>Quality signal</dt><dd>{selected.popularitySummary}</dd><dt>Found through</dt><dd>OpenRouter AI discovery with website checks</dd><dt>Safety</dt><dd>Restaurant confirmation required</dd></dl>
+        <div className="detail-actions"><a className="primary-link" href={selected.website || selected.sourceUrl} target="_blank" rel="noreferrer">{selected.website ? "Open restaurant website ↗" : "Search on Maps ↗"}</a>{selected.menuSourceUrl && <a className="map-link" href={selected.menuSourceUrl} target="_blank" rel="noreferrer">Evidence source</a>}<a className="map-link" href={selected.qualitySourceUrl} target="_blank" rel="noreferrer">Map search</a></div>
         <p className="safety-callout"><strong>Before ordering:</strong> Tell staff about every allergy and ask whether they can prevent cross-contact. If you are unsure, do not eat the item.</p>
       </div></motion.section></motion.div>}
       </AnimatePresence>

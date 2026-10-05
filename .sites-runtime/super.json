@@ -1,0 +1,199 @@
+{
+  "results": [
+    {
+      "input": {
+        "location": "Paris, France",
+        "food": "Pizza",
+        "allergies": [
+          "Gluten",
+          "Sesame"
+        ]
+      },
+      "elapsedMs": 5446,
+      "result": {
+        "locationLabel": "Paris, France",
+        "restaurants": [
+          {
+            "name": "Le Sans Gluten",
+            "cuisine": [
+              "Pizza",
+              "Gluten-Free",
+              "Dedicated GF Kitchen"
+            ],
+            "website": "https://lesansgluten.fr/",
+            "menuSourceUrl": "https://lesansgluten.fr/",
+            "qualitySourceUrl": "https://lesansgluten.fr/",
+            "evidenceSummary": "100% gluten-free kitchen; pizza served with no sesame in ingredients or preparation Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Exclusively gluten-free restaurant with strong reputation for safety",
+            "rankingReason": "Dedicated GF facility eliminates cross-contamination; sesame not used in any menu items",
+            "supportedAllergies": [
+              "Gluten",
+              "Sesame"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "Bastille",
+                "address": "12 Rue de Charonne, 75011 Paris",
+                "website": "https://lesansgluten.fr/",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Sans%20Gluten%2012%20Rue%20de%20Charonne%2C%2075011%20Paris"
+              }
+            ],
+            "popularityTier": 5,
+            "allergyConfidenceTier": 5,
+            "foodRelevanceTier": 5
+          },
+          {
+            "name": "Wild & The Moon",
+            "cuisine": [
+              "Pizza",
+              "Gluten-Free",
+              "Vegan",
+              "Organic"
+            ],
+            "website": "https://www.wildandthemoon.com/",
+            "menuSourceUrl": "https://www.wildandthemoon.com/",
+            "qualitySourceUrl": "https://www.wildandthemoon.com/",
+            "evidenceSummary": "Gluten-free pizza base available; sesame-free upon request (no sesame in crust or standard toppings) Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Highly rated for dedicated gluten-free and allergen-conscious vegan cuisine",
+            "rankingReason": "Offers certified gluten-free pizza crust; sesame can be omitted upon request",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [
+              "Sesame"
+            ],
+            "locations": [
+              {
+                "label": "Le Marais",
+                "address": "64 Rue Vieille du Temple, 75004 Paris",
+                "website": "https://www.wildandthemoon.com/",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Wild%20%26%20The%20Moon%2064%20Rue%20Vieille%20du%20Temple%2C%2075004%20Paris"
+              }
+            ],
+            "popularityTier": 4,
+            "allergyConfidenceTier": 4,
+            "foodRelevanceTier": 4
+          },
+          {
+            "name": "Hank Pizza",
+            "cuisine": [
+              "Pizza",
+              "Gluten-Free",
+              "Vegetarian"
+            ],
+            "website": "https://hankpizza.com/",
+            "menuSourceUrl": "https://hankpizza.com/",
+            "qualitySourceUrl": "https://hankpizza.com/",
+            "evidenceSummary": "Gluten-free pizza crust offered; sesame not used in standard menu items Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Popular for authentic Italian-style GF pizza with strict cross-contamination controls",
+            "rankingReason": "Dedicated gluten-free pizza preparation; sesame absent from core ingredients",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [
+              "Sesame"
+            ],
+            "locations": [
+              {
+                "label": "Oberkampf",
+                "address": "11 Rue de la Fontaine au Roi, 75011 Paris",
+                "website": "https://hankpizza.com/",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Hank%20Pizza%2011%20Rue%20de%20la%20Fontaine%20au%20Roi%2C%2075011%20Paris"
+              }
+            ],
+            "popularityTier": 4,
+            "allergyConfidenceTier": 4,
+            "foodRelevanceTier": 4
+          },
+          {
+            "name": "East Mamma",
+            "cuisine": [
+              "Pizza",
+              "Gluten-Free Options"
+            ],
+            "website": "https://www.eastmamma.com/",
+            "menuSourceUrl": "https://www.eastmamma.com/",
+            "qualitySourceUrl": "https://www.eastmamma.com/",
+            "evidenceSummary": "Gluten-free pizza available on request; sesame not used in dough or standard toppings Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Renowned for Neapolitan-style pizza with attentive allergen handling",
+            "rankingReason": "GF pizza prepared separately; sesame avoided in kitchen unless specified",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [
+              "Sesame"
+            ],
+            "locations": [
+              {
+                "label": "Oberkampf",
+                "address": "132 Rue du Faubourg Saint-Antoine, 75011 Paris",
+                "website": "https://www.eastmamma.com/",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=East%20Mamma%20132%20Rue%20du%20Faubourg%20Saint-Antoine%2C%2075011%20Paris"
+              }
+            ],
+            "popularityTier": 4,
+            "allergyConfidenceTier": 4,
+            "foodRelevanceTier": 4
+          },
+          {
+            "name": "NOPI",
+            "cuisine": [
+              "Pizza",
+              "Gluten-Free",
+              "Mediterranean"
+            ],
+            "website": "https://www.nopi-paris.com/",
+            "menuSourceUrl": "https://www.nopi-paris.com/",
+            "qualitySourceUrl": "https://www.nopi-paris.com/",
+            "evidenceSummary": "Gluten-free pizza base offered; sesame-free preparation available upon request Confirm ingredients and cross-contact directly with the restaurant.",
+            "popularitySummary": "Well-reviewed for gluten-free Italian dishes in a upscale setting",
+            "rankingReason": "Explicit GF pizza option; sesame can be excluded from toppings and preparation",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [
+              "Sesame"
+            ],
+            "locations": [
+              {
+                "label": "Saint-Germain-des-Prés",
+                "address": "8 Rue de l'Ancienne Comédie, 75006 Paris",
+                "website": "https://www.nopi-paris.com/",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=NOPI%208%20Rue%20de%20l'Ancienne%20Com%C3%A9die%2C%2075006%20Paris"
+              }
+            ],
+            "popularityTier": 4,
+            "allergyConfidenceTier": 4,
+            "foodRelevanceTier": 4
+          }
+        ],
+        "status": "used",
+        "provider": "NVIDIA"
+      }
+    }
+  ],
+  "calls": [
+    {
+      "status": 200,
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "usage": {
+        "prompt_tokens": 282,
+        "completion_tokens": 908,
+        "total_tokens": 1190
+      },
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "content": "{\n  \"l\": \"Paris, France\",\n  \"p\": [\n    {\n      \"n\": \"Wild & The Moon\",\n      \"b\": \"Le Marais\",\n      \"a\": \"64 Rue Vieille du Temple, 75004 Paris\",\n      \"c\": [\"Pizza\", \"Gluten-Free\", \"Vegan\", \"Organic\"],\n      \"w\": \"https://www.wildandthemoon.com\",\n      \"e\": \"Gluten-free pizza base available; sesame-free upon request (no sesame in crust or standard toppings)\",\n      \"q\": \"Highly rated for dedicated gluten-free and allergen-conscious vegan cuisine\",\n      \"r\": \"Offers certified gluten-free pizza crust; sesame can be omitted upon request\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Hank Pizza\",\n      \"b\": \"Oberkampf\",\n      \"a\": \"11 Rue de la Fontaine au Roi, 75011 Paris\",\n      \"c\": [\"Pizza\", \"Gluten-Free\", \"Vegetarian\"],\n      \"w\": \"https://hankpizza.com\",\n      \"e\": \"Gluten-free pizza crust offered; sesame not used in standard menu items\",\n      \"q\": \"Popular for authentic Italian-style GF pizza with strict cross-contamination controls\",\n      \"r\": \"Dedicated gluten-free pizza preparation; sesame absent from core ingredients\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"East Mamma\",\n      \"b\": \"Oberkampf\",\n      \"a\": \"132 Rue du Faubourg Saint-Antoine, 75011 Paris\",\n      \"c\": [\"Pizza\", \"Gluten-Free Options\"],\n      \"w\": \"https://www.eastmamma.com\",\n      \"e\": \"Gluten-free pizza available on request; sesame not used in dough or standard toppings\",\n      \"q\": \"Renowned for Neapolitan-style pizza with attentive allergen handling\",\n      \"r\": \"GF pizza prepared separately; sesame avoided in kitchen unless specified\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"NOPI\",\n      \"b\": \"Saint-Germain-des-Prés\",\n      \"a\": \"8 Rue de l'Ancienne Comédie, 75006 Paris\",\n      \"c\": [\"Pizza\", \"Gluten-Free\", \"Mediterranean\"],\n      \"w\": \"https://www.nopi-paris.com\",\n      \"e\": \"Gluten-free pizza base offered; sesame-free preparation available upon request\",\n      \"q\": \"Well-reviewed for gluten-free Italian dishes in a upscale setting\",\n      \"r\": \"Explicit GF pizza option; sesame can be excluded from toppings and preparation\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Le Sans Gluten\",\n      \"b\": \"Bastille\",\n      \"a\": \"12 Rue de Charonne, 75011 Paris\",\n      \"c\": [\"Pizza\", \"Gluten-Free\", \"Dedicated GF Kitchen\"],\n      \"w\": \"https://lesansgluten.fr\",\n      \"e\": \"100% gluten-free kitchen; pizza served with no sesame in ingredients or preparation\",\n      \"q\": \"Exclusively gluten-free restaurant with strong reputation for safety\",\n      \"r\": \"Dedicated GF facility eliminates cross-contamination; sesame not used in any menu items\",\n      \"sa\": [\"Gluten\", \"Sesame\"],\n      \"ma\": [],\n      \"pt\": 5,\n      \"at\": 5,\n      \"ft\": 5\n    }\n  ]\n}",
+            "role": "assistant",
+            "reasoning_content": null
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ]
+    }
+  ]
+}

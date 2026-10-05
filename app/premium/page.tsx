@@ -1,107 +1,39 @@
 "use client";
-
 import Link from "next/link";
-import { AccountControls } from "../auth-ui";
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { BrandWordmark, SafeServeMark } from "../safe-serve-logo";
-import { readJson } from "../lib/http-json";
+import { premiumReturn } from "../lib/premium-return";
 
-type Plan = "monthly" | "annual";
-
-const benefits = [
-  "Unlimited searches",
-  "Every ranked match",
-  "Community ranking",
-  "Deeper restaurant research",
-  "Source-linked menu checks",
-  "Live preference updates",
-];
-
+const subscribe = () => () => {};
+type Plan = "monthly" | "annual" | "lifetime";
 export default function PremiumPage() {
   const [plan, setPlan] = useState<Plan>("annual");
-  const [status, setStatus] = useState<"idle" | "loading" | "active" | "error">("idle");
-  const [message, setMessage] = useState("");
-  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
-  const [returnTo, setReturnTo] = useState("/search");
-
-  useEffect(() => {
-    fetch("/api/subscription", { cache: "no-store" })
-      .then((response) => readJson<{ authenticated?: boolean; premium?: boolean }>(response))
-      .then((data) => {
-        const requestedReturn = new URLSearchParams(window.location.search).get("return") || "/search";
-        const resolved = new URL(requestedReturn, window.location.origin);
-        if (resolved.origin === window.location.origin) setReturnTo(resolved.pathname + resolved.search);
-        setAuthenticated(Boolean(data.authenticated));
-        if (data.premium) {
-          setStatus("active");
-          setMessage("Premium is active on this account.");
-        }
-      })
-      .catch(() => setAuthenticated(false));
-  }, []);
-
-  async function choosePlan() {
-    if (authenticated === false) {
-      window.location.assign(`/sign-in?callbackURL=${encodeURIComponent(window.location.href)}`);
-      return;
-    }
-    setStatus("loading");
-    setMessage("");
-    try {
-      const response = await fetch("/api/subscription", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
-      });
-      const data = await readJson<{ error?: string }>(response);
-      if (response.status === 401) {
-        window.location.assign(`/sign-in?callbackURL=${encodeURIComponent(window.location.href)}`);
-        return;
-      }
-      if (!response.ok) throw new Error(data.error || "Premium could not be activated.");
-      setStatus("active");
-      setMessage("Premium is active. Returning to your search...");
-      window.setTimeout(() => window.location.assign(returnTo), 650);
-    } catch (error) {
-      setStatus("error");
-      setMessage(error instanceof Error ? error.message : "Premium could not be activated.");
-    }
-  }
-
-  return (
-    <main className="premium-page">
-      <header className="premium-nav">
-        <Link className="brand" href="/?step=allergies" aria-label="Return to the Gluten FreEat allergy selection"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link>
-        <div className="premium-nav-actions"><Link href={returnTo}>Back to search</Link><AccountControls /></div>
-      </header>
-
-      <section className="premium-stage">
-        <div className="premium-story">
-          <span className="premium-kicker">Gluten FreEat Premium</span>
-          <h1>More strong matches.<br /><em>Fewer dead ends.</em></h1>
-          <div className="premium-limit-visual" aria-label="Upgrade from three daily searches to unlimited searches">
-            <div><small>Daily limit</small><strong>3</strong></div>
-            <span aria-hidden="true">becomes</span>
-            <div><small>Premium</small><strong>∞</strong></div>
-          </div>
-          <div className="premium-benefit-grid">
-            {benefits.map(title => <article key={title}><span aria-hidden="true">✓</span><div><strong>{title}</strong></div></article>)}
-          </div>
-        </div>
-
-        <aside className="premium-checkout">
-          <div className="premium-checkout-heading"><span>Choose your plan</span><strong>Cancel anytime</strong></div>
-          <div className="premium-plan-options" role="radiogroup" aria-label="Premium billing period">
-            <button type="button" role="radio" aria-checked={plan === "monthly"} className={plan === "monthly" ? "selected" : ""} onClick={() => setPlan("monthly")}><span>Monthly</span><strong>$2.99</strong><small>per month</small></button>
-            <button type="button" role="radio" aria-checked={plan === "annual"} className={plan === "annual" ? "selected" : ""} onClick={() => setPlan("annual")}><span>Annual</span><strong>$29.99</strong><small>$2.50 per month</small><b>Best value</b></button>
-          </div>
-          <div className="premium-price-summary"><span>{plan === "annual" ? "Billed annually" : "Billed monthly"}</span><strong>{plan === "annual" ? "$29.99/year" : "$2.99/month"}</strong></div>
-          <button type="button" className="premium-subscribe-button" onClick={choosePlan} disabled={status === "loading" || status === "active"}>{status === "loading" ? "Activating Premium..." : status === "active" ? "Premium active" : authenticated === false ? "Sign in to continue" : `Choose ${plan}`}</button>
-          {message && <p className={`premium-checkout-message ${status}`}>{message}</p>}
-          <p className="premium-preview-note">Paid checkout coming soon. No payment is collected.</p>
-          <p className="premium-safety-note">Gluten FreEat provides research, not medical certification. Always confirm ingredients and cross-contact with restaurant staff.</p>
-        </aside>
-      </section>
-    </main>
-  );
+  const [trialEnabled, setTrialEnabled] = useState(false);
+  const returnTo = useSyncExternalStore(subscribe, () => {
+    let saved = ""; try { saved = sessionStorage.getItem("premium-origin") || ""; } catch { /* Private browsing may restrict storage. */ }
+    return premiumReturn(new URLSearchParams(window.location.search).get("return") || saved || document.referrer, window.location.origin);
+  }, () => "/");
+  return <main className="premium-page premium-compact">
+    <header className="premium-nav"><Link className="brand" href="/" aria-label="Start menu"><span className="brand-symbol"><SafeServeMark /></span><BrandWordmark /></Link><div className="premium-nav-actions"><Link href={returnTo}>Back</Link><Link href="/contact">Contact us</Link></div></header>
+    <section className="premium-compact-frame">
+      <div className="premium-intro-grid">
+        <ol className="trial-journey" id="trial-timeline" aria-label="Your seven-day trial">
+          <li><span className="journey-icon" aria-hidden="true">🔓</span><div><small>DAY 1</small><h2>Instant access</h2><p>Explore every Premium feature.</p></div></li>
+          <li><span className="journey-icon" aria-hidden="true">🔔</span><div><small>DAY 5</small><h2>A friendly reminder</h2><p>We’ll remind you in the app, two days before it ends.</p></div></li>
+          <li><span className="journey-icon" aria-hidden="true">★</span><div><small>DAY 7</small><h2>Your trial ends</h2><p>No automatic charge.</p></div></li>
+        </ol>
+        <div className="premium-compact-copy"><span className="premium-kicker">Gluten FreEat Premium</span><h1>Find your next<br /><em>great table.</em></h1><p>More places to explore. More details to help you choose.</p><ul><li>Unlimited searches and every ranked match</li><li>Deeper research and source-linked menu checks</li><li>Community recommendations and ratings</li></ul><small>Confirm ingredients and cross-contact with restaurant staff.</small></div>
+      </div>
+      <div className="premium-plan-options" role="radiogroup" aria-label="Premium billing period">
+        <button type="button" role="radio" aria-checked={plan === "monthly"} className={plan === "monthly" ? "selected" : ""} onClick={() => setPlan("monthly")}><strong>$0.99</strong><small>per month</small><ul className="plan-benefits"><li>Unlimited searches</li><li>Ranked allergy-aware matches</li><li>Community hearts and stars</li></ul><span className="plan-name">Monthly</span></button>
+        <button type="button" role="radio" aria-checked={plan === "annual"} className={`featured-year ${plan === "annual" ? "selected" : ""}`} onClick={() => setPlan("annual")}><b>Save 16%</b><strong>$9.99</strong><small>per year · <s>$11.88</s></small><ul className="plan-benefits"><li>Everything in Monthly</li><li>Deeper menu and source checks</li><li>Best value for regular searches</li></ul><span className="plan-name">Yearly</span></button>
+        <button type="button" role="radio" aria-checked={plan === "lifetime"} className={`lifetime-plan ${plan === "lifetime" ? "selected" : ""}`} onClick={() => setPlan("lifetime")}><strong>$19.99</strong><small>One payment. Lifetime access.</small><ul className="plan-benefits"><li>Everything in Yearly</li><li>All future Premium access</li><li>No recurring payments</li></ul><span className="plan-name">Lifetime</span></button>
+      </div>
+      <label className={`trial-toggle ${trialEnabled ? "enabled" : ""}`}>
+        <span><strong>Enable 7-day free trial</strong><small>{trialEnabled ? "Trial will start after checkout." : "Off by default. Continue without a trial."}</small></span>
+        <input type="checkbox" checked={trialEnabled} onChange={(event) => setTrialEnabled(event.target.checked)} />
+      </label>
+      <footer className="premium-continue"><span role="status">Selected: {plan === "annual" ? "Yearly" : plan === "monthly" ? "Monthly" : "Lifetime"}{trialEnabled ? " with trial" : ""}</span><Link className="premium-subscribe-button" href={`/premium/billing?plan=${plan}&trial=${trialEnabled ? "1" : "0"}&return=${encodeURIComponent(returnTo)}`}>Continue →</Link><small>{trialEnabled ? "Trial starts only after you confirm." : "Premium activates after the checkout confirmation."}</small></footer>
+    </section>
+  </main>;
 }

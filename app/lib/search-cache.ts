@@ -5,7 +5,7 @@ import { restaurantSearchCache } from "../../db/schema";
 type CacheMode = "free" | "premium";
 
 function normalized(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+  return value.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").replace(/\s+/g, " ").trim();
 }
 
 export async function restaurantSearchCacheKey(input: {
@@ -15,34 +15,36 @@ export async function restaurantSearchCacheKey(input: {
   longitude?: number;
   food: string;
   allergies: string[];
-}, version = 29) {
+  suggestedRestaurants?: string[];
+}, version = 53) {
   const normalizedLocation = normalized(input.location);
   const source = JSON.stringify({
     version,
-    mode: input.mode,
+    // Discovery is public and identical for both plans; entitlements and
+    // community votes are applied independently after reading this cache.
     location: normalizedLocation,
-    // A typed city is the canonical search identity. Coordinates only identify
-    // searches that genuinely have no location text, avoiding needless cache
-    // misses from tiny globe/geocoder coordinate differences.
-    latitude: !normalizedLocation && Number.isFinite(input.latitude) ? Number(input.latitude).toFixed(3) : "",
-    longitude: !normalizedLocation && Number.isFinite(input.longitude) ? Number(input.longitude).toFixed(3) : "",
+    // Coordinates keep nearby-city searches distinct when the browser supplies them.
+    latitude: Number.isFinite(input.latitude) ? Number(input.latitude).toFixed(3) : "",
+    longitude: Number.isFinite(input.longitude) ? Number(input.longitude).toFixed(3) : "",
     food: normalized(input.food),
     allergies: input.allergies.map(normalized).filter(Boolean).sort(),
-    // Preference changes explicitly invalidate the whole cache, so including
-    // asynchronously loaded preference arrays here would only make identical
-    // visible searches produce different cache entries.
+    // New recommendation names change candidate discovery; vote totals remain live.
+    suggestions: [...new Set((input.suggestedRestaurants || []).map(normalized))].sort(),
   });
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(source));
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export async function readRestaurantSearchCache<T>(cacheKey: string): Promise<T | null> {
+export async function readRestaurantSearchCache<T>(cacheKey: string, options: { allowStale?: boolean } = {}): Promise<T | null> {
   const row = await getDb().select().from(restaurantSearchCache).where(eq(restaurantSearchCache.cacheKey, cacheKey)).limit(1).then((rows) => rows[0]);
   if (!row) return null;
   // Menu and branch information changes; never reuse it indefinitely.
-  if (Date.now() - new Date(row.createdAt).getTime() > 24 * 60 * 60 * 1000) return null;
+  if (!options.allowStale && Date.now() - new Date(row.createdAt).getTime() > 24 * 60 * 60 * 1000) return null;
   try {
-    return JSON.parse(row.payload) as T;
+    const payload = JSON.parse(row.payload);
+    // Retry the AI sooner for a successful but degraded public-web result.
+    if (!options.allowStale && payload.searchWarning && Date.now() - new Date(row.createdAt).getTime() > 15 * 60 * 1000) return null;
+    return payload as T;
   } catch {
     await getDb().delete(restaurantSearchCache).where(eq(restaurantSearchCache.cacheKey, cacheKey));
     return null;

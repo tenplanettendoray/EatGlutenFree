@@ -1,0 +1,65 @@
+[
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 2131,
+      "completion_tokens": 816,
+      "total_tokens": 2947
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Tasca\",\n      \"s\": 1,\n      \"a\": \"46 Av. de Suffren, 75015 Paris, France\",\n      \"fq\": \"Pizzas: From the savory Quattro Stagioni to the Bio (Pour 2) $€28.00\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"100% gluten-free Italian cuisine, Tasca redefines traditional flavors while catering to dietary needs, ensuring everyone can indulge worry-free.\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Little Nonna\",\n      \"s\": 2,\n      \"a\": \"12, Avenue Niel – 75017 Paris\",\n      \"fq\": \"Pizza, pastas, salads, desserts, organic and gluten-free drinks (even beer!)\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Gluten Free restaurant of the moment! ... cuisine made in Italy (direct producers), to discover pizzas, pastas, salads, desserts, organic and gluten-free drinks (even beer!).\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    },\n    {\n      \"n\": \"L'Artisan Napolitain\",\n      \"s\": 3,\n      \"a\": \"117 Rue du Theatre, 15e arrondissement de Paris\",\n      \"fq\": \"La Margherita sans gluten, avec sa pate alternative garnie de tomate San Marzano\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"l'intolerance au gluten ne devrait jamais etre une raison de se priver du plaisir d'une authentique pizza napolitaine. ... nos clients peuvent choisir parmi une large selection de pizzas de notre carte en version sans gluten.\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    },\n    {\n      \"n\": \"La Scuderia del Mulino\",\n      \"s\": 4,\n      \"a\": \"106 Boulevard de Clichy, 75018 Paris, France\",\n      \"fq\": \"pizzas à pâte fine cuites au four à legna, des pâtes et des risottos, tous disponibles en version sans gluten sur demande\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"une large gamme de plats faits maison, incluant des pizzas à pâte fine cuites au four à legna, des pâtes et des risottos, tous disponibles en version sans gluten sur demande.\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Noglu\",\n      \"s\": 5,\n      \"a\": \"5 rue Antoine Vollon, 75012 Paris\",\n      \"fq\": \"pizza Cacio e Pepe au Pont Traversé, 5 rue Antoine Vollon, 75012 Paris\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"100% GLUTEN FREE LIVRAISON SUR PARIS OFFERTE DÈS 200€ D’ACHAT ... Venez découvrir notre pizza Cacio e Pepe au Pont Traversé, 5 rue Antoine Vollon, 75012 Paris.\"\n        },\n        {\n          \"n\": \"Sesame\",\n          \"q\": \"\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 1576,
+      "completion_tokens": 333,
+      "total_tokens": 1909
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Café do Rio\",\n      \"s\": 3,\n      \"a\": \"Rua da Alfândega, 114, 1100-016 Lisboa\",\n      \"fq\": \"100% gluten free gourmet burger restaurant in Portugal\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"menu completely suitable for celiacs, including starters, burgers, breads, sauces, desserts and even gluten-free beers\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Hard Rock Cafe Lisbon\",\n      \"s\": 1,\n      \"a\": \"gluten-free bun\",\n      \"fq\": \"THE CLASSIC BURGER ... on a gluten-free bun.*\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"All Legendary® Steak Burgers are served with seasoned fries. ... on a gluten-free bun.*\"\n        }\n      ]\n    },\n    {\n      \"n\": \"O Gambuzino - Burger Clube\",\n      \"s\": 2,\n      \"a\": \"Rua Damasceno Monteiro 106D, Lisbon, 1170-113\",\n      \"fq\": \"Temos opções sem glúten.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Temos opções sem glúten.\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  },
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "usage": {
+      "prompt_tokens": 2023,
+      "completion_tokens": 477,
+      "total_tokens": 2500
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"p\": [\n    {\n      \"n\": \"Lievito72\",\n      \"s\": 3,\n      \"a\": \"Via del Forte Braschi 82A - 00167 Roma\",\n      \"fq\": \"Pizza a lunga lievitazione, fritti, bruschette e burger, con tante proposte disponibili anche senza glutine.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"tutto il menu anche senza glutine\"\n        }\n      ]\n    },\n    {\n      \"n\": \"La Tana Dei Ricci\",\n      \"s\": 4,\n      \"a\": \"Via Pontina 391\",\n      \"fq\": \"Pizza Romana. Classica e Senza Glutine.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Certificati AIC, offriamo la leggendaria pizza \\\"scrocchiarella\\\", fritti artigianali e specialità di pesce in totale sicurezza.\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Pizzeria Teresina\",\n      \"s\": 2,\n      \"a\": \"Two separate workshops, two wood-fired ovens, zero contamination.\",\n      \"fq\": \"In the Trionfale area since 2015, on gluten free. In fact, today it has two separate locations to avoid contamination risks.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"two separate locations to avoid contamination risks\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Gustoso Ristorante Pizzeria\",\n      \"s\": 5,\n      \"a\": \"Via Gasperina 151\",\n      \"fq\": \"pizze e pinse romane con farciture irresistibili, dolci fatti in casa e birre artigianali dal sapore unico.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"selezioniamo rigorosamente ingredienti esenti da glutine e partecipiamo attivamente al programma AIC.\"\n        }\n      ]\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  }
+]

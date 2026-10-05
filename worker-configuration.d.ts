@@ -5,6 +5,7 @@ interface __BaseEnv_CloudflareEnv {
 	DB: D1Database;
 	OPENAI_API_KEY: string;
 	OPENROUTER_API_KEY: string;
+	GOOGLE_API_KEY: string;
 	BETTER_AUTH_SECRET: string;
 	BETTER_AUTH_URL: string;
 	SEARCH_WHITELIST_EMAILS: string;
@@ -21,7 +22,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "OPENAI_API_KEY" | "OPENROUTER_API_KEY" | "BETTER_AUTH_SECRET" | "BETTER_AUTH_URL" | "SEARCH_WHITELIST_EMAILS" | "ADMIN_EMAILS">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "OPENAI_API_KEY" | "OPENROUTER_API_KEY" | "GOOGLE_API_KEY" | "BETTER_AUTH_SECRET" | "BETTER_AUTH_URL" | "SEARCH_WHITELIST_EMAILS" | "ADMIN_EMAILS">> {}
 }
 
 // Begin runtime types

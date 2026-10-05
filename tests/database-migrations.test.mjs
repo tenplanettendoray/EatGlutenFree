@@ -14,9 +14,9 @@ test("every migration is registered and provisions a clean publication database"
     db.exec("PRAGMA foreign_keys = ON");
     for (const entry of journal.entries) db.exec(read(`drizzle/${entry.tag}.sql`));
     const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map((row) => row.name);
-    for (const name of ["user", "session", "account", "verification", "restaurant_preference", "restaurant_signal", "restaurant_search_cache", "user_search"]) assert.ok(tables.includes(name), name);
+    for (const name of ["user", "session", "account", "verification", "restaurant_preference", "restaurant_signal", "restaurant_search_cache", "user_search", "restaurant_rating"]) assert.ok(tables.includes(name), name);
     const columns = db.prepare('PRAGMA table_info("user")').all().map((row) => row.name);
-    for (const name of ["role", "premium_plan", "premium_activated_at", "premium_updated_at"]) assert.ok(columns.includes(name), name);
+    for (const name of ["role", "premium_plan", "premium_activated_at", "premium_updated_at", "trial_started_at"]) assert.ok(columns.includes(name), name);
     assert.equal(db.prepare("PRAGMA integrity_check").get().integrity_check, "ok");
     assert.deepEqual(db.prepare("PRAGMA foreign_key_check").all(), []);
     // Cache writes replace one search, rather than duplicating it.

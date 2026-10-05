@@ -1,0 +1,26 @@
+{
+  "results": [
+    {
+      "input": {
+        "location": "Paris, France",
+        "food": "Pizza",
+        "allergies": [
+          "Gluten",
+          "Sesame"
+        ]
+      },
+      "elapsedMs": 268,
+      "result": {
+        "locationLabel": "Paris, France",
+        "restaurants": [],
+        "status": "unavailable"
+      }
+    }
+  ],
+  "calls": [
+    {
+      "status": 404,
+      "model": "nvidia/llama-3.1-nemotron-70b-instruct"
+    }
+  ]
+}

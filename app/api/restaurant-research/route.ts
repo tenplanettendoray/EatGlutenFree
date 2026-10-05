@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { officialUrl } from "../../lib/public-web";
+import { auth } from "../../lib/auth";
+import { getAccountAccess } from "../../lib/premium";
 
 type Citation = {
   type?: string;
@@ -40,6 +42,9 @@ function safeCitationUrl(value: unknown) {
 }
 
 export async function POST(request: NextRequest) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  if (!session?.user) return NextResponse.json({ error: "Sign in first." }, { status: 401 });
+  if (!(await getAccountAccess(session)).premium) return NextResponse.json({ error: "Premium is required for deeper research." }, { status: 403 });
   const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) {
     return NextResponse.json({ error: "OPENAI_API_KEY is not configured on the server." }, { status: 503 });

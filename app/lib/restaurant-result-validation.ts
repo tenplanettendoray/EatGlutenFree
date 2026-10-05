@@ -1,5 +1,5 @@
 function normalized(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").replace(/\s+/g, " ").trim();
 }
 
 const CATEGORY_ONLY_NAMES = new Set([
@@ -11,8 +11,9 @@ const CATEGORY_ONLY_NAMES = new Set([
 
 export function isPlausibleRestaurantName(name: string, food: string, allergies: string[]) {
   const candidate = normalized(name);
-  if (candidate.length < 2 || !/[a-z]/.test(candidate)) return false;
+  if (candidate.length < 2 || !/[\p{L}]/u.test(candidate)) return false;
   if (CATEGORY_ONLY_NAMES.has(candidate)) return false;
+  if (/^(?:\d+\s+)?(?:best|top|guide|visit|menu|reviews?|potential allergens)(?:\s|$)/.test(candidate)) return false;
   if (normalized(food) === candidate) return false;
   if (allergies.some((allergy) => normalized(allergy) === candidate)) return false;
   if (/^(best|top|popular|recommended)\s+(place|places|restaurant|restaurants|food|foods)\b/.test(candidate)) return false;

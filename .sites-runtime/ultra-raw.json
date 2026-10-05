@@ -1,0 +1,23 @@
+[
+  {
+    "status": 200,
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "usage": {
+      "prompt_tokens": 282,
+      "completion_tokens": 871,
+      "total_tokens": 1153
+    },
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "content": "{\n  \"l\": \"Paris, France\",\n  \"p\": [\n    {\n      \"n\": \"Nolita\",\n      \"b\": \"11th arrondissement\",\n      \"a\": \"16 Rue de la Folie-Méricourt, 75011 Paris\",\n      \"c\": [\"Pizza\", \"Italian\", \"Gluten-Free Options\"],\n      \"w\": \"https://nolita.fr\",\n      \"e\": \"Offers gluten-free pizza bases; sesame status not confirmed on menu\",\n      \"q\": \"Popular Neapolitan pizzeria, high ratings for authentic pizza\",\n      \"r\": \"Serves pizza with gluten-free base option; sesame presence unknown\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Pizzeria Popolare\",\n      \"b\": \"2nd arrondissement\",\n      \"a\": \"111 Rue Réaumur, 75002 Paris\",\n      \"w\": \"https://pizzeriapopolare.com\",\n      \"e\": \"Gluten-free pizza base available; sesame not mentioned in allergen info\",\n      \"q\": \"Highly rated, busy spot known for quality Neapolitan pizza\",\n      \"r\": \"Offers gluten-free pizza crust; sesame cross-contact risk unverified\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Big Mamma Group - East Mamma\",\n      \"b\": \"11th arrondissement\",\n      \"a\": \"19 Rue de la Folie-Méricourt, 75011 Paris\",\n      \"c\": [\"Pizza\", \"Italian\", \"Gluten-Free Options\"],\n      \"w\": \"https://bigmamma-group.com/east-mamma\",\n      \"e\": \"Gluten-free pizza dough offered; sesame not listed in allergen guide\",\n      \"q\": \"Well-known group, consistent quality, popular for groups\",\n      \"r\": \"Provides gluten-free pizza base; sesame safety not documented\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Il Brigante\",\n      \"b\": \"10th arrondissement\",\n      \"a\": \"25 Rue du Faubourg Saint-Denis, 75010 Paris\",\n      \"c\": [\"Pizza\", \"Italian\", \"Gluten-Free Options\"],\n      \"w\": \"https://ilbrigante.fr\",\n      \"e\": \"Gluten-free pizza available on request; no sesame allergen info published\",\n      \"q\": \"Respected for traditional Neapolitan pizza, loyal local following\",\n      \"r\": \"Makes gluten-free pizza; sesame handling not confirmed\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    },\n    {\n      \"n\": \"Da Graziella\",\n      \"b\": \"9th arrondissement\",\n      \"a\": \"12 Rue de la Rochefoucauld, 75009 Paris\",\n      \"c\": [\"Pizza\", \"Italian\", \"Gluten-Free Options\"],\n      \"w\": \"https://dagraziella.com\",\n      \"e\": \"Offers gluten-free pizza base; sesame not addressed in menu allergens\",\n      \"q\": \"Classic Italian restaurant, long-standing reputation for pizza\",\n      \"r\": \"Serves pizza with gluten-free crust option; sesame status unknown\",\n      \"sa\": [\"Gluten\"],\n      \"ma\": [\"Sesame\"],\n      \"pt\": 4,\n      \"at\": 4,\n      \"ft\": 4\n    }\n  ]\n}",
+          "role": "assistant",
+          "reasoning_content": null
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ]
+  }
+]

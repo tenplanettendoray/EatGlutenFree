@@ -42,3 +42,5 @@ next-env.d.ts
 /work/
 # local pnpm cache
 /.pnpm-store/
+node_modules/
+node_modules-broken/

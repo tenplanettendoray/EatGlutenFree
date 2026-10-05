@@ -27,7 +27,7 @@ export function officialUrl(value: unknown) {
   const url = publicUrl(value);
   if (!url) return "";
   const host = new URL(url).hostname;
-  return /(^|\.)(google|bing|yelp|tripadvisor|thefork|facebook|instagram|tiktok|wikipedia|ubereats|deliveroo|doordash|openstreetmap)\./i.test(host) ? "" : url;
+  return /(^|\.)(google|bing|yelp|tripadvisor|thefork|facebook|instagram|tiktok|wikipedia|ubereats|deliveroo|doordash|openstreetmap|findmeglutenfree|atly|wanderlog|happycow|restaurantguru|opentable|wheree|trustpilot|res-discover|res-menu|restomenu|sluurpy|eater|wheatlesswanderlust|mygfguide)\./i.test(host) ? "" : url;
 }
 
 /** Bound bytes while reading, rather than allocating an arbitrary response first. */
@@ -48,7 +48,7 @@ export async function boundedText(response: Response, maxBytes = 700_000) {
   } finally { reader.releaseLock(); }
 }
 
-export async function fetchPublicPage(value: string): Promise<{ url: string; html: string } | null> {
+async function fetchUncachedPublicPage(value: string, allowXml = false): Promise<{ url: string; html: string } | null> {
   let url = publicUrl(value);
   const signal = AbortSignal.timeout(6500);
   try {
@@ -70,7 +70,8 @@ export async function fetchPublicPage(value: string): Promise<{ url: string; htm
         url = location ? publicUrl(new URL(location, url).toString()) : "";
         continue;
       }
-      if (!response.ok || !/text\/html|application\/xhtml\+xml/i.test(response.headers.get("content-type") || "")) { console.warn("Website page unavailable", host, response.status); await response.body?.cancel(); return null; }
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok || !(/text\/html|application\/xhtml\+xml/i.test(contentType) || allowXml && /(?:application|text)\/(?:rss\+)?xml/i.test(contentType))) { console.warn("Website page unavailable", host, response.status); await response.body?.cancel(); return null; }
       // Modern restaurant sites often include more than 700 KB of hydration
       // data before their menu/footer. Keep a hard limit without excluding them.
       return { url, html: await boundedText(response, 2_500_000) };
@@ -79,9 +80,40 @@ export async function fetchPublicPage(value: string): Promise<{ url: string; htm
   return null;
 }
 
+type PublicPage = { url: string; html: string };
+const pageCache = new Map<string, { page: PublicPage; expires: number }>();
+const pendingPages = new Map<string, Promise<PublicPage | null>>();
+
+/** Repeated verification reuses public pages briefly, with a bounded memory budget. */
+export async function fetchPublicPage(value: string, allowXml = false): Promise<PublicPage | null> {
+  const url = publicUrl(value);
+  if (!url) return null;
+  const key = `${allowXml}:${url}`;
+  const cached = pageCache.get(key);
+  if (cached && cached.expires > Date.now()) return cached.page;
+  pageCache.delete(key);
+  const existing = pendingPages.get(key);
+  if (existing) return existing;
+  const pending = fetchUncachedPublicPage(url, allowXml);
+  if (pendingPages.size < 64) pendingPages.set(key, pending);
+  try {
+    const page = await pending;
+    if (page) {
+      pageCache.set(key, { page, expires: Date.now() + 5 * 60_000 });
+      while (pageCache.size > 16 || [...pageCache.values()].reduce((size, item) => size + item.page.html.length, 0) > 4_000_000) {
+        const oldest = pageCache.keys().next().value;
+        if (!oldest) break;
+        pageCache.delete(oldest);
+      }
+    }
+    return page;
+  } finally { pendingPages.delete(key); }
+}
+
 export function htmlText(html: string) {
   return html.replace(/<(script|style|noscript|svg)\b[^>]*>[\s\S]*?<\/\1>/gi, " ").replace(/<[^>]+>/g, " ")
     .replace(/&amp;/gi, "&").replace(/&quot;/gi, '"').replace(/&#0?39;|&apos;/gi, "'").replace(/&nbsp;/gi, " ")
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => parseInt(n, 16) <= 0x10ffff ? String.fromCodePoint(parseInt(n, 16)) : " ")
     .replace(/&#(\d+);/g, (_, n) => Number(n) <= 0x10ffff ? String.fromCodePoint(Number(n)) : " ").replace(/\s+/g, " ").trim();
 }
 

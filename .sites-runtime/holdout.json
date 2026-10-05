@@ -1,0 +1,125 @@
+{
+  "results": [
+    {
+      "input": {
+        "location": "New York, USA",
+        "food": "Burger",
+        "allergies": [
+          "Gluten"
+        ]
+      },
+      "elapsedMs": 20527,
+      "sources": [
+        {
+          "id": 1,
+          "url": "https://www.noglu.nyc/menu/restaurant/",
+          "title": "Restaurant | Noglu | Gluten-Free Restaurant in New York, NY",
+          "text": "Restaurant | Noglu | Gluten-Free Restaurant in New York, NY ... 1260 Madison Ave, New York, NY 10128 (646) 895 9798 ... ## Breakfast & Lunch ... $ 8 - Chicken Burger ... Grilled Chicken burger on a Brioche bun with Cheddar Cheese, Boston lettuce, BBQ Sauce, Tomato & Onion. Served with a side of Veggie chips $ 24 - Quiche with Salad spinach & feta, or turkey cheddar quiche served with greens ... $ 14"
+        },
+        {
+          "id": 2,
+          "url": "https://www.seamless.com/menu/vinnys-gluten-free-kitchen-201-west-14th-street-new-york/14649880",
+          "title": "Vinny's Gluten Free Kitchen - New York, NY Restaurant | Menu + Delivery | Seamless",
+          "text": "Vinny's Gluten Free Kitchen - New York, NY Restaurant | Menu + Delivery | Seamless ... # Vinny's Gluten Free Kitchen ... 201 West 14th Street • ... - Best Sellers - Gluten-Free Appetizers - Vinny's Mozzarella Bar - Gluten-Free Sourdough Starter - Gluten-Free Loaded French Fries - Gluten-Free Loaded Crispy Tater Tots - Gluten-Free Loaded Protein Mac and Cheese - Gluten-Free Buffalo Wings - Gluten-Free Chicken Tender - Main Course Salad - Gluten-Free Cauli - Burrata Panini Sandwich - Gluten-Free Sandwich in a Gluten-Free Bun - Gluten-Free Burger in Gluten-Free Bun - Gluten-Free Pizza Bagel - Gluten-Free Stromboli - Gluten-Free Calzone - 14\" Gluten-Free Sourdough Pizza - 14\" Gluten-Free Sourdough Pizzette - 14\" Plant Based Gluten-Free Sourdough Pizza - 10\" Guilt-Free Sourdough Low Carb High Protein Lupine Flour Pizza - 10\" Gluten-Free Cauliflower Crust Pan Pizza - 12\" Gluten-Free Sourdough Oat Flour Crust Pan Pizza - 12\" Gluten-free Sourdough Sorghum Flour Crust Pizza - 12\" Gluten-free Sourdough Brown Rice Flour Crust Pan Pizza - Gluten-free Sicilian Pizza Slice - Gluten-free Pasta - Gluten-Free Pasta Chef Suggestions - Gluten-Free Pasta Entrée - Gluten-Free Desserts - Sauce a La Carte - Beverage ... ### Gluten-Free Burger in Gluten-Free Bun ... ###### Quarter Pounder Hamburger in a Gluten-Free Bun ... Gluten free. Served with pickle, mayo, grilled onion and bourbon sauce. ###### $13.95 ... ###### Double Quarter Pounder Hamburger in a Gluten-Free Bun ... Gluten free. Served with pickle, mayo, grilled onion and bourbon sauce. ###### $16.95 ... ###### Bacon Cheese Burger in a Gluten-Free Bun ... Gluten free. Served with pickle, mayo, grilled onion and bourbon sauce. ###### $16.95 ... ###### Double Quarter Pounder Cheeseburger in a Gluten-Free Bun ... Gluten free. Served with pickle, mayo, grilled onion and bourbon sauce. ###### $16.95 ... ###### Quarter Pounder Cheeseburger in a Gluten-Free Bun ... Gluten free. Served with pickle, mayo, grilled onion and bourbon sauce. ###### $13.95 ... ## Vinny's Gluten Free Kitchen Menu Info ... 201 West 14th StreetNew York, NY 10011"
+        },
+        {
+          "id": 3,
+          "url": "https://senzaglutennyc.com/menu/",
+          "title": "Italian gluten-free restaurant in New York City: Senza Gluten",
+          "text": "Italian gluten-free restaurant in New York City: Senza Gluten ... ## Sandwiches & Burgers ... --- ... ##### ALL OF OUR SANDWICHES COME WITH MIXED GREENS AND HOUSE FRENCH FRIES. ... #### Burger Italiano Prime ground beef, romaine lettuce, red onion, tomato and pickles. Add Cheese $3 ... #### Burger Italiano Prime ground beef, romaine lettuce, red onion, tomato and pickles. Add Cheese $3 ... Our menu is 100% gluten-free and there are no gluten-based products used in our restaurant. Before placing your order, please inform your server if a person in your party has any additional food allergies or intolerances. We will do our best to accommodate your needs. Please be aware that our restaurant uses ingredients that contain dairy, eggs, fish, shellfish, milk, soy, peanuts, and tree nuts. ... Senza Gluten is a 100% gluten-free restaurant. We do not use any wheat, rye, oats, or barley in our restaurant. Before placing your order, please inform your server if a person in your party has a food allergy. Please be aware that our restaurant uses ingredients that contain dairy, eggs, fish, shellfish, milk, soy, peanuts, and tree nuts. We have a very small kitchen. We do our very best to avoid cross-contact if you have food allergies, but due to the nature of our menu and the size of our kitchen there is always a small risk of contamination. If you have airborne allergies to shellfish or any other allergen, we would advise you not to dine at Senza Gluten. We are happy to provide information about ingredients to customers upon request so you can make informed decisions about what to order from the menu. If you have multiple allergies, we urge you to call ahead and discuss your dietary needs with the chef directly. (Senza Gluten – Updated March 2015)"
+        },
+        {
+          "id": 4,
+          "url": "https://www.grubhub.com/restaurant/senza-gluten-by-jemiko-100--gluten-free-cafe-and-bakery-171-sullivan-st-new-york/951188",
+          "title": "Senza Gluten By Jemiko 100 % Gluten Free Cafe and Bakery  Delivery Menu | Order Online | 171 Sullivan St New York | Grubhub",
+          "text": "# Senza Gluten By Jemiko 100 % Gluten Free Cafe and Bakery ... ###### Four Gluten Free Burger Buns 16oz. ###### FOUR GLUTEN-FREE BURGER BUNS - 16oz ... Ingredients: Cornstarch, white rice flour, active dry yeast, brown rice flour, organic cane sugar, milk powder (*rbst-free), whole eggs, whole milk, tapioca flour, potato starch, guar gum, xanthan gum, kosher salt, canola oil, San Pellegrino sparkling water, apple cider vinegar. ... 171 Sullivan St New York, NY 10012"
+        }
+      ],
+      "result": {
+        "locationLabel": "New York, USA",
+        "restaurants": [
+          {
+            "name": "Vinny's Gluten Free Kitchen",
+            "cuisine": [
+              "Burger"
+            ],
+            "website": "https://www.seamless.com/menu/vinnys-gluten-free-kitchen-201-west-14th-street-new-york/14649880",
+            "menuSourceUrl": "https://www.seamless.com/menu/vinnys-gluten-free-kitchen-201-west-14th-street-new-york/14649880",
+            "qualitySourceUrl": "https://www.seamless.com/menu/vinnys-gluten-free-kitchen-201-west-14th-street-new-york/14649880",
+            "evidenceSummary": "Gluten: “Gluten-Free Burger in Gluten-Free Bun ... Quarter Pounder Hamburger in a Gluten-Free Bun ... Gluten free.” Confirm ingredients and cross-contact with staff.",
+            "popularitySummary": "Selected from restaurant-published menu information; public ratings were not verified.",
+            "rankingReason": "Burger listed on the restaurant website. Confirm preparation with staff.",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "New York",
+                "address": "New York, USA · confirm branch address",
+                "website": "https://www.seamless.com/menu/vinnys-gluten-free-kitchen-201-west-14th-street-new-york/14649880",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Vinny's%20Gluten%20Free%20Kitchen%20New%20York%2C%20USA"
+              }
+            ],
+            "foodRelevanceTier": 5,
+            "allergyConfidenceTier": 4,
+            "popularityTier": 3
+          },
+          {
+            "name": "Senza Gluten",
+            "cuisine": [
+              "Burger"
+            ],
+            "website": "https://senzaglutennyc.com/menu/",
+            "menuSourceUrl": "https://senzaglutennyc.com/menu/",
+            "qualitySourceUrl": "https://senzaglutennyc.com/menu/",
+            "evidenceSummary": "Gluten: “Our menu is 100% gluten-free and there are no gluten-based products used in our restaurant.” Confirm ingredients and cross-contact with staff.",
+            "popularitySummary": "Selected from restaurant-published menu information; public ratings were not verified.",
+            "rankingReason": "Burger listed on the restaurant website. Confirm preparation with staff.",
+            "supportedAllergies": [
+              "Gluten"
+            ],
+            "missingAllergies": [],
+            "locations": [
+              {
+                "label": "New York",
+                "address": "Italian gluten-free restaurant in New York City: Senza Gluten",
+                "website": "https://senzaglutennyc.com/menu/",
+                "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Senza%20Gluten%20New%20York%2C%20USA"
+              }
+            ],
+            "foodRelevanceTier": 5,
+            "allergyConfidenceTier": 4,
+            "popularityTier": 3
+          }
+        ],
+        "status": "used",
+        "provider": "NVIDIA",
+        "grounded": true
+      }
+    }
+  ],
+  "calls": [
+    {
+      "status": 200,
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "usage": {
+        "prompt_tokens": 1877,
+        "completion_tokens": 280,
+        "total_tokens": 2157
+      },
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "content": "{\n  \"p\": [\n    {\n      \"n\": \"Vinny's Gluten Free Kitchen\",\n      \"s\": 2,\n      \"a\": \"201 West 14th Street, New York, NY 10011\",\n      \"fq\": \"Gluten-Free Burger in Gluten-Free Bun ... ###### Quarter Pounder Hamburger in a Gluten-Free Bun ... Gluten free. Served with pickle, mayo, grilled onion and bourbon sauce.\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Gluten-Free Burger in Gluten-Free Bun ... Quarter Pounder Hamburger in a Gluten-Free Bun ... Gluten free.\"\n        }\n      ]\n    },\n    {\n      \"n\": \"Senza Gluten\",\n      \"s\": 3,\n      \"a\": \"Italian gluten-free restaurant in New York City: Senza Gluten\",\n      \"fq\": \"Burger Italiano Prime ground beef, romaine lettuce, red onion, tomato and pickles. Add Cheese $3\",\n      \"ae\": [\n        {\n          \"n\": \"Gluten\",\n          \"q\": \"Our menu is 100% gluten-free and there are no gluten-based products used in our restaurant.\"\n        }\n      ]\n    }\n  ]\n}",
+            "role": "assistant",
+            "reasoning_content": null
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ]
+    }
+  ]
+}

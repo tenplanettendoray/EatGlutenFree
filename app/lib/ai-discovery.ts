@@ -1,3 +1,5 @@
+import { verifyAndRankRestaurants } from "./restaurant-verification";
+
 export type DiscoveryInput = {
   location: string;
   latitude?: number;
@@ -9,6 +11,8 @@ export type DiscoveryInput = {
 };
 
 export type AiRestaurantLocation = {
+  latitude?: number;
+  longitude?: number;
   label: string;
   address: string;
   website: string;
@@ -16,6 +20,23 @@ export type AiRestaurantLocation = {
 };
 
 export type AiDiscoveredRestaurant = {
+  guideName?: string;
+  guideRank?: number;
+  guideLabel?: string;
+  fsqPlaceId?: string;
+  phone?: string;
+  distanceKm?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  evidenceRank?: number;
+  confidence?: "strong" | "medium" | "weak";
+  crossContaminationWarning?: string;
+  evidenceSources?: Array<{ title: string; url: string; quote: string }>;
+  sourceUrls?: string[];
+  websiteStatus?: "verified" | "unverified" | "missing";
+  checkedAt?: string;
+  locationConfirmed?: boolean;
+  foodConfirmed?: boolean;
   allergenEvidence?: Array<{ allergy: string; quote: string; url: string }>;
   name: string;
   cuisine: string[];
@@ -32,6 +53,12 @@ export type AiDiscoveredRestaurant = {
   popularityTier?: number;
   allergyConfidenceTier?: number;
   foodRelevanceTier?: number;
+  /** Evidence-backed match category; community votes only reorder peers. */
+  matchQuality?: number;
+  dedicatedGlutenFree?: boolean;
+  rating?: number | null;
+  reviewCount?: number | null;
+  popularitySourceUrl?: string;
 };
 
 type OpenAIResponse = {
@@ -235,11 +262,10 @@ export async function discoverRestaurants(input: DiscoveryInput) {
       || (b.allergyConfidenceTier || 0) - (a.allergyConfidenceTier || 0)
       || (b.foodRelevanceTier || 0) - (a.foodRelevanceTier || 0));
     const locationLabel = cleanText(parsed.l ?? parsed.locationLabel, 240) || input.location || "your location";
-    return { locationLabel, restaurants, status: restaurants.length ? "used" as const : "empty" as const, provider: restaurants.length ? "OpenAI" : undefined };
+    const verifiedRestaurants = await verifyAndRankRestaurants(restaurants, input);
+    return { locationLabel, restaurants: verifiedRestaurants, status: verifiedRestaurants.length ? "used" as const : "empty" as const, provider: verifiedRestaurants.length ? "OpenAI" : undefined };
   } catch (error) {
     console.error("OpenAI restaurant discovery error", error);
     return { locationLabel: input.location || "your location", restaurants: [] as AiDiscoveredRestaurant[], status: "unavailable" as const };
   }
 }
-
-

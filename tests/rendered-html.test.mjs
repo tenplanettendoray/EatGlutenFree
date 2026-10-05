@@ -8,7 +8,7 @@ test("builds the Gluten FreEat homepage and catchphrase", async () => {
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(layout, /Gluten FreEat — Can I Eat It\?/i);
-  assert.match(homepage, /aria-label="Return to the Gluten FreEat start page"/i);
+  assert.match(homepage, /aria-label="Return to the Gluten FreEat allergy selection"/i);
   assert.match(homepage, /Can I Eat It\?/i);
   assert.match(homepage, /AccountControls/i);
   assert.doesNotMatch(homepage, /ClearPlate/i);

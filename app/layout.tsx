@@ -1,9 +1,13 @@
+import { TrialReminder } from "./trial-reminder";
+import { InteractionEffects } from "./interaction-effects";
+import { CustomConfetti } from "./custom-confetti";
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
 import "./experience.css";
 import "./mobile.css";
 import "./typography.css";
+import "./refinements.css";
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
@@ -29,6 +33,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
+        <InteractionEffects />
+        <CustomConfetti />
+        <TrialReminder />
         {children}
       </body>
     </html>

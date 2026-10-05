@@ -1,4 +1,12 @@
-import { index, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+
+export const supportMessage = sqliteTable("support_message", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  email: text("email").notNull(),
+  message: text("message").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+}, table => [index("support_message_user_created").on(table.userId, table.createdAt)]);
 
 export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
@@ -9,8 +17,12 @@ export const user = sqliteTable("user", {
   username: text("username").unique(),
   displayUsername: text("display_username"),
   role: text("role", { enum: ["user", "admin"] }).notNull().default("user"),
-  premiumPlan: text("premium_plan", { enum: ["monthly", "annual"] }),
+  premiumPlan: text("premium_plan", { enum: ["monthly", "annual", "lifetime"] }),
   premiumActivatedAt: integer("premium_activated_at", { mode: "timestamp" }),
+  premiumPaymentReference: text("premium_payment_reference"),
+  premiumExpiresAt: integer("premium_expires_at", { mode: "timestamp" }),
+  trialStartedAt: integer("trial_started_at", { mode: "timestamp" }),
+  trialCancelledAt: integer("trial_cancelled_at", { mode: "timestamp" }),
   premiumUpdatedAt: integer("premium_updated_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
@@ -105,3 +117,11 @@ export const userSearch = sqliteTable("user_search", {
   resultCount: integer("result_count").notNull().default(0),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 }, (table) => [index("user_search_user_created_idx").on(table.userId, table.createdAt)]);
+
+export const restaurantRating = sqliteTable("restaurant_rating", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  restaurantKey: text("restaurant_key").notNull(),
+  stars: real("stars").notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+}, (table) => [uniqueIndex("restaurant_rating_user_key").on(table.userId, table.restaurantKey), index("restaurant_rating_key").on(table.restaurantKey)]);
